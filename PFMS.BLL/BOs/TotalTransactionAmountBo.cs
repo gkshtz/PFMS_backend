@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PFMS.BLL.BOs
+﻿namespace PFMS.BLL.BOs
 {
     public class TotalTransactionAmountBo
     {
@@ -15,5 +7,12 @@ namespace PFMS.BLL.BOs
         public decimal TotalIncome { get; set; }
         public DateTime LastTransactionDate { get; set; }
         public Guid UserId { get; set; }
+      
+        public TotalTransactionAmountBo()
+        {
+            LastTransactionDate = DateTime.UtcNow;
+            TotalExpence = 0;
+            TotalIncome = 0;   
+        }
     }
 }

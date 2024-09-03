@@ -9,6 +9,6 @@ namespace PFMS.BLL.Interfaces
 {
     public interface IUserService
     {
-        public Task<UserBo> AddUser(UserBo userBo);
+        public Task<UserBo> AddUserAsync(UserBo userBo);
     }
 }
