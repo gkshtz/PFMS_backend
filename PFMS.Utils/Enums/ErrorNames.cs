@@ -10,6 +10,7 @@ namespace PFMS.Utils.Enums
     {
         AUTHENTICATION_FAILED_ERROR,
         RESOURCE_NOT_FOUND_ERROR,
-        INTERNAL_SERVER_ERROR
+        INTERNAL_SERVER_ERROR,
+        UNAUTHORIZED_ERROR
     }
 }

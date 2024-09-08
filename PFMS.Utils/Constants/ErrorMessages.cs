@@ -10,5 +10,6 @@ namespace PFMS.Utils.Constants
     {
         public const string UserNotFound = "User with this email does not exist.";
         public const string UserNotAuthenticated = "Incorrect Password, authentication failed.";
+        public const string MisingAuthorizationHeader = "Authorization header not present.";
     }
 }
