@@ -8,7 +8,7 @@ using PFMS.Utils.Enums;
 
 namespace PFMS.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UserController : ControllerBase
     {

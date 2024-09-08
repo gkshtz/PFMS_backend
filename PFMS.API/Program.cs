@@ -19,7 +19,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("pfmsDb")));
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
 builder.Services.AddAutoMapper(typeof(UserMapper));
 builder.Services.AddAutoMapper(typeof(UserBLLMapper));
@@ -27,6 +30,11 @@ builder.Services.AddAutoMapper(typeof(UsersDALMapper));
 
 builder.Services.AddAutoMapper(typeof(TotalTransactionAmountBLLMapper));
 builder.Services.AddAutoMapper(typeof(TotalTransactionAmountDALMapper));
+
+builder.Services.AddAutoMapper(typeof(TransactionMapper));
+builder.Services.AddAutoMapper(typeof(TransactionBLLMapper));
+builder.Services.AddAutoMapper(typeof(TransactionDALMapper));
+
 
 builder.Services.AddScoped<IPasswordHasher<UserBo>, PasswordHasher<UserBo>>();
 

@@ -42,9 +42,9 @@ namespace PFMS.API.Middlewares
             }
             string token = authorizationContent.Split(" ").Last();
 
-            if(!string.IsNullOrEmpty(token))
+            if(string.IsNullOrEmpty(token))
             {
-                throw new UnauthorizedAccessException();
+                throw new UnauthorizedException();
             }
 
             ClaimsPrincipal? principal = ValidateToken(token);
