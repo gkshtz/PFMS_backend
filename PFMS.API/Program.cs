@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PFMS.API.Mappers;
+using PFMS.API.Middlewares;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.BLL.Mappers;
@@ -42,6 +43,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
+
+app.UseMiddleware<AuthMiddleware>();
 
 app.UseHttpsRedirection();
 
