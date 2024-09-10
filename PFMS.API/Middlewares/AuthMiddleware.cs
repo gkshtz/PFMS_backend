@@ -18,7 +18,7 @@ namespace PFMS.API.Middlewares
         }
         public async Task InvokeAsync(HttpContext context)
         {
-            if(CheckByPassRoutes(context.Request.Path.Value))
+            if(CheckByPassRoutes(context.Request.Path.Value!))
             {
                 await _next(context);
                 return;

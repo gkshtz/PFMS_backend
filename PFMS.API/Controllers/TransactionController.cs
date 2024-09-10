@@ -10,7 +10,7 @@ namespace PFMS.API.Controllers
 {
     [Route("api/transactions")]
     [ApiController]
-    public class TransactionController : ControllerBase
+    public class TransactionController : BaseController
     {
         private readonly IMapper _mapper;
         private readonly ITransactionService _transactionService;
@@ -23,10 +23,10 @@ namespace PFMS.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
+            FetchFilters();
             var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
             List<TransactionBo> transactionsBo = await _transactionService.GetAllTransactionsAsync(userId);
             List<TransactionResponseModel> transactionsModel = _mapper.Map<List<TransactionResponseModel>>(transactionsBo);
-
             GenericSuccessResponse<List<TransactionResponseModel>> response = new GenericSuccessResponse<List<TransactionResponseModel>>()
             {
                 StatusCode = 200,

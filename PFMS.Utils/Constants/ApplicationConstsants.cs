@@ -10,7 +10,7 @@ namespace PFMS.Utils.Constants
     {
         public static readonly List<string> BypassRoutes = new List<string>()
         {
-            "/api/User/login"
+            "/api/users/login"
         };
     }
 }
