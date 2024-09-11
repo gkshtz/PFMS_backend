@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using PFMS.Utils.Constants;
 using PFMS.Utils.Custom_Exceptions;
+using PFMS.Utils.Enums;
 
 namespace PFMS.API.Middlewares
 {
@@ -18,7 +19,7 @@ namespace PFMS.API.Middlewares
         }
         public async Task InvokeAsync(HttpContext context)
         {
-            if(CheckByPassRoutes(context.Request.Path.Value))
+            if(CheckByPassRoutes(context.Request.Path.Value!))
             {
                 await _next(context);
                 return;
@@ -42,16 +43,16 @@ namespace PFMS.API.Middlewares
             }
             string token = authorizationContent.Split(" ").Last();
 
-            if(!string.IsNullOrEmpty(token))
+            if(string.IsNullOrEmpty(token))
             {
-                throw new UnauthorizedAccessException();
+                throw new UnauthorizedException();
             }
 
             ClaimsPrincipal? principal = ValidateToken(token);
 
             if(principal == null)
             {
-                throw new UnauthorizedAccessException();
+                throw new UnauthorizedException(ErrorMessages.InvalidToken);
             }
 
             // Attach the user (ClaimsPrincipal) to the HttpContext
