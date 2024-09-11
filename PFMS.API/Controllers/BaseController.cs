@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PFMS.Utils.Request_Data;
 
 namespace PFMS.API.Controllers
 {
@@ -8,7 +9,7 @@ namespace PFMS.API.Controllers
         public Filter? Filter { get; set; }
         [NonAction]
         public void FetchFilters()
-        { 
+        {
             var query = HttpContext.Request.Query;
             if(query.ContainsKey("filterOn"))
             {
@@ -20,10 +21,4 @@ namespace PFMS.API.Controllers
             }
         }
     }
-    public class Filter
-    {
-        public List<string>? FilterOn { get; set; }
-        public List<string>? FilterQuery { get; set; }
-    }
-
 }

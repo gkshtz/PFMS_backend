@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using PFMS.Utils.Constants;
 using PFMS.Utils.Custom_Exceptions;
+using PFMS.Utils.Enums;
 
 namespace PFMS.API.Middlewares
 {
@@ -51,7 +52,7 @@ namespace PFMS.API.Middlewares
 
             if(principal == null)
             {
-                throw new UnauthorizedAccessException();
+                throw new UnauthorizedException(ErrorMessages.InvalidToken);
             }
 
             // Attach the user (ClaimsPrincipal) to the HttpContext

@@ -4,6 +4,7 @@ using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Interfaces;
+using PFMS.Utils.Request_Data;
 
 namespace PFMS.BLL.Services
 {
@@ -16,9 +17,9 @@ namespace PFMS.BLL.Services
             _transactionRepository = transactionRepository;
             _mapper = mapper;
         }
-        public async Task<List<TransactionBo>> GetAllTransactionsAsync(Guid userId)
+        public async Task<List<TransactionBo>> GetAllTransactionsAsync(Guid userId, Filter? filter)
         {
-            List<TransactionDto> transactionsDto = await _transactionRepository.GetAllTransactionsAsync(userId);            
+            List<TransactionDto> transactionsDto = await _transactionRepository.GetAllTransactionsAsync(userId, filter);            
             return _mapper.Map<List<TransactionBo>>(transactionsDto);
         }
     }
