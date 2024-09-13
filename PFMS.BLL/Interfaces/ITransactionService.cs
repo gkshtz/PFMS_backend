@@ -10,6 +10,8 @@ namespace PFMS.BLL.Interfaces
 {
     public interface ITransactionService
     {
-        public Task<List<TransactionBo>> GetAllTransactionsAsync(Guid userId, Filter? filter);
+        public Task<List<TransactionBo>> GetAllTransactionsAsync(Guid userId, Filter? filter, Sort? sort);
+    
+        public Task<TransactionBo> AddTransaction(TransactionBo transactionBo, Guid userId)
     }
 }
