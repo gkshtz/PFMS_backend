@@ -24,8 +24,7 @@ namespace PFMS.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            FetchFilters();
-            FetchSort();
+            FetchParameters();
             var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
             List<TransactionBo> transactionsBo = await _transactionService.GetAllTransactionsAsync(userId, Filter, Sort);
             List<TransactionResponseModel> transactionsModel = _mapper.Map<List<TransactionResponseModel>>(transactionsBo);
@@ -61,10 +60,11 @@ namespace PFMS.API.Controllers
             }, response);
         }
 
-        [HttpGet("{id: Guid}")]
-        public async Task<IActionResult> GetById(Guid id)
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetById(string id)
         {
-
+            return Ok();
         }
     }
 }

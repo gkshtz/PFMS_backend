@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PFMS.Utils.Request_Data;
 
 namespace PFMS.API.Controllers
@@ -8,6 +7,15 @@ namespace PFMS.API.Controllers
     {
         public Filter? Filter { get; set; }
         public Sort? Sort { get; set; }
+        public Pagination Pagination { get; set; }
+
+        public void FetchParameters()
+        {
+            FetchFilters();
+            FetchSort();
+            FetchPagination();
+        }
+
         [NonAction]
         public void FetchFilters()
         {
@@ -21,6 +29,8 @@ namespace PFMS.API.Controllers
                 };
             }
         }
+
+        [NonAction]
         public void FetchSort()
         {
             var query = HttpContext.Request.Query;
@@ -35,6 +45,21 @@ namespace PFMS.API.Controllers
                 else
                 {
                     Sort.IsAscending = true;
+                }
+            }
+        }
+
+        [NonAction]
+        public void FetchPagination()
+        {
+            var query = HttpContext.Request.Query;
+            Pagination = new Pagination();
+            if(query.ContainsKey("pageNumber"))
+            {
+                Pagination.PageNumber = int.Parse(query["pageNumber"]!);
+                if(query.ContainsKey("pageSize"))
+                {
+                    Pagination.PageSize = int.Parse(query["pageSize"]!);
                 }
             }
         }
