@@ -4,6 +4,7 @@ using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Interfaces;
+using PFMS.Utils.Custom_Exceptions;
 using PFMS.Utils.Request_Data;
 
 namespace PFMS.BLL.Services
@@ -17,10 +18,26 @@ namespace PFMS.BLL.Services
             _transactionRepository = transactionRepository;
             _mapper = mapper;
         }
-        public async Task<List<TransactionBo>> GetAllTransactionsAsync(Guid userId, Filter? filter)
+        public async Task<List<TransactionBo>> GetAllTransactionsAsync(Guid userId, Filter? filter, Sort? sort)
         {
-            List<TransactionDto> transactionsDto = await _transactionRepository.GetAllTransactionsAsync(userId, filter);            
+            List<TransactionDto> transactionsDto = await _transactionRepository.GetAllTransactionsAsync(userId, filter, sort);
             return _mapper.Map<List<TransactionBo>>(transactionsDto);
+        }
+
+        public async Task<TransactionBo> AddTransaction(TransactionBo transactionBo, Guid userId)
+        {
+            var totalTransactionAmountDto = await _transactionRepository.GetTotalTransactionAmountByUserId(userId);
+
+            if(totalTransactionAmountDto == null)
+            {
+                throw new ResourceNotFoundExecption();
+            }
+
+            transactionBo.TotalTransactionAmountId = totalTransactionAmountDto.TotalTransactionAmountId;
+            var transactionDto = _mapper.Map<TransactionDto>(transactionBo);
+            transactionDto = await _transactionRepository.AddTransaction(transactionDto);
+
+            return _mapper.Map<TransactionBo>(transactionDto);
         }
     }
 }

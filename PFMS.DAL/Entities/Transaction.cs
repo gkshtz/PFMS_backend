@@ -27,7 +27,7 @@ namespace PFMS.DAL.Entities
         [Column("transactionCategoryId")]
         public Guid TransactionCategoryId { get; set; }
         [Column("transactionType")]
-        public TransactionType TransactionType { get; set; }
+        public string TransactionType { get; set; }
 
         [ForeignKey("TotalTransactionAmount")]
         [Column("totalTransactionAmountId")]

@@ -70,7 +70,7 @@ namespace PFMS.BLL.Services
                 throw new AuthenticationFailedException(ErrorMessages.UserNotAuthenticated);
             }
         }
-        
+
         private string GenerateToken(UserBo userBo)
         {
             var claims = new List<Claim> {

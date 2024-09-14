@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using PFMS.API.Models;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
@@ -23,9 +24,9 @@ namespace PFMS.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            FetchFilters();
+            FetchParameters();
             var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
-            List<TransactionBo> transactionsBo = await _transactionService.GetAllTransactionsAsync(userId, Filter);
+            List<TransactionBo> transactionsBo = await _transactionService.GetAllTransactionsAsync(userId, Filter, Sort);
             List<TransactionResponseModel> transactionsModel = _mapper.Map<List<TransactionResponseModel>>(transactionsBo);
             GenericSuccessResponse<List<TransactionResponseModel>> response = new GenericSuccessResponse<List<TransactionResponseModel>>()
             {
@@ -35,6 +36,35 @@ namespace PFMS.API.Controllers
             };
 
             return Ok(response);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostAsync([FromBody] TransactionResponseModel transactionRequest)
+        {
+            var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
+            var transactionBo = _mapper.Map<TransactionBo>(transactionRequest);
+            transactionBo = await _transactionService.AddTransaction(transactionBo, userId);
+
+            var transactionResponse = _mapper.Map<TransactionResponseModel>(transactionBo);
+
+            GenericSuccessResponse<TransactionResponseModel> response = new GenericSuccessResponse<TransactionResponseModel>()
+            {
+                StatusCode = 200,
+                ResponseData = transactionResponse,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
+            return CreatedAtAction(nameof(GetById), new
+            {
+                id = transactionResponse.TransactionId
+            }, response);
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            return Ok();
         }
     }
 }

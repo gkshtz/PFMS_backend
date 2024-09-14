@@ -19,6 +19,6 @@ namespace PFMS.DAL.Entities
         public string CategoryName { get; set; }
 
         [Column("transactionType")]
-        public TransactionType TransactionType { get; set; }
+        public string TransactionType { get; set; }
     }
 }
