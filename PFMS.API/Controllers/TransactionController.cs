@@ -26,7 +26,7 @@ namespace PFMS.API.Controllers
         {
             FetchParameters();
             var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
-            List<TransactionBo> transactionsBo = await _transactionService.GetAllTransactionsAsync(userId, Filter, Sort);
+            List<TransactionBo> transactionsBo = await _transactionService.GetAllTransactionsAsync(userId, Filter, Sort, Pagination);
             List<TransactionResponseModel> transactionsModel = _mapper.Map<List<TransactionResponseModel>>(transactionsBo);
             GenericSuccessResponse<List<TransactionResponseModel>> response = new GenericSuccessResponse<List<TransactionResponseModel>>()
             {
@@ -54,17 +54,28 @@ namespace PFMS.API.Controllers
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
 
-            return CreatedAtAction(nameof(GetById), new
+            return CreatedAtAction(nameof(GetByIdAsync), new
             {
                 id = transactionResponse.TransactionId
             }, response);
         }
 
         [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> GetById(string id)
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
         {
-            return Ok();
+            var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
+            var transactionBo = await _transactionService.GetByTransactionId(id, userId);
+            var transactionModel = _mapper.Map<TransactionResponseModel>(transactionBo);
+
+            var response = new GenericSuccessResponse<TransactionResponseModel>()
+            {
+                StatusCode = 200,
+                ResponseData = transactionModel,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
+            return Ok(response);
         }
     }
 }

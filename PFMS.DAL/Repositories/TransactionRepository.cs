@@ -24,7 +24,7 @@ namespace PFMS.DAL.Repositories
             _appDbContext = appDbContext;
             _mapper = mapper;
         }
-        public async Task<List<TransactionDto>> GetAllTransactionsAsync(Guid userId, Filter? filter ,Sort? sort)
+        public async Task<List<TransactionDto>> GetAllTransactionsAsync(Guid userId, Filter? filter ,Sort? sort, Pagination pagination)
         {
             var totalTransactionAmount = await _appDbContext.TotalTransactionAmounts.FirstOrDefaultAsync(x => x.UserId == userId);
             /* we dont need to check whether TotalTransactionAmount record for this user is available or not
@@ -54,7 +54,7 @@ namespace PFMS.DAL.Repositories
                     }
                     if (filter.FilterOn[i].Equals("TaskType", StringComparison.OrdinalIgnoreCase))
                     {
-                        transactions = transactions.Where(x => x.TransactionType.ToString() == filter.FilterQuery[i].ToString());
+                        transactions = transactions.Where(x => x.TransactionType == filter.FilterQuery[i].ToString());
                     }
                 }
             }
@@ -86,6 +86,11 @@ namespace PFMS.DAL.Repositories
                 }
             }
             #endregion
+
+            #region Pagination
+            transactions = transactions.Skip((pagination.PageNumber - 1) * pagination.PageSize).Take(pagination.PageSize);
+            #endregion
+
             var transactionsList = await transactions.ToListAsync();
 
             return _mapper.Map<List<TransactionDto>>(transactionsList);
@@ -103,6 +108,13 @@ namespace PFMS.DAL.Repositories
         {
             var totalTransactionAmount = await _appDbContext.TotalTransactionAmounts.FirstOrDefaultAsync(x => x.UserId == userId);
             return _mapper.Map<TotalTransactionAmountDto>(totalTransactionAmount);
+        }
+
+        public async Task<TransactionDto?> GetByTransactionId(Guid transactionId, Guid userId)
+        {
+            var totalTransactionAmount = await GetTotalTransactionAmountByUserId(userId);
+            var transaction = await _appDbContext.Transactions.FirstOrDefaultAsync(x => x.TotalTransactionAmountId == totalTransactionAmount.TotalTransactionAmountId);
+            return _mapper.Map<TransactionDto?>(transaction);
         }
     }
 }

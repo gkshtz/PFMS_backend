@@ -12,5 +12,6 @@ namespace PFMS.Utils.Constants
         public const string UserNotAuthenticated = "Incorrect Password, authentication failed.";
         public const string MisingAuthorizationHeader = "Authorization header not present.";
         public const string InvalidToken = "Token validation failed";
+        public const string TransactionNotFound = "Transaction Not Found";
     }
 }

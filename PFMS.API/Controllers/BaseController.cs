@@ -9,6 +9,7 @@ namespace PFMS.API.Controllers
         public Sort? Sort { get; set; }
         public Pagination Pagination { get; set; }
 
+        [NonAction]
         public void FetchParameters()
         {
             FetchFilters();
