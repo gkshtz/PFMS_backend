@@ -1,7 +1,4 @@
-﻿using PFMS.DAL.Entities;
-using PFMS.Utils.Enums;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using PFMS.Utils.Enums;
 
 namespace PFMS.API.Models
 {
@@ -13,5 +10,10 @@ namespace PFMS.API.Models
         public decimal TransactionAmount { get; set; }
         public DateTime TransactionDate { get; set; }
         public TransactionType TransactionType { get; set; }
+
+        #region Navigation Properties
+        public TransactionCategoryResponseModel? TransactionCategory { get; set; }
+        public TotalTransactionAmountModel? TotalTransactionAmount { get; set; }
+        #endregion
     }
 }

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Runtime.CompilerServices;
+using AutoMapper;
 using Microsoft.Identity.Client;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
@@ -12,12 +13,14 @@ namespace PFMS.BLL.Services
 {
     public class TransactionService: ITransactionService
     {
+        private readonly ITotalTransactionAmountRespository _totalTransactionAmountRepository;
         private readonly ITransactionRepository _transactionRepository;
         private readonly IMapper _mapper;
-        public TransactionService(ITransactionRepository transactionRepository, IMapper mapper)
+        public TransactionService(ITransactionRepository transactionRepository, IMapper mapper, ITotalTransactionAmountRespository totalTransactionAmountRespository)
         {
             _transactionRepository = transactionRepository;
             _mapper = mapper;
+            _totalTransactionAmountRepository = totalTransactionAmountRespository;
         }
         public async Task<List<TransactionBo>> GetAllTransactionsAsync(Guid userId, Filter? filter, Sort? sort, Pagination pagination)
         {
@@ -29,12 +32,22 @@ namespace PFMS.BLL.Services
         {
             var totalTransactionAmountDto = await _transactionRepository.GetTotalTransactionAmountByUserId(userId);
 
-            if(totalTransactionAmountDto == null)
+            var totalTransactionAmountBo = _mapper.Map<TotalTransactionAmountBo>(totalTransactionAmountDto);
+
+            if (transactionBo.TransactionType == Utils.Enums.TransactionType.Income)
             {
-                throw new ResourceNotFoundExecption();
+                totalTransactionAmountBo.TotalIncome += transactionBo.TransactionAmount;
+            }
+            else if (transactionBo.TransactionType == Utils.Enums.TransactionType.Expense)
+            {
+                totalTransactionAmountBo.TotalExpence += transactionBo.TransactionAmount;
             }
 
-            transactionBo.TotalTransactionAmountId = totalTransactionAmountDto.TotalTransactionAmountId;
+            totalTransactionAmountBo.LastTransactionDate = DateTime.UtcNow;
+
+            await _totalTransactionAmountRepository.UpdateTotalTransactionAmount(_mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo));
+
+            transactionBo.TotalTransactionAmountId = totalTransactionAmountBo.TotalTransactionAmountId;
             transactionBo.TransactionId = Guid.NewGuid(); 
 
             var transactionDto = _mapper.Map<TransactionDto>(transactionBo);
