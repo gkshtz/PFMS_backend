@@ -10,11 +10,13 @@ namespace PFMS.DAL.Interfaces
 {
     public interface ITransactionRepository
     {
-        public Task<List<TransactionDto>> GetAllTransactionsAsync(Guid userId, Filter? filter, Sort? sort);
+        public Task<List<TransactionDto>> GetAllTransactionsAsync(Guid userId, Filter? filter, Sort? sort, Pagination pagination);
 
         public Task<TotalTransactionAmountDto> GetTotalTransactionAmountByUserId(Guid userId);
 
         public Task<TransactionDto> AddTransaction(TransactionDto transactionDto);
+
+        public Task<TransactionDto?> GetByTransactionId(Guid transactionId, Guid userId);
     }
 
 }

@@ -2,14 +2,12 @@
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
-using Azure.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.DAL.DTOs;
-using PFMS.DAL.Entities;
 using PFMS.DAL.Interfaces;
 using PFMS.Utils.Constants;
 using PFMS.Utils.Custom_Exceptions;
@@ -33,13 +31,12 @@ namespace PFMS.BLL.Services
         public async Task<UserBo> AddUserAsync(UserBo userBo)
         {
             TotalTransactionAmountBo totalTransactionAmountBo = new TotalTransactionAmountBo();
-            totalTransactionAmountBo.TotalTransactionAmountId = Guid.NewGuid();
             userBo.UserId = Guid.NewGuid();
+            totalTransactionAmountBo.TotalTransactionAmountId = Guid.NewGuid();
+            totalTransactionAmountBo.UserId = userBo.UserId;
 
             // we dont want to store the password in plain text
             userBo.Password = _passwordHasher.HashPassword(null, userBo.Password);
-
-            totalTransactionAmountBo.UserId = userBo.UserId;
 
             var userDto = _mapper.Map<UserDto>(userBo);
             var totalTransactionAmountDto = _mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo);
