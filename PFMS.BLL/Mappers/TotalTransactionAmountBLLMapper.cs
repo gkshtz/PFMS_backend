@@ -14,6 +14,7 @@ namespace PFMS.BLL.Mappers
         public TotalTransactionAmountBLLMapper()
         {
             CreateMap<TotalTransactionAmountBo, TotalTransactionAmountDto>().ReverseMap();
+            CreateMap<TotalMonthlyAmountBo, TotalMonthlyAmountDto>().ReverseMap();
         }
     }
 }

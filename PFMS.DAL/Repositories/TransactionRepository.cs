@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
 using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Entities;
@@ -26,12 +28,12 @@ namespace PFMS.DAL.Repositories
         }
         public async Task<List<TransactionDto>> GetAllTransactionsAsync(Guid userId, Filter? filter ,Sort? sort, Pagination pagination)
         {
-            var totalTransactionAmount = await _appDbContext.TotalTransactionAmounts.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId);
+            var totalTransactionAmountDto = await GetTotalTransactionAmountByUserId(userId);
             /* we dont need to check whether TotalTransactionAmount record for this user is available or not
              because user is already authenticated and a registered user will always have totalTransactionAmount
             Record. So the check is unnecessary */
 
-            var totalTransactionAmountId = totalTransactionAmount!.TotalTransactionAmountId;
+            var totalTransactionAmountId = totalTransactionAmountDto!.TotalTransactionAmountId;
 
             IQueryable<Transaction> transactions = _appDbContext.Transactions.Where(x => x.TotalTransactionAmountId == totalTransactionAmountId).AsQueryable();
 
@@ -44,17 +46,20 @@ namespace PFMS.DAL.Repositories
                 }
                 for(int i=0;i<filter.FilterOn.Count;i++)
                 {
-                    if (filter.FilterQuery[i].Equals("TransactionName", StringComparison.OrdinalIgnoreCase))
+                    if (filter.FilterOn[i].Equals("TransactionName", StringComparison.OrdinalIgnoreCase))
                     {
-                        transactions = transactions.Where(x => x.TransactionName.Contains(filter.FilterQuery[i].ToString(), StringComparison.OrdinalIgnoreCase));
+                        string filterQuery = filter.FilterQuery[i].ToLower();
+                        transactions = transactions.Where(x => x.TransactionName.Contains(filterQuery.ToLower()));
                     }
                     if (filter.FilterOn[i].Equals("TransactionDescription", StringComparison.OrdinalIgnoreCase))
                     {
-                        transactions = transactions.Where(x => x.TransactionDescription != null && x.TransactionDescription.Contains(filter.FilterQuery[i].ToString(), StringComparison.OrdinalIgnoreCase));
+                        string filterQuery = filter.FilterQuery[i].ToLower();
+                        transactions = transactions.Where(x => x.TransactionDescription != null && x.TransactionDescription.ToLower().Contains(filterQuery));
                     }
                     if (filter.FilterOn[i].Equals("TaskType", StringComparison.OrdinalIgnoreCase))
                     {
-                        transactions = transactions.Where(x => x.TransactionType == filter.FilterQuery[i].ToString());
+                        string filterQuery = filter.FilterQuery[i].ToLower();
+                        transactions = transactions.Where(x => x.TransactionType.ToLower() == filterQuery);
                     }
                 }
             }
@@ -90,7 +95,7 @@ namespace PFMS.DAL.Repositories
             #region Pagination
             transactions = transactions.Skip((pagination.PageNumber - 1) * pagination.PageSize).Take(pagination.PageSize);
             #endregion
-
+          
             var transactionsList = await transactions.ToListAsync();
 
             return _mapper.Map<List<TransactionDto>>(transactionsList);

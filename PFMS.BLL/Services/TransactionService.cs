@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using AutoMapper;
-using Microsoft.Identity.Client;
+﻿using AutoMapper;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.DAL.DTOs;
@@ -27,12 +25,33 @@ namespace PFMS.BLL.Services
             List<TransactionDto> transactionsDto = await _transactionRepository.GetAllTransactionsAsync(userId, filter, sort, pagination);
             return _mapper.Map<List<TransactionBo>>(transactionsDto);
         }
-
         public async Task<TransactionBo> AddTransaction(TransactionBo transactionBo, Guid userId)
         {
             var totalTransactionAmountDto = await _transactionRepository.GetTotalTransactionAmountByUserId(userId);
 
             var totalTransactionAmountBo = _mapper.Map<TotalTransactionAmountBo>(totalTransactionAmountDto);
+
+            int currentMonth = DateTime.UtcNow.Month;
+            int currentYear = DateTime.UtcNow.Year;
+
+            if (totalTransactionAmountBo.LastTransactionDate.Month < currentMonth || totalTransactionAmountBo.LastTransactionDate.Year < currentYear)
+            {
+                var totalMonthlyAmountBo = new TotalMonthlyAmountBo()
+                {
+                    TotalMonthlyAmountId = Guid.NewGuid(),
+                    TotalExpenceOfMonth = totalTransactionAmountBo.TotalExpence,
+                    TotalIncomeOfMonth = totalTransactionAmountBo.TotalIncome,
+                    Month = totalTransactionAmountBo.LastTransactionDate.Month,
+                    Year = totalTransactionAmountBo.LastTransactionDate.Year,
+                    TotalTransactionAmountId = totalTransactionAmountBo.TotalTransactionAmountId
+                };
+
+                var totalMonthlyAmountDto = _mapper.Map<TotalMonthlyAmountDto>(totalMonthlyAmountBo);
+                await _totalTransactionAmountRepository.AddTotalMonthlyAmount(totalMonthlyAmountDto);
+
+                totalTransactionAmountBo.TotalExpence = 0;
+                totalTransactionAmountBo.TotalIncome = 0;
+            }
 
             if (transactionBo.TransactionType == Utils.Enums.TransactionType.Income)
             {
@@ -66,6 +85,5 @@ namespace PFMS.BLL.Services
 
             return _mapper.Map<TransactionBo>(transactionDto);
         }
-        
     }
 }

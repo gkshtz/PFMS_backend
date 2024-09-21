@@ -28,5 +28,13 @@ namespace PFMS.DAL.Repositories
             await _appDbContext.SaveChangesAsync();
             return totalTransactionAmountDto;
         }
+
+        public async Task<TotalMonthlyAmountDto> AddTotalMonthlyAmount(TotalMonthlyAmountDto totalMonthlyAmountDto)
+        {
+            var totalMonthlyAmount = _mapper.Map<TotalMonthlyAmount>(totalMonthlyAmountDto);
+            await _appDbContext.TotalMonthlyAmounts.AddAsync(totalMonthlyAmount);
+            await _appDbContext.SaveChangesAsync();
+            return _mapper.Map<TotalMonthlyAmountDto>(totalMonthlyAmount);
+        }
     }
 }

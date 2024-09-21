@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Storage.Json;
 using PFMS.DAL.Entities;
 
@@ -20,6 +21,7 @@ namespace PFMS.DAL.Data
         public DbSet<TransactionCategory> TransactionCategories { get; set; }
         public DbSet<TotalTransactionAmount> TotalTransactionAmounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<TotalMonthlyAmount> TotalMonthlyAmounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
