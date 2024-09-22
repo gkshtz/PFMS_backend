@@ -15,5 +15,7 @@ namespace PFMS.BLL.Interfaces
         public Task<TransactionBo> AddTransaction(TransactionBo transactionBo, Guid userId);
 
         public Task<TransactionBo> GetByTransactionId(Guid transactionId, Guid userId);
+
+        public Task UpdateTransaction(TransactionBo transactionBo, Guid userId, Guid transactionId);
     }
 }

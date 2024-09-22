@@ -117,9 +117,24 @@ namespace PFMS.DAL.Repositories
 
         public async Task<TransactionDto?> GetByTransactionId(Guid transactionId, Guid userId)
         {
-            var totalTransactionAmount = await GetTotalTransactionAmountByUserId(userId);
-            var transaction = await _appDbContext.Transactions.Include(x=>x.TransactionCategory).Include(x=>x.TotalTransactionAmount).FirstOrDefaultAsync(x => x.TotalTransactionAmountId == totalTransactionAmount.TotalTransactionAmountId && x.TransactionId == transactionId);
+            var totalTransactionAmountDto = await GetTotalTransactionAmountByUserId(userId);
+            var transaction = await _appDbContext.Transactions.Include(x=>x.TransactionCategory).Include(x=>x.TotalTransactionAmount).FirstOrDefaultAsync(x => x.TotalTransactionAmountId == totalTransactionAmountDto.TotalTransactionAmountId && x.TransactionId == transactionId);
             return _mapper.Map<TransactionDto>(transaction);
+        }
+
+        public async Task<bool> UpdateTransaction(TransactionDto transactionDto, Guid transactionId, Guid totalTransactionAmountId)
+        {
+            var transaction = await _appDbContext.Transactions.FirstOrDefaultAsync(x => x.TransactionId == transactionId && x.TotalTransactionAmountId == totalTransactionAmountId);
+            if(transaction == null)
+            {
+                return false;
+            }
+
+            transaction = _mapper.Map<Transaction>(transactionDto);
+
+            _appDbContext.Transactions.Update(transaction);
+            await _appDbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

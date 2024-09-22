@@ -9,7 +9,7 @@ using PFMS.Utils.Request_Data;
 
 namespace PFMS.BLL.Services
 {
-    public class TransactionService: ITransactionService
+    public class TransactionService : ITransactionService
     {
         private readonly ITotalTransactionAmountRespository _totalTransactionAmountRepository;
         private readonly ITransactionRepository _transactionRepository;
@@ -62,12 +62,12 @@ namespace PFMS.BLL.Services
                 totalTransactionAmountBo.TotalExpence += transactionBo.TransactionAmount;
             }
 
-            totalTransactionAmountBo.LastTransactionDate = DateTime.UtcNow;
+            totalTransactionAmountBo.LastTransactionDate = transactionBo.TransactionDate;
 
             await _totalTransactionAmountRepository.UpdateTotalTransactionAmount(_mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo));
 
             transactionBo.TotalTransactionAmountId = totalTransactionAmountBo.TotalTransactionAmountId;
-            transactionBo.TransactionId = Guid.NewGuid(); 
+            transactionBo.TransactionId = Guid.NewGuid();
 
             var transactionDto = _mapper.Map<TransactionDto>(transactionBo);
             transactionDto = await _transactionRepository.AddTransaction(transactionDto);
@@ -78,12 +78,61 @@ namespace PFMS.BLL.Services
         public async Task<TransactionBo> GetByTransactionId(Guid transactionId, Guid userId)
         {
             var transactionDto = await _transactionRepository.GetByTransactionId(transactionId, userId);
-            if(transactionDto == null)
+            if (transactionDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.TransactionNotFound);
             }
 
             return _mapper.Map<TransactionBo>(transactionDto);
+        }
+
+        public async Task UpdateTransaction(TransactionBo transactionBoNew, Guid userId, Guid transactionId)
+        {
+            var totalTransactionAmountDto = await _transactionRepository.GetTotalTransactionAmountByUserId(userId);
+            var transactionDto = await _transactionRepository.GetByTransactionId(transactionId, userId);
+
+            if(transactionDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.TransactionNotFound);
+            }
+
+            var transactionBoOld = _mapper.Map<TransactionBo>(transactionDto);
+
+            decimal changeInAmount = transactionBoNew.TransactionAmount - transactionBoOld.TransactionAmount;
+
+            var totalTransactionAmountBo = _mapper.Map<TotalTransactionAmountBo>(totalTransactionAmountDto);
+
+            if(transactionBoNew.TransactionType == Utils.Enums.TransactionType.Expense)
+            {
+                if(transactionBoOld.TransactionType == Utils.Enums.TransactionType.Expense)
+                {
+                    totalTransactionAmountBo.TotalExpence += changeInAmount;
+                }
+                else
+                {
+                    totalTransactionAmountBo.TotalIncome -= transactionBoOld.TransactionAmount;
+                    totalTransactionAmountBo.TotalExpence += transactionBoNew.TransactionAmount;
+                }
+            }
+            else if(transactionBoNew.TransactionType == Utils.Enums.TransactionType.Income)
+            {
+                if(transactionBoOld.TransactionType == Utils.Enums.TransactionType.Income)
+                {
+                    totalTransactionAmountBo.TotalIncome += changeInAmount;
+                }
+                else if(transactionBoOld.TransactionType == Utils.Enums.TransactionType.Expense)
+                {
+                    totalTransactionAmountBo.TotalExpence -= transactionBoOld.TransactionAmount;
+                    totalTransactionAmountBo.TotalIncome += transactionBoNew.TransactionAmount;
+                }
+            }
+            totalTransactionAmountBo.LastTransactionDate = transactionBoNew.TransactionDate;
+
+            await _totalTransactionAmountRepository.UpdateTotalTransactionAmount(_mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo));
+
+            transactionDto = _mapper.Map<TransactionDto>(transactionBoNew);
+
+            await _transactionRepository.UpdateTransaction(transactionDto, transactionId, totalTransactionAmountBo.TotalTransactionAmountId);
         }
     }
 }

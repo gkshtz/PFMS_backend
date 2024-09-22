@@ -72,5 +72,22 @@ namespace PFMS.API.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = transactionResponse.TransactionId}, response);
         }
+
+
+        [HttpPatch]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> PatchAsync([FromBody] TransactionRequestModel transactionRequest, [FromRoute] Guid id)
+        {
+            var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
+            var transactionBo = _mapper.Map<TransactionBo>(transactionRequest);
+            await _transactionService.UpdateTransaction(transactionBo, userId, id);
+            GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = 200,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
+        }
     }
 }
