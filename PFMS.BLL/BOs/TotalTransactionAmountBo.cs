@@ -7,7 +7,7 @@
         public decimal TotalIncome { get; set; }
         public DateTime LastTransactionDate { get; set; }
         public Guid UserId { get; set; }
-      
+
         public TotalTransactionAmountBo()
         {
             LastTransactionDate = DateTime.UtcNow;

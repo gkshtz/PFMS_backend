@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PFMS.API.Models
 {
-    public class TransactionRequest
+    public class TransactionRequestModel
     {
         public string TransactionName { get; set; }
         public string? TransactionDescription { get; set; }
@@ -13,6 +13,5 @@ namespace PFMS.API.Models
         public DateTime TransactionDate { get; set; }
         public Guid TransactionCategoryId { get; set; }
         public TransactionType TransactionType { get; set; }
-        public Guid TotalTransactionAmountId { get; set; }
     }
 }

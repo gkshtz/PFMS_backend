@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using PFMS.API.Models;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
@@ -38,8 +36,26 @@ namespace PFMS.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
+            var transactionBo = await _transactionService.GetByTransactionId(id, userId);
+            var transactionModel = _mapper.Map<TransactionResponseModel>(transactionBo);
+
+            var response = new GenericSuccessResponse<TransactionResponseModel>()
+            {
+                StatusCode = 200,
+                ResponseData = transactionModel,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
+            return Ok(response);
+        }
+
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] TransactionResponseModel transactionRequest)
+        public async Task<IActionResult> PostAsync([FromBody] TransactionRequestModel transactionRequest)
         {
             var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
             var transactionBo = _mapper.Map<TransactionBo>(transactionRequest);
@@ -54,27 +70,23 @@ namespace PFMS.API.Controllers
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
 
-            return CreatedAtAction(nameof(GetByIdAsync), new
-            {
-                id = transactionResponse.TransactionId
-            }, response);
+            return CreatedAtAction(nameof(GetById), new { id = transactionResponse.TransactionId}, response);
         }
 
-        [HttpGet]
+
+        [HttpPatch]
         [Route("{id:Guid}")]
-        public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
+        public async Task<IActionResult> PatchAsync([FromBody] TransactionRequestModel transactionRequest, [FromRoute] Guid id)
         {
             var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
-            var transactionBo = await _transactionService.GetByTransactionId(id, userId);
-            var transactionModel = _mapper.Map<TransactionResponseModel>(transactionBo);
-
-            var response = new GenericSuccessResponse<TransactionResponseModel>()
+            var transactionBo = _mapper.Map<TransactionBo>(transactionRequest);
+            await _transactionService.UpdateTransaction(transactionBo, userId, id);
+            GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
             {
                 StatusCode = 200,
-                ResponseData = transactionModel,
+                ResponseData = true,
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
-
             return Ok(response);
         }
     }

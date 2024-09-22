@@ -19,7 +19,7 @@ namespace PFMS.API.Middlewares
         }
         public async Task InvokeAsync(HttpContext context)
         {
-            if(CheckByPassRoutes(context.Request.Path.Value!))
+            if(CheckBypassRoute(context.Request.Path.Value!))
             {
                 await _next(context);
                 return;
@@ -85,8 +85,8 @@ namespace PFMS.API.Middlewares
             }
         }
 
-        private bool CheckByPassRoutes(string path)
-        {
+        private bool CheckBypassRoute(string path)
+        { 
             var res = ApplicationConstsants.BypassRoutes.Any(route => path.StartsWith(route));
             return res;
         }

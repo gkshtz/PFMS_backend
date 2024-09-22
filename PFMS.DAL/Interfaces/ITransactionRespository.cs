@@ -17,6 +17,8 @@ namespace PFMS.DAL.Interfaces
         public Task<TransactionDto> AddTransaction(TransactionDto transactionDto);
 
         public Task<TransactionDto?> GetByTransactionId(Guid transactionId, Guid userId);
+
+        public Task<bool> UpdateTransaction(TransactionDto transactionDto, Guid transactionId, Guid totalTransactionAmountId);
     }
 
 }

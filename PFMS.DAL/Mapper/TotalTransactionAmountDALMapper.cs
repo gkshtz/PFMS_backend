@@ -9,6 +9,7 @@ namespace PFMS.DAL.Mapper
         public TotalTransactionAmountDALMapper()
         {
             CreateMap<TotalTransactionAmount, TotalTransactionAmountDto>().ReverseMap();
+            CreateMap<TotalMonthlyAmount, TotalMonthlyAmountDto>().ReverseMap();
         }
     }
 }

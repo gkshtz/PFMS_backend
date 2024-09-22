@@ -17,5 +17,10 @@ namespace PFMS.DAL.DTOs
         public Guid TransactionCategoryId { get; set; }
         public TransactionType TransactionType { get; set; }
         public Guid TotalTransactionAmountId { get; set; }
+
+        #region Navigation Property
+        public TransactionCategoryDto? TransactionCategory { get; set; }
+        public TotalTransactionAmountDto? TotalTransactionAmount { get; set; }
+        #endregion
     }
 }

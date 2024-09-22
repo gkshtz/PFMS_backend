@@ -20,5 +20,10 @@ namespace PFMS.BLL.BOs
         public Guid TransactionCategoryId { get; set; }
         public TransactionType TransactionType { get; set; }
         public Guid TotalTransactionAmountId { get; set; }
+
+        #region Navigation Properties
+        public TotalTransactionAmountBo? TotalTransactionAmount { get; set; }
+        public TransactionCategoryBo? TransactionCategory { get; set; }
+        #endregion
     }
 }

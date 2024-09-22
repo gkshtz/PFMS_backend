@@ -24,16 +24,23 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
+builder.Services.AddScoped<ITotalTransactionAmountRespository, TotalTransactionAmountRepository>();
+
 builder.Services.AddAutoMapper(typeof(UserMapper));
 builder.Services.AddAutoMapper(typeof(UserBLLMapper));
 builder.Services.AddAutoMapper(typeof(UsersDALMapper));
 
 builder.Services.AddAutoMapper(typeof(TotalTransactionAmountBLLMapper));
 builder.Services.AddAutoMapper(typeof(TotalTransactionAmountDALMapper));
+builder.Services.AddAutoMapper(typeof(TotalTransactionAmountMapper));
 
 builder.Services.AddAutoMapper(typeof(TransactionMapper));
 builder.Services.AddAutoMapper(typeof(TransactionBLLMapper));
 builder.Services.AddAutoMapper(typeof(TransactionDALMapper));
+
+builder.Services.AddAutoMapper(typeof(TransactionCategoryMapper));
+builder.Services.AddAutoMapper(typeof(TransactionCategoryBLLMapper));
+builder.Services.AddAutoMapper(typeof(TransactionCategoryDALMapper));
 
 
 builder.Services.AddScoped<IPasswordHasher<UserBo>, PasswordHasher<UserBo>>();

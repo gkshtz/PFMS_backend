@@ -41,7 +41,7 @@ namespace PFMS.API.Controllers
                 Sort.SortBy = query["sortBy"].ToString();
                 if (query.ContainsKey("isAscending"))
                 {
-                    Sort.IsAscending = bool.Parse(query["isAscending"]);
+                    Sort.IsAscending = bool.Parse(query["isAscending"]!);
                 }
                 else
                 {

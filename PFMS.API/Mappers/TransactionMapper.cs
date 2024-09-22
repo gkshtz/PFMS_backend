@@ -8,7 +8,8 @@ namespace PFMS.API.Mappers
     {
         public TransactionMapper()
         {
-            CreateMap<TransactionResponseModel, TransactionBo>().ReverseMap();
+            CreateMap<TransactionBo, TransactionResponseModel>();
+            CreateMap<TransactionRequestModel, TransactionBo>();
         }
     }
 }

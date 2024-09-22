@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PFMS.DAL.Data;
 
@@ -11,9 +12,11 @@ using PFMS.DAL.Data;
 namespace PFMS.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240914092851_correction")]
+    partial class correction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,40 +24,6 @@ namespace PFMS.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("PFMS.DAL.Entities.TotalMonthlyAmount", b =>
-                {
-                    b.Property<Guid>("TotalMonthlyAmountId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("totalMonthlyAmountId");
-
-                    b.Property<int>("Month")
-                        .HasColumnType("int")
-                        .HasColumnName("month");
-
-                    b.Property<decimal>("TotalExpenceOfMonth")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("totalExpenceOfMonth");
-
-                    b.Property<decimal>("TotalIncomeOfMonth")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("totalIncomeOfMonth");
-
-                    b.Property<Guid>("TotalTransactionAmountId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("totalTransactionAmountId");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int")
-                        .HasColumnName("year");
-
-                    b.HasKey("TotalMonthlyAmountId");
-
-                    b.HasIndex("TotalTransactionAmountId");
-
-                    b.ToTable("TotalMonthlyAmounts");
-                });
 
             modelBuilder.Entity("PFMS.DAL.Entities.TotalTransactionAmount", b =>
                 {
@@ -248,17 +217,6 @@ namespace PFMS.DAL.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("PFMS.DAL.Entities.TotalMonthlyAmount", b =>
-                {
-                    b.HasOne("PFMS.DAL.Entities.TotalTransactionAmount", "TotalTransactionAmount")
-                        .WithMany()
-                        .HasForeignKey("TotalTransactionAmountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TotalTransactionAmount");
                 });
 
             modelBuilder.Entity("PFMS.DAL.Entities.TotalTransactionAmount", b =>
