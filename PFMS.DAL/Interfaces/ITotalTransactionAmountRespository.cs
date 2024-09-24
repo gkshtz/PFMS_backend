@@ -10,7 +10,7 @@ namespace PFMS.DAL.Interfaces
 {
     public interface ITotalTransactionAmountRespository
     {
-        public Task<TotalTransactionAmountDto> UpdateTotalTransactionAmount(TotalTransactionAmountDto totalTransactionAmountDto);
+        public Task<bool> UpdateTotalTransactionAmount(TotalTransactionAmountDto totalTransactionAmountDto);
 
         public Task<TotalMonthlyAmountDto> AddTotalMonthlyAmount(TotalMonthlyAmountDto totalMonthlyAmountDto);
     }

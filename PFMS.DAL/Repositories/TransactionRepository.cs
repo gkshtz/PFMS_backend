@@ -136,5 +136,23 @@ namespace PFMS.DAL.Repositories
             await _appDbContext.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> DeleteTransaction(Guid transactionId, Guid totalTransactionAmountId)
+        {
+            var transaction = await _appDbContext.Transactions.FirstOrDefaultAsync(x => x.TransactionId == transactionId && x.TotalTransactionAmountId == totalTransactionAmountId);
+            if(transaction == null)
+            {
+                return false;
+            }
+            _appDbContext.Transactions.Remove(transaction);
+            await _appDbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<TransactionDto> GetTransactionWithLatestDate(Guid totalTransactionAmounId)
+        {
+            var transaction = await _appDbContext.Transactions.Where(x => x.TotalTransactionAmountId == totalTransactionAmounId).OrderByDescending(x => x.TransactionDate).FirstOrDefaultAsync();
+            return _mapper.Map<TransactionDto>(transaction);
+        }
     }
 }
