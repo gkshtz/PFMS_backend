@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.DAL.DTOs;
@@ -130,9 +131,54 @@ namespace PFMS.BLL.Services
 
             await _totalTransactionAmountRepository.UpdateTotalTransactionAmount(_mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo));
 
+            transactionBoNew.TotalTransactionAmountId = transactionBoOld.TotalTransactionAmountId;
+            transactionBoNew.TransactionId = transactionBoOld.TransactionId;
+
             transactionDto = _mapper.Map<TransactionDto>(transactionBoNew);
 
             await _transactionRepository.UpdateTransaction(transactionDto, transactionId, totalTransactionAmountBo.TotalTransactionAmountId);
         }
+
+        public async Task DeleteTransaction(Guid transactionId, Guid userId)
+        {
+            var totalTransactionAmountDto = await _transactionRepository.GetTotalTransactionAmountByUserId(userId);
+            var totalTransactionAmountBo = _mapper.Map<TotalTransactionAmountBo>(totalTransactionAmountDto);
+
+            var transactionDto = await _transactionRepository.GetByTransactionId(transactionId, userId);
+            if(transactionDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.TransactionNotFound);
+            }
+
+            var transactionBo = _mapper.Map<TransactionBo>(transactionDto);
+
+            if(transactionBo.TransactionType == Utils.Enums.TransactionType.Expense)
+            {
+                totalTransactionAmountBo.TotalExpence -= transactionBo.TransactionAmount;
+            }
+            else if(transactionBo.TransactionType == Utils.Enums.TransactionType.Income)
+            {
+                totalTransactionAmountBo.TotalIncome -= transactionBo.TransactionAmount;
+            }
+
+            await _transactionRepository.DeleteTransaction(transactionId, totalTransactionAmountBo.TotalTransactionAmountId);
+
+            transactionDto = await _transactionRepository.GetTransactionWithLatestDate(totalTransactionAmountBo.TotalTransactionAmountId);
+
+            if(transactionDto == null)
+            {
+                totalTransactionAmountBo.LastTransactionDate = DateTime.UtcNow;
+            }
+            else
+            {
+                transactionBo = _mapper.Map<TransactionBo>(transactionDto);
+                totalTransactionAmountBo.LastTransactionDate = transactionBo.TransactionDate;
+            }
+
+            totalTransactionAmountDto = _mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo);
+
+            await _totalTransactionAmountRepository.UpdateTotalTransactionAmount(totalTransactionAmountDto);
+        }
+
     }
 }

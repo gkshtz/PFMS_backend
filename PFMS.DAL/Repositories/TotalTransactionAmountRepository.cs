@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;
@@ -21,12 +16,18 @@ namespace PFMS.DAL.Repositories
             _appDbContext = appDbContext;
             _mapper = mapper;
         }
-        public async Task<TotalTransactionAmountDto> UpdateTotalTransactionAmount(TotalTransactionAmountDto totalTransactionAmountDto)
-        {   
-            var totalTransactionAmount = _mapper.Map<TotalTransactionAmount>(totalTransactionAmountDto);
+        public async Task<bool> UpdateTotalTransactionAmount(TotalTransactionAmountDto totalTransactionAmountDto)
+        {
+            var totalTransactionAmount = await _appDbContext.TotalTransactionAmounts.AsNoTracking().FirstOrDefaultAsync(x => x.TotalTransactionAmountId == totalTransactionAmountDto.TotalTransactionAmountId);
+            if(totalTransactionAmount == null)
+            {
+                return false;
+            }
+            totalTransactionAmount = _mapper.Map<TotalTransactionAmount>(totalTransactionAmountDto);
             _appDbContext.TotalTransactionAmounts.Update(totalTransactionAmount);
             await _appDbContext.SaveChangesAsync();
-            return totalTransactionAmountDto;
+            return true;
+
         }
 
         public async Task<TotalMonthlyAmountDto> AddTotalMonthlyAmount(TotalMonthlyAmountDto totalMonthlyAmountDto)
