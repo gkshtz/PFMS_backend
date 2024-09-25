@@ -131,6 +131,9 @@ namespace PFMS.BLL.Services
 
             await _totalTransactionAmountRepository.UpdateTotalTransactionAmount(_mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo));
 
+            transactionBoNew.TotalTransactionAmountId = transactionBoOld.TotalTransactionAmountId;
+            transactionBoNew.TransactionId = transactionBoOld.TransactionId;
+
             transactionDto = _mapper.Map<TransactionDto>(transactionBoNew);
 
             await _transactionRepository.UpdateTransaction(transactionDto, transactionId, totalTransactionAmountBo.TotalTransactionAmountId);
