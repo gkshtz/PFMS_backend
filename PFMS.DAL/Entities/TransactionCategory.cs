@@ -16,9 +16,19 @@ namespace PFMS.DAL.Entities
         public Guid CategoryId { get; set; }
 
         [Column("categoryName")]
+        [Required]
         public string CategoryName { get; set; }
 
         [Column("transactionType")]
+        [Required]
         public string TransactionType { get; set; }
+
+        [ForeignKey("User")]
+        [Column("userId")]
+        public Guid? UserId { get; set; }
+
+        #region Navigation Properties
+        public User? User { get; set; }
+        #endregion
     }
 }
