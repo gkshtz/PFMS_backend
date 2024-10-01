@@ -49,14 +49,14 @@ namespace PFMS.DAL.Repositories
                     if (filter.FilterOn[i].Equals("TransactionName", StringComparison.OrdinalIgnoreCase))
                     {
                         string filterQuery = filter.FilterQuery[i].ToLower();
-                        transactions = transactions.Where(x => x.TransactionName.Contains(filterQuery.ToLower()));
+                        transactions = transactions.Where(x => x.TransactionName.ToLower().Contains(filterQuery));
                     }
                     if (filter.FilterOn[i].Equals("TransactionDescription", StringComparison.OrdinalIgnoreCase))
                     {
                         string filterQuery = filter.FilterQuery[i].ToLower();
                         transactions = transactions.Where(x => x.TransactionDescription != null && x.TransactionDescription.ToLower().Contains(filterQuery));
                     }
-                    if (filter.FilterOn[i].Equals("TaskType", StringComparison.OrdinalIgnoreCase))
+                    if (filter.FilterOn[i].Equals("TransactionType", StringComparison.OrdinalIgnoreCase))
                     {
                         string filterQuery = filter.FilterQuery[i].ToLower();
                         transactions = transactions.Where(x => x.TransactionType.ToLower() == filterQuery);

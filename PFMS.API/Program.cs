@@ -20,9 +20,11 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("pfmsDb")));
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 builder.Services.AddScoped<ITotalTransactionAmountRespository, TotalTransactionAmountRepository>();
 
