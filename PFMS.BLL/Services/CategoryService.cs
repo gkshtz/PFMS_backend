@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.Identity.Client;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
+using PFMS.DAL.DTOs;
 using PFMS.DAL.Interfaces;
 
 namespace PFMS.BLL.Services

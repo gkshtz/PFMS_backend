@@ -23,7 +23,7 @@ namespace PFMS.API.Controllers
         public async Task<IActionResult> GetAsync()
         {
             FetchParameters();
-            List<TransactionBo> transactionsBo = await _transactionService.GetAllTransactionsAsync(UserId, Filter, Sort, Pagination);
+            List<TransactionBo> transactionsBo = await _transactionService.GetAllTransactionsAsync(UserId, Filter, Sort, Pagination!);
             List<TransactionResponseModel> transactionsModel = _mapper.Map<List<TransactionResponseModel>>(transactionsBo);
             GenericSuccessResponse<List<TransactionResponseModel>> response = new GenericSuccessResponse<List<TransactionResponseModel>>()
             {
@@ -74,7 +74,7 @@ namespace PFMS.API.Controllers
         [HttpPatch]
         [Route("{id:Guid}")]
         public async Task<IActionResult> PatchAsync([FromBody] TransactionRequestModel transactionRequest, [FromRoute] Guid id)
-        { 
+        {
             var transactionBo = _mapper.Map<TransactionBo>(transactionRequest);
             await _transactionService.UpdateTransaction(transactionBo, UserId, id);
             GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()

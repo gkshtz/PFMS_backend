@@ -1,21 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Identity.Client;
 using PFMS.Utils.Request_Data;
 
 namespace PFMS.API.Controllers
 {
     public class BaseController : Controller
-    {
+    { 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            UserId = Guid.Parse(User.FindFirst("UserId")!.Value);
+            UserId = Guid.Parse(User.FindFirst("UserId")!.Value ?? Guid.Empty.ToString());
+            base.OnActionExecuting(context);
         }
 
         public Guid UserId { get; set; }
-
         public Filter? Filter { get; set; }
         public Sort? Sort { get; set; }
-        public Pagination Pagination { get; set; }
+        public Pagination? Pagination { get; set; }
 
         [NonAction]
         public void FetchParameters()

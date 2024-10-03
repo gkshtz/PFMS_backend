@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;
+using PFMS.DAL.Entities;
 using PFMS.DAL.Interfaces;
 
 namespace PFMS.DAL.Repositories
