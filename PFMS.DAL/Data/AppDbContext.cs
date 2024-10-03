@@ -63,7 +63,7 @@ namespace PFMS.DAL.Data
                 {
                     CategoryId = Guid.Parse("92ca68b2-e05b-40cf-981b-5abfea29a8c2"),
                     CategoryName = "Others",
-                    TransactionType = Utils.Enums.TransactionType.Expense.ToString(),
+                    TransactionType = Utils.Enums.TransactionType.Expense.ToString()
                 },
                 new TransactionCategory()
                 {

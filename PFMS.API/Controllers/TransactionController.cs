@@ -23,8 +23,7 @@ namespace PFMS.API.Controllers
         public async Task<IActionResult> GetAsync()
         {
             FetchParameters();
-            var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
-            List<TransactionBo> transactionsBo = await _transactionService.GetAllTransactionsAsync(userId, Filter, Sort, Pagination);
+            List<TransactionBo> transactionsBo = await _transactionService.GetAllTransactionsAsync(UserId, Filter, Sort, Pagination!);
             List<TransactionResponseModel> transactionsModel = _mapper.Map<List<TransactionResponseModel>>(transactionsBo);
             GenericSuccessResponse<List<TransactionResponseModel>> response = new GenericSuccessResponse<List<TransactionResponseModel>>()
             {
@@ -40,8 +39,7 @@ namespace PFMS.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
-            var transactionBo = await _transactionService.GetByTransactionId(id, userId);
+            var transactionBo = await _transactionService.GetByTransactionId(id, UserId);
             var transactionModel = _mapper.Map<TransactionResponseModel>(transactionBo);
 
             var response = new GenericSuccessResponse<TransactionResponseModel>()
@@ -57,9 +55,8 @@ namespace PFMS.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] TransactionRequestModel transactionRequest)
         {
-            var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
             var transactionBo = _mapper.Map<TransactionBo>(transactionRequest);
-            transactionBo = await _transactionService.AddTransaction(transactionBo, userId);
+            transactionBo = await _transactionService.AddTransaction(transactionBo, UserId);
 
             var transactionResponse = _mapper.Map<TransactionResponseModel>(transactionBo);
 
@@ -78,9 +75,8 @@ namespace PFMS.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> PatchAsync([FromBody] TransactionRequestModel transactionRequest, [FromRoute] Guid id)
         {
-            var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
             var transactionBo = _mapper.Map<TransactionBo>(transactionRequest);
-            await _transactionService.UpdateTransaction(transactionBo, userId, id);
+            await _transactionService.UpdateTransaction(transactionBo, UserId, id);
             GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
             {
                 StatusCode = 200,
@@ -94,8 +90,7 @@ namespace PFMS.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
-            var userId = Guid.Parse(User.FindFirst("UserId")!.Value);
-            await _transactionService.DeleteTransaction(id, userId);
+            await _transactionService.DeleteTransaction(id, UserId);
             GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
             {
                 StatusCode = 200,
