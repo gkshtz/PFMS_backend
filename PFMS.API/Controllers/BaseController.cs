@@ -1,10 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using PFMS.Utils.Request_Data;
 
 namespace PFMS.API.Controllers
 {
-    public class BaseController : ControllerBase
+    public class BaseController : Controller
     {
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            UserId = Guid.Parse(User.FindFirst("UserId")!.Value);
+        }
+
+        public Guid UserId { get; set; }
+
         public Filter? Filter { get; set; }
         public Sort? Sort { get; set; }
         public Pagination Pagination { get; set; }
