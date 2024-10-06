@@ -34,20 +34,21 @@ namespace PFMS.API.Middlewares
             var authorizationContent = headers["Authorization"].FirstOrDefault();
             if(authorizationContent == null)
             {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(ErrorMessages.EmptyAuthorizationHeader);
             }
-            string type = authorizationContent.Split(" ").First();
+            List<string> tokenParts = authorizationContent.ToString().Split(" ").ToList();
+
+            if(tokenParts.Count != 2)
+            {
+                throw new UnauthorizedAccessException(ErrorMessages.TokenMalformed);
+            }
+            string type = tokenParts.First();
             if(type != "Bearer")
             {
-                throw new UnauthorizedException();
-            }
-            string token = authorizationContent.Split(" ").Last();
-
-            if(string.IsNullOrEmpty(token))
-            {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException(ErrorMessages.TokenMalformed);
             }
 
+            string token = tokenParts.Last();
             ClaimsPrincipal? principal = ValidateToken(token);
 
             if(principal == null)

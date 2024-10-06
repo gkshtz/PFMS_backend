@@ -14,6 +14,5 @@ namespace PFMS.DAL.DTOs
         public Guid CategoryId { get; set; }
         public string CategoryName { get; set; }
         public TransactionType TransactionType { get; set; }
-        public Guid? UserId { get; set; }
     }
 }

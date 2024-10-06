@@ -14,6 +14,17 @@ namespace PFMS.BLL.Services
 {
     public class CategoryService: ICategoryService
     {
-       
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
+        public CategoryService(IMapper mapper, ICategoryRepository categoryRepository)
+        {
+            _mapper = mapper;
+            _categoryRepository = categoryRepository;
+        }
+        public async Task<List<TransactionCategoryBo>> GetAllCategories(Guid userId)
+        {
+            List<TransactionCategoryDto> categoryDtos = await _categoryRepository.GetAllCategories(userId);
+            return _mapper.Map<List<TransactionCategoryBo>>(categoryDtos);
+        }
     }
 }
