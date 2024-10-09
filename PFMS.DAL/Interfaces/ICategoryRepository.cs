@@ -9,6 +9,6 @@ namespace PFMS.DAL.Interfaces
 {
     public interface ICategoryRepository
     {
-      
+        public Task<List<TransactionCategoryDto>> GetAllCategories(Guid userId);
     }
 }
