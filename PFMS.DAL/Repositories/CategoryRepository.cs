@@ -21,5 +21,19 @@ namespace PFMS.DAL.Repositories
             List<TransactionCategory> categories = await _appDbContext.CategoryToUser.Include(x=>x.Category).Where(x => x.UserId == null || x.UserId == userId).Select(x=>x.Category!).ToListAsync();
             return _mapper.Map<List<TransactionCategoryDto>>(categories);
         }
+
+        public async Task AddCategory(TransactionCategoryDto categoryDto)
+        {
+            var category = _mapper.Map<TransactionCategory>(categoryDto);
+            await _appDbContext.TransactionCategories.AddAsync(category);
+            await _appDbContext.SaveChangesAsync();
+        }
+
+        public async Task AddCategoryToUser(CategoryToUserDto categoryToUserDto)
+        {
+            var categoryToUser = _mapper.Map<CategoryToUser>(categoryToUserDto);
+            await _appDbContext.CategoryToUser.AddAsync(categoryToUser);
+            await _appDbContext.SaveChangesAsync();
+        }
     }
 }
