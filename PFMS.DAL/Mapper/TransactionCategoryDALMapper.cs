@@ -13,6 +13,7 @@ namespace PFMS.DAL.Mapper
                 .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(src => src.TransactionType.ToString()))
                 .ReverseMap()
                 .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(src => Enum.Parse<TransactionType>(src.TransactionType)));
+            CreateMap<CategoryToUserDto, CategoryToUser>();
         }
     }
 }

@@ -33,5 +33,19 @@ namespace PFMS.API.Controllers
             };
             return Ok(response);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> PostAsync([FromBody] TransactionCategoryRequestModel categoryRequestModel)
+        {
+            var categoryBo = _mapper.Map<TransactionCategoryBo>(categoryRequestModel);
+            await _categoryService.AddCategory(categoryBo, UserId);
+            var response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = 200,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
+        }
     }
 }

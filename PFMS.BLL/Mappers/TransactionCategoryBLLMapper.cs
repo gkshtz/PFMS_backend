@@ -13,7 +13,9 @@ namespace PFMS.BLL.Mappers
     {
         public TransactionCategoryBLLMapper()
         {
-            CreateMap<TransactionCategoryBo, TransactionCategoryDto>().ReverseMap();   
+            CreateMap<TransactionCategoryBo, TransactionCategoryDto>().ReverseMap();
+
+            CreateMap<CategoryToUserBo, CategoryToUserDto>();
         }
     }
 }

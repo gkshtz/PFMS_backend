@@ -9,6 +9,7 @@ namespace PFMS.API.Mappers
         public TransactionCategoryMapper()
         {
             CreateMap<TransactionCategoryBo, TransactionCategoryResponseModel>();
+            CreateMap<TransactionCategoryRequestModel, TransactionCategoryBo>();
         }
     }
 }

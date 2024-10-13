@@ -10,5 +10,7 @@ namespace PFMS.BLL.Interfaces
     public interface ICategoryService
     {
         public Task<List<TransactionCategoryBo>> GetAllCategories(Guid userId);
+
+        public Task AddCategory(TransactionCategoryBo categoryBo, Guid userId);
     }
 }
