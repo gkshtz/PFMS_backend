@@ -133,14 +133,7 @@ namespace PFMS.DAL.Repositories
             transaction = _mapper.Map<Transaction>(transactionDto);
 
             _appDbContext.Transactions.Update(transaction);
-            try
-            {
-                await _appDbContext.SaveChangesAsync();
-            }
-            catch(Exception ex)
-            {
-                return false;
-            }
+            await _appDbContext.SaveChangesAsync();
             return true;
         }
 
