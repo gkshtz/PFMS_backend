@@ -25,4 +25,8 @@
     <ProjectReference Include="..\PFMS.BLL\PFMS.BLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
+
 </Project>

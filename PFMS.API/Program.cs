@@ -10,8 +10,18 @@ using PFMS.DAL.Data;
 using PFMS.DAL.Interfaces;
 using PFMS.DAL.Mapper;
 using PFMS.DAL.Repositories;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/PfmsLog.txt", rollingInterval: RollingInterval.Day)
+    .MinimumLevel.Error()
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 // Add services to the container.
 
