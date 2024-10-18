@@ -4,4 +4,4 @@
 # Ignore bin, obj folders and log file recursively
 **/bin/
 **/obj/
-**/PfmsLog*.txt/
+**/PfmsLog*.txt
