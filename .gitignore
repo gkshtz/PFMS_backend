@@ -1,6 +1,7 @@
 # Ignore Visual Studio folder recursively
 **/.vs/
 
-# Ignore bin and obj folders recursively
+# Ignore bin, obj folders and log file recursively
 **/bin/
 **/obj/
+**/PfmsLog*.txt/
