@@ -26,7 +26,8 @@ builder.Logging.AddSerilog(logger);
 // Add services to the container.
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("pfmsDb")));
+options.UseSqlServer(builder.Configuration.GetConnectionString("pfmsDb"))
+);
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
