@@ -12,9 +12,11 @@ namespace PFMS.API.Middlewares
     public class ExceptionHandlerMiddleware
     {
         private readonly RequestDelegate _next;
-        public ExceptionHandlerMiddleware(RequestDelegate next)
+        private readonly ILogger<ExceptionHandlerMiddleware> _logger;
+        public ExceptionHandlerMiddleware(RequestDelegate next, ILogger<ExceptionHandlerMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         /// <summary>
@@ -30,10 +32,12 @@ namespace PFMS.API.Middlewares
             }
             catch (CustomException ex)
             {
+                _logger.LogError(ex, $"Log Id: {Guid.NewGuid()} - {ex.Message}");
                 await HandleCustomExceptionAsync(httpContext, ex);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, $"Log Id: {Guid.NewGuid()} - {ex.Message}");
                 await HandleExceptionAsync(httpContext, ex);
             }
         }
