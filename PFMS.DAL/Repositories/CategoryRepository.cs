@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Runtime.CompilerServices;
+using System.Xml.Linq;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;
@@ -34,6 +36,40 @@ namespace PFMS.DAL.Repositories
             var categoryToUser = _mapper.Map<CategoryToUser>(categoryToUserDto);
             await _appDbContext.CategoryToUser.AddAsync(categoryToUser);
             await _appDbContext.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteCategory(Guid categoryId)
+        {
+            var category = await _appDbContext.TransactionCategories.FindAsync(categoryId);
+            if(category == null)
+            {
+                return false;
+            }
+            _appDbContext.TransactionCategories.Remove(category);
+            await _appDbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteCategoryToUser(Guid categoryId)
+        {
+            var categoryToUser = await _appDbContext.CategoryToUser.FindAsync(categoryId);
+            if(categoryToUser == null)
+            {
+                return false;
+            }
+            _appDbContext.CategoryToUser.Remove(categoryToUser);
+            await _appDbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<Guid?> GetUserIdByCategoryId(Guid categoryId)
+        {
+            var categoryToUser = await _appDbContext.CategoryToUser.Where(x => x.CategoryId == categoryId).FirstOrDefaultAsync();
+            if(categoryToUser == null)
+            {
+                return null;
+            }
+            return categoryToUser.UserId == null ? Guid.Empty : categoryToUser.UserId;
         }
     }
 }

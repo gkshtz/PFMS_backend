@@ -12,5 +12,7 @@ namespace PFMS.BLL.Interfaces
         public Task<List<TransactionCategoryBo>> GetAllCategories(Guid userId);
 
         public Task AddCategory(TransactionCategoryBo categoryBo, Guid userId);
+
+        public Task DeleteCategory(Guid categoryId, Guid userId);
     }
 }

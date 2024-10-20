@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PFMS.DAL.DTOs;
+﻿using PFMS.DAL.DTOs;
 
 namespace PFMS.DAL.Interfaces
 {
@@ -14,5 +9,11 @@ namespace PFMS.DAL.Interfaces
         public Task AddCategory(TransactionCategoryDto categoryDto);
 
         public Task AddCategoryToUser(CategoryToUserDto categoryToUserDto);
+
+        public Task<bool> DeleteCategory(Guid categoryId);
+
+        public Task<bool> DeleteCategoryToUser(Guid categoryId);
+
+        public Task<Guid?> GetUserIdByCategoryId(Guid categoryId);
     }
 }

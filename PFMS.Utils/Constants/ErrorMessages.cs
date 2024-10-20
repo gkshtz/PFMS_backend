@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PFMS.Utils.Constants
+﻿namespace PFMS.Utils.Constants
 {
     public static class ErrorMessages
     {
@@ -16,5 +10,7 @@ namespace PFMS.Utils.Constants
         public const string TokenMalformed = "Token Malformed";
         public const string EmptyToken = "Token is empty";
         public const string EmptyAuthorizationHeader = "Authorization Header is Empty";
+        public const string CategoryNotFound = "Category Does Not Exist";
+        public const string CannotDeleteCategory = "User Cannot Delete This Category";
     }
 }
