@@ -64,8 +64,12 @@ namespace PFMS.DAL.Repositories
 
         public async Task<Guid?> GetUserIdByCategoryId(Guid categoryId)
         {
-            var userId = await _appDbContext.CategoryToUser.Where(x => x.CategoryId == categoryId).Select(x => x.UserId).FirstOrDefaultAsync();
-            return userId;
+            var categoryToUser = await _appDbContext.CategoryToUser.Where(x => x.CategoryId == categoryId).FirstOrDefaultAsync();
+            if(categoryToUser == null)
+            {
+                return null;
+            }
+            return categoryToUser.UserId == null ? Guid.Empty : categoryToUser.UserId;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PFMS.API.Models;
@@ -52,7 +53,14 @@ namespace PFMS.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
-
+            await _categoryService.DeleteCategory(id, UserId);
+            GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,9 @@ using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Interfaces;
+using PFMS.Utils.Constants;
+using PFMS.Utils.Custom_Exceptions;
+using PFMS.Utils.Enums;
 
 namespace PFMS.BLL.Services
 {
@@ -42,5 +46,20 @@ namespace PFMS.BLL.Services
             await _categoryRepository.AddCategoryToUser(categoryToUerDto);
         }
 
+        public async Task DeleteCategory(Guid categoryId, Guid userId)
+        {
+            var userIdOfCategory = await _categoryRepository.GetUserIdByCategoryId(categoryId);
+            if(userIdOfCategory == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.CategoryNotFound);
+            }
+            if(userIdOfCategory!=userId)
+            {
+                throw new ForbiddenException(ErrorMessages.CannotDeleteCategory);
+            }
+
+            await _categoryRepository.DeleteCategoryToUser(categoryId);
+            await _categoryRepository.DeleteCategory(categoryId);
+        }
     }
 }
