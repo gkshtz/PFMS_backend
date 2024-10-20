@@ -41,5 +41,6 @@ namespace PFMS.BLL.Services
             var categoryToUerDto = _mapper.Map<CategoryToUserDto>(categoryToUserBo);
             await _categoryRepository.AddCategoryToUser(categoryToUerDto);
         }
+
     }
 }
