@@ -10,6 +10,7 @@ namespace PFMS.API.Mappers
         {
             CreateMap<UserRequestModel, UserBo>();
             CreateMap<UserBo, UserResponseModel>();
+            CreateMap<UserUpdateRequestModel, UserBo>();           
         }
     }
 }

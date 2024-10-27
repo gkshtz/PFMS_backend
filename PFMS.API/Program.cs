@@ -14,6 +14,17 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontendApp", builder =>
+    {
+        builder.WithOrigins("http://localhost:5173")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
+    });
+});
+
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("Logs/PfmsLog.txt", rollingInterval: RollingInterval.Day)
@@ -71,6 +82,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Ensure UseCors is before UseRouting
+app.UseCors("AllowFrontendApp");
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 
