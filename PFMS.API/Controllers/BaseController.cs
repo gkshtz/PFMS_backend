@@ -9,7 +9,7 @@ namespace PFMS.API.Controllers
     { 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            UserId = Guid.Parse(User.FindFirst("UserId")!.Value ?? Guid.Empty.ToString());
+            UserId = Guid.Parse(User.FindFirst("UserId")?.Value ?? Guid.Empty.ToString());
             base.OnActionExecuting(context);
         }
 
