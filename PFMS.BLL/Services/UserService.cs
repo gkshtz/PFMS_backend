@@ -90,11 +90,12 @@ namespace PFMS.BLL.Services
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
             }
 
-            var isCorrectOldPassword = _passwordHasher.VerifyHashedPassword(null, userDto.Password, newPassword);
+            var isCorrectOldPassword = _passwordHasher.VerifyHashedPassword(null, userDto.Password, oldPassword);
 
             if (isCorrectOldPassword == PasswordVerificationResult.Success)
             {
-                await _userRepository.UpdatePassword(newPassword, userId);
+                var newHashedPassword = _passwordHasher.HashPassword(null, newPassword);
+                await _userRepository.UpdatePassword(newHashedPassword, userId);
             }
             else
             {
