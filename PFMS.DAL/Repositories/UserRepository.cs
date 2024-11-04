@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;
@@ -36,6 +30,30 @@ namespace PFMS.DAL.Repositories
         {
             var user = await _appDbContext.Users.FirstOrDefaultAsync(x=>x.Email == email);
             return _mapper.Map<UserDto>(user);
+        }
+
+        public async Task<UserDto> GetUserById(Guid userId)
+        {
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            return _mapper.Map<UserDto>(user);
+        }
+
+        public async Task<bool> UpdateUser(UserDto userDto)
+        {
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userDto.UserId);
+            if(user == null)
+            {
+                return false;
+            }
+
+            user.FirstName = userDto.FirstName;
+            user.LastName = userDto.LastName;
+            user.Email = userDto.Email;
+            user.City = userDto.City;
+            user.Age = userDto.Age;
+
+            await _appDbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

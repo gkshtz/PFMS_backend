@@ -68,6 +68,21 @@ namespace PFMS.BLL.Services
             }
         }
 
+        public async Task UpdateUserProfile(UserBo userBo, Guid userId)
+        {
+            var userDto = await _userRepository.GetUserById(userId);
+            if(userDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
+            userBo.UserId = userId;
+            userDto = _mapper.Map<UserDto>(userBo);
+
+            await _userRepository.UpdateUser(userDto);
+        }
+
+
         private string GenerateToken(UserBo userBo)
         {
             var claims = new List<Claim> {

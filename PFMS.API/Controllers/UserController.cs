@@ -10,7 +10,7 @@ namespace PFMS.API.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : BaseController
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
@@ -46,6 +46,22 @@ namespace PFMS.API.Controllers
                 ResponseData = token,
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
+            return Ok(response);
+        }
+
+        [HttpPatch]
+        [Route("update")]
+        public async Task<IActionResult> PatchAsync([FromBody] UserUpdateRequestModel userModel)
+        {
+            var userBo = _mapper.Map<UserBo>(userModel);
+            await _userService.UpdateUserProfile(userBo, UserId);
+            GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = 200,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
             return Ok(response);
         }
     }
