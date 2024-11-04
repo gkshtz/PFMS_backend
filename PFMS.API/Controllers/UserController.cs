@@ -50,6 +50,7 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPatch]
+        [Route("update")]
         public async Task<IActionResult> PatchAsync([FromBody] UserUpdateRequestModel userModel)
         {
             var userBo = _mapper.Map<UserBo>(userModel);

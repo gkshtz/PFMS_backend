@@ -87,8 +87,8 @@ namespace PFMS.API.Middlewares
         }
 
         private bool CheckBypassRoute(string path)
-        { 
-            var res = ApplicationConstsants.BypassRoutes.Any(route => path.StartsWith(route));
+        {
+            var res = ApplicationConstsants.BypassRoutes.Contains(path);
             return res;
         }
 
