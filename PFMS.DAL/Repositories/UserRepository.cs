@@ -55,5 +55,24 @@ namespace PFMS.DAL.Repositories
             await _appDbContext.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> UpdatePassword(string newPassword, Guid userId)
+        {
+            var userDto = await GetUserById(userId);
+            if(userDto == null)
+            {
+                return false;
+            }
+
+            userDto.Password = newPassword;
+
+            var user = _mapper.Map<User>(userDto);
+
+            _appDbContext.Users.Update(user);
+
+            await _appDbContext.SaveChangesAsync();
+
+            return true;
+        }
     }
 }
