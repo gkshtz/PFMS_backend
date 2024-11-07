@@ -82,6 +82,26 @@ namespace PFMS.BLL.Services
             await _userRepository.UpdateUser(userDto);
         }
 
+        public async Task UpdatePassword(string oldPassword, string newPassword, Guid userId)
+        {
+            var userDto = await _userRepository.GetUserById(userId);
+            if(userDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
+            var isCorrectOldPassword = _passwordHasher.VerifyHashedPassword(null, userDto.Password, oldPassword);
+
+            if (isCorrectOldPassword == PasswordVerificationResult.Success)
+            {
+                var newHashedPassword = _passwordHasher.HashPassword(null, newPassword);
+                await _userRepository.UpdatePassword(newHashedPassword, userId);
+            }
+            else
+            {
+                throw new BadRequestException(ErrorMessages.IncorrectOldPassword);
+            }
+        }
 
         private string GenerateToken(UserBo userBo)
         {

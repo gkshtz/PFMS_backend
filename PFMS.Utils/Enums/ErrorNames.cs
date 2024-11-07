@@ -12,6 +12,7 @@ namespace PFMS.Utils.Enums
         RESOURCE_NOT_FOUND_ERROR,
         INTERNAL_SERVER_ERROR,
         UNAUTHORIZED_ERROR,
-        FORBIDDEN_ERROR
+        FORBIDDEN_ERROR,
+        BAD_REQUEST_ERROR
     }
 }

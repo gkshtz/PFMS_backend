@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PFMS.API.Models;
@@ -50,7 +51,7 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPatch]
-        [Route("update")]
+        [Route("profile")]
         public async Task<IActionResult> PatchAsync([FromBody] UserUpdateRequestModel userModel)
         {
             var userBo = _mapper.Map<UserBo>(userModel);
@@ -58,6 +59,22 @@ namespace PFMS.API.Controllers
             GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
             {
                 StatusCode = 200,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
+            return Ok(response);
+        }
+
+        [HttpPatch]
+        [Route("password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] PasswordUpdateRequestModel passwordUpdateModel)
+        {
+            await _userService.UpdatePassword(passwordUpdateModel.OldPassword, passwordUpdateModel.NewPassword, UserId);
+
+            GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
                 ResponseData = true,
                 ResponseMessage = ResponseMessage.Success.ToString()
             };

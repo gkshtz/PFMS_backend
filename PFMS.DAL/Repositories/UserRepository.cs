@@ -34,7 +34,7 @@ namespace PFMS.DAL.Repositories
 
         public async Task<UserDto> GetUserById(Guid userId)
         {
-            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            var user = await _appDbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId);
             return _mapper.Map<UserDto>(user);
         }
 
@@ -53,6 +53,25 @@ namespace PFMS.DAL.Repositories
             user.Age = userDto.Age;
 
             await _appDbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdatePassword(string newPassword, Guid userId)
+        {
+            var userDto = await GetUserById(userId);
+            if(userDto == null)
+            {
+                return false;
+            }
+
+            userDto.Password = newPassword;
+
+            var user = _mapper.Map<User>(userDto);
+
+            _appDbContext.Users.Update(user);
+
+            await _appDbContext.SaveChangesAsync();
+
             return true;
         }
     }

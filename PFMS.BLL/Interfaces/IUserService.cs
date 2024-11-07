@@ -13,6 +13,8 @@ namespace PFMS.BLL.Interfaces
 
         public Task<string> AuthenticateUser(UserCredentialsBo userCredentialsBo);
 
-        public Task UpdateUserProfile(UserBo userBo, Guid userId); 
+        public Task UpdateUserProfile(UserBo userBo, Guid userId);
+
+        public Task UpdatePassword(string oldPassword, string newPassword, Guid userId);
     }
 }

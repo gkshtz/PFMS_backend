@@ -12,5 +12,6 @@
         public const string EmptyAuthorizationHeader = "Authorization Header is Empty";
         public const string CategoryNotFound = "Category Does Not Exist";
         public const string CannotDeleteCategory = "User Cannot Delete This Category";
+        public const string IncorrectOldPassword = "Old Password is Incorrect";
     }
 }
