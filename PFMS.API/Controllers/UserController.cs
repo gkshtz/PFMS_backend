@@ -51,7 +51,7 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPatch]
-        [Route("update")]
+        [Route("profile")]
         public async Task<IActionResult> PatchAsync([FromBody] UserUpdateRequestModel userModel)
         {
             var userBo = _mapper.Map<UserBo>(userModel);
@@ -67,7 +67,7 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPatch]
-        [Route("update-password")]
+        [Route("password")]
         public async Task<IActionResult> UpdatePassword([FromBody] PasswordUpdateRequestModel passwordUpdateModel)
         {
             await _userService.UpdatePassword(passwordUpdateModel.OldPassword, passwordUpdateModel.NewPassword, UserId);

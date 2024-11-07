@@ -34,7 +34,7 @@ namespace PFMS.DAL.Repositories
 
         public async Task<UserDto> GetUserById(Guid userId)
         {
-            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            var user = await _appDbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId);
             return _mapper.Map<UserDto>(user);
         }
 
