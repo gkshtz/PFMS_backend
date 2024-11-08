@@ -74,5 +74,11 @@ namespace PFMS.DAL.Repositories
 
             return true;
         }
+
+        public async Task<UserDto> GetUserProfile(Guid userId)
+        {
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            return _mapper.Map<UserDto>(user);
+        }
     }
 }

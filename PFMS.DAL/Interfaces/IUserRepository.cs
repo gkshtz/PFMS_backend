@@ -20,5 +20,7 @@ namespace PFMS.DAL.Interfaces
         public Task<bool> UpdateUser(UserDto userDto);
 
         public Task<bool> UpdatePassword(string password, Guid userId);
+
+        public Task<UserDto> GetUserProfile(Guid userId);
     }
 }

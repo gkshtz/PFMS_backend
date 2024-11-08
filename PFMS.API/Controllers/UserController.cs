@@ -1,10 +1,11 @@
 ﻿using System.Net;
+using System.Security.Cryptography.Xml;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PFMS.API.Models;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
+using PFMS.BLL.Services;
 using PFMS.Utils.Enums;
 
 namespace PFMS.API.Controllers
@@ -19,6 +20,22 @@ namespace PFMS.API.Controllers
         {
             _userService = userService;
             _mapper = mapper;
+        }
+
+        [HttpGet]
+        [Route("profile")]
+        public async Task<IActionResult> GetProfileAsync()
+        {
+            var userBo = await _userService.GetUserProfile(UserId);
+            var userModel = _mapper.Map<UserResponseModel>(userBo);
+            var response = new GenericSuccessResponse<UserResponseModel>()
+            {
+                StatusCode = 200,
+                ResponseData = userModel,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
+            return Ok(response);
         }
 
         [HttpPost]
