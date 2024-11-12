@@ -6,6 +6,7 @@ using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Entities;
 using PFMS.DAL.Interfaces;
+using PFMS.Utils.Enums;
 
 namespace PFMS.DAL.Repositories
 {
@@ -18,9 +19,9 @@ namespace PFMS.DAL.Repositories
             _mapper = mapper;
             _appDbContext = appDbContext;            
         }
-        public async Task<List<TransactionCategoryDto>> GetAllCategories(Guid userId)
+        public async Task<List<TransactionCategoryDto>> GetAllCategories(Guid userId, TransactionType transactionType)
         {
-            List<TransactionCategory> categories = await _appDbContext.CategoryToUser.Include(x=>x.Category).Where(x => x.UserId == null || x.UserId == userId).Select(x=>x.Category!).ToListAsync();
+            List<TransactionCategory> categories = await _appDbContext.CategoryToUser.Include(x=>x.Category).Where(x => (x.UserId == null || x.UserId == userId) && (x.Category!.TransactionType == transactionType.ToString())).Select(x=>x.Category!).ToListAsync();
             return _mapper.Map<List<TransactionCategoryDto>>(categories);
         }
 

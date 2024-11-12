@@ -25,9 +25,9 @@ namespace PFMS.BLL.Services
             _mapper = mapper;
             _categoryRepository = categoryRepository;
         }
-        public async Task<List<TransactionCategoryBo>> GetAllCategories(Guid userId)
+        public async Task<List<TransactionCategoryBo>> GetAllCategories(Guid userId, TransactionType transactionType)
         {
-            List<TransactionCategoryDto> categoryDtos = await _categoryRepository.GetAllCategories(userId);
+            List<TransactionCategoryDto> categoryDtos = await _categoryRepository.GetAllCategories(userId, transactionType);
             return _mapper.Map<List<TransactionCategoryBo>>(categoryDtos);
         }
 

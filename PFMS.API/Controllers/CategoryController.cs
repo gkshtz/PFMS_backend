@@ -22,9 +22,10 @@ namespace PFMS.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        [Route("{transactionType}")]
+        public async Task<IActionResult> GetAllAsync([FromRoute] TransactionType transactionType)
         {
-            List<TransactionCategoryBo> categoryBos = await _categoryService.GetAllCategories(UserId);
+            List<TransactionCategoryBo> categoryBos = await _categoryService.GetAllCategories(UserId, transactionType);
             List<TransactionCategoryResponseModel> categoryResponse = _mapper.Map<List<TransactionCategoryResponseModel>>(categoryBos);
             var response = new GenericSuccessResponse<List<TransactionCategoryResponseModel>>()
             {
