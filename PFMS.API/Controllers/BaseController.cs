@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Identity.Client;
 using PFMS.Utils.Request_Data;
 
 namespace PFMS.API.Controllers
