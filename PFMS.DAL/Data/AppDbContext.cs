@@ -24,6 +24,7 @@ namespace PFMS.DAL.Data
         public DbSet<TotalMonthlyAmount> TotalMonthlyAmounts { get; set; }
         public DbSet<CategoryToUser> CategoryToUser { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -134,8 +135,26 @@ namespace PFMS.DAL.Data
                 }
             };
 
+            List<Role> roles = new List<Role>()
+            {
+                new Role()
+                {
+                    RoleId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf"),
+                    RoleName = "Admin"
+                },
+                new Role()
+                {
+                    RoleId = Guid.Parse("0d8766d8-09df-4aa6-9838-8da59552a736"),
+                    RoleName = "User"
+                }
+            };
+
+            modelBuilder.Entity<Role>().HasData(roles);
             modelBuilder.Entity<TransactionCategory>().HasData(transactionCategories);
             modelBuilder.Entity<CategoryToUser>().HasData(categoryUsers);
+
+            // modelBuilder.Entity<UserRole>().HasKey(x => new { x.RoleId, x.UserId });
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
