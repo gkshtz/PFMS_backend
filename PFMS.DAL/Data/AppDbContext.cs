@@ -23,7 +23,7 @@ namespace PFMS.DAL.Data
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<TotalMonthlyAmount> TotalMonthlyAmounts { get; set; }
         public DbSet<CategoryToUser> CategoryToUser { get; set; }
-
+        public DbSet<Role> Roles { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
