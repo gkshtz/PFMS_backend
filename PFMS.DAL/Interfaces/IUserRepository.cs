@@ -11,6 +11,8 @@ namespace PFMS.DAL.Interfaces
 {
     public interface IUserRepository
     {
+
+        public Task<List<UserDto>> GetAllUsers();
         public Task<UserDto> AddUser(UserDto userDto, TotalTransactionAmountDto totalTransactionAmountDto);
 
         public Task<UserDto> FindUserByEmail(string email);

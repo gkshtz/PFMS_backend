@@ -28,6 +28,13 @@ namespace PFMS.BLL.Services
             _mapper = mapper;
             _configuration = configuration;
         }
+
+        public async Task<List<UserBo>> GetAllUsers()
+        {
+            var userDtos = await _userRepository.GetAllUsers();
+            return _mapper.Map<List<UserBo>>(userDtos);
+        }
+
         public async Task<UserBo> AddUserAsync(UserBo userBo)
         {
             TotalTransactionAmountBo totalTransactionAmountBo = new TotalTransactionAmountBo();

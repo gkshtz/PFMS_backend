@@ -9,6 +9,7 @@ namespace PFMS.BLL.Interfaces
 {
     public interface IUserService
     {
+        public Task<List<UserBo>> GetAllUsers();
         public Task<UserBo> AddUserAsync(UserBo userBo);
 
         public Task<string> AuthenticateUser(UserCredentialsBo userCredentialsBo);
