@@ -37,6 +37,20 @@ namespace PFMS.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
+        {
+            var userBo = await _userService.GetUserProfile(id);
+            var userModel = _mapper.Map<UserResponseModel>(userBo);
+            var response = new GenericSuccessResponse<UserResponseModel>()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                ResponseData = userModel,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
+        }
 
         [HttpGet]
         [Route("profile")]
