@@ -16,6 +16,13 @@ namespace PFMS.DAL.Repositories
             _mapper = mapper;
             _appDbContext = appDbContext;
         }
+
+        public async Task<List<UserDto>> GetAllUsers()
+        {
+            var users = await _appDbContext.Users.ToListAsync();
+            return _mapper.Map<List<UserDto>>(users);
+        }
+
         public async Task<UserDto> AddUser(UserDto userDto, TotalTransactionAmountDto totalTransactionAmountDto)
         {
             var user = _mapper.Map<User>(userDto);
