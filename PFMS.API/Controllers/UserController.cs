@@ -80,7 +80,7 @@ namespace PFMS.API.Controllers
                 ResponseData = userResponseModel,
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
-            return Ok(response);
+            return CreatedAtAction(nameof(GetById), new { id = userResponseModel.UserId }, response);
         }
 
         [HttpPost("login")]
