@@ -53,7 +53,7 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] TransactionRequestModel transactionRequest)
+        public async Task<IActionResult> PostAsync([FromBody] TransactionRequestModel transactionRequest)        
         {
             var transactionBo = _mapper.Map<TransactionBo>(transactionRequest);
             transactionBo = await _transactionService.AddTransaction(transactionBo, UserId);

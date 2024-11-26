@@ -9,6 +9,7 @@ namespace PFMS.API.Mappers
         public RoleMapper()
         {
             CreateMap<RoleBo, RoleResponseModel>();
+            CreateMap<RoleRequestModel, RoleBo>();
         }
     }
 }

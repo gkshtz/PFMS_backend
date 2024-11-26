@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
+using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PFMS.API.Models;
+using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.Utils.Enums;
 
@@ -34,6 +36,20 @@ namespace PFMS.API.Controllers
             };
             return Ok(response);
 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostAsync([FromBody] RoleRequestModel roleModel)
+        {
+            var roleBo = _mapper.Map<RoleBo>(roleModel);
+            await _rolesService.AddRole(roleBo);
+            var response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
         }
     }
 }
