@@ -7,5 +7,7 @@ namespace PFMS.BLL.Interfaces
         public Task<List<RoleBo>> GetAllRoles();
 
         public Task AddRole(RoleBo roleBo);
+
+        public Task AddUserRole(UserRoleBo userRoleBo);
     }
 }
