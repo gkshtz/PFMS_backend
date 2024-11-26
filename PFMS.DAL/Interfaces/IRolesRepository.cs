@@ -10,5 +10,7 @@ namespace PFMS.DAL.Interfaces
     public interface IRolesRepository
     {
         public Task<List<RoleDto>> GetAllRoles();
+
+        public Task AddRole(RoleDto roleDto);
     }
 }

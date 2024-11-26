@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
+using PFMS.DAL.DTOs;
 using PFMS.DAL.Interfaces;
 
 namespace PFMS.BLL.Services
@@ -23,6 +24,13 @@ namespace PFMS.BLL.Services
         {
             var roleDtos = await _rolesRepository.GetAllRoles();
             return _mapper.Map<List<RoleBo>>(roleDtos);
+        }
+
+        public async Task AddRole(RoleBo roleBo)
+        {
+            roleBo.RoleId = Guid.NewGuid();
+            var roleDto = _mapper.Map<RoleDto>(roleBo);
+            await _rolesRepository.AddRole(roleDto);
         }
     }
 }
