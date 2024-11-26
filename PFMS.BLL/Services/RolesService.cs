@@ -32,5 +32,11 @@ namespace PFMS.BLL.Services
             var roleDto = _mapper.Map<RoleDto>(roleBo);
             await _rolesRepository.AddRole(roleDto);
         }
+
+        public async Task AddUserRole(UserRoleBo userRoleBo)
+        {
+            var userRoleDto = _mapper.Map<UserRoleDto>(userRoleBo);
+            await _rolesRepository.AddUserRole(userRoleDto);
+        }
     }
 }

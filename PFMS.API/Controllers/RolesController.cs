@@ -2,6 +2,7 @@
 using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PFMS.API.Models;
 using PFMS.BLL.BOs;
@@ -46,6 +47,21 @@ namespace PFMS.API.Controllers
             var response = new GenericSuccessResponse<bool>()
             {
                 StatusCode = (int)HttpStatusCode.OK,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("user-roles")]
+        public async Task<IActionResult> AddUserRole([FromBody] UserRoleModel userRoleModel)
+        {
+            var userRoleBo = _mapper.Map<UserRoleBo>(userRoleModel);
+            await _rolesService.AddUserRole(userRoleBo);
+            var response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = 200,
                 ResponseData = true,
                 ResponseMessage = ResponseMessage.Success.ToString()
             };

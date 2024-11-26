@@ -14,6 +14,7 @@ namespace PFMS.DAL.Mapper
         public RoleDALMapper()
         {
             CreateMap<RoleDto, Role>().ReverseMap();
+            CreateMap<UserRoleDto, UserRole>();
         }
     }
 }
