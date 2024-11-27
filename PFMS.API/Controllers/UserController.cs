@@ -87,13 +87,25 @@ namespace PFMS.API.Controllers
         public async Task<IActionResult> Login(UserCredentialsModel credentialsModel)
         {
             var credentialsBo = _mapper.Map<UserCredentialsBo>(credentialsModel);
-            string token = await _userService.AuthenticateUser(credentialsBo);
+            TokenBo accessAndRefreshToken = await _userService.AuthenticateUser(credentialsBo);
+            var accessToken = accessAndRefreshToken.AccessToken;
+            var refreshToken = accessAndRefreshToken.RefreshToken;
             GenericSuccessResponse<string> response = new GenericSuccessResponse<string>()
             {
                 StatusCode = 200,
-                ResponseData = token,
+                ResponseData = accessToken,
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
+
+            Response.Cookies.Append("refresh-token", refreshToken, new CookieOptions()
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Path = "/refresh",
+                Expires = DateTime.UtcNow.AddHours(1)
+            });
+
+
             return Ok(response);
         }
 
