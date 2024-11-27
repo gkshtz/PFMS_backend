@@ -52,7 +52,7 @@ namespace PFMS.BLL.Services
             return _mapper.Map<UserBo>(userDto);
         }
 
-        public async Task<string> AuthenticateUser(UserCredentialsBo userCredentialsBo)
+        public async Task<TokenBo> AuthenticateUser(UserCredentialsBo userCredentialsBo)
         {
             var userDto = await _userRepository.FindUserByEmail(userCredentialsBo.Email);
 
@@ -66,8 +66,8 @@ namespace PFMS.BLL.Services
             if (isAuthenticated == PasswordVerificationResult.Success)
             {
                 var userBo = _mapper.Map<UserBo>(userDto);
-                string token = GenerateToken(userBo);
-                return token;
+                TokenBo accessAndRefreshTokens = GenerateToken(userBo);
+                return accessAndRefreshTokens;
             }
             else
             {
@@ -120,12 +120,14 @@ namespace PFMS.BLL.Services
             return _mapper.Map<UserBo>(userDto);
         }
 
-        private string GenerateToken(UserBo userBo)
+        private TokenBo GenerateToken(UserBo userBo)
         {
+            //Generate Access Token
             var claims = new List<Claim> {
-                        new Claim(JwtRegisteredClaimNames.Sub,_configuration["Jwt:Subject"]!),
-                        new Claim("UserId", userBo.UserId.ToString()!),
+                        new Claim(JwtRegisteredClaimNames.Sub, userBo.UserId.ToString()),
                         new Claim("Email",userBo.Email),
+                        new Claim("FirstName", userBo.FirstName),
+                        new Claim("LastName", userBo.LastName)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
@@ -135,11 +137,34 @@ namespace PFMS.BLL.Services
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddHours(10),
+                expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: signIn
                 );
-            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwtToken;
+            var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            //Generate refresh token
+            claims = new List<Claim>()
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, userBo.UserId.ToString()),
+            };
+
+            key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+            signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            token = new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                claims,
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: signIn);
+
+            var refreshToken = new JwtSecurityTokenHandler().WriteToken(token);
+            var accessAndRefreshTokens = new TokenBo()
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
+            return accessAndRefreshTokens;
         }
     }
 }

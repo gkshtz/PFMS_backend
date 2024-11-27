@@ -12,7 +12,7 @@ namespace PFMS.BLL.Interfaces
         public Task<List<UserBo>> GetAllUsers();
         public Task<UserBo> AddUserAsync(UserBo userBo);
 
-        public Task<string> AuthenticateUser(UserCredentialsBo userCredentialsBo);
+        public Task<TokenBo> AuthenticateUser(UserCredentialsBo userCredentialsBo);
 
         public Task UpdateUserProfile(UserBo userBo, Guid userId);
 
