@@ -65,7 +65,7 @@ namespace PFMS.API.Middlewares
         private ClaimsPrincipal? ValidateToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["jwt:Key"]!);
+            var key = Encoding.UTF8.GetBytes(_configuration["jwt:Key"]!);
 
             try
             {
@@ -73,8 +73,10 @@ namespace PFMS.API.Middlewares
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = _configuration["Jwt:Audience"],
+                    ValidIssuer = _configuration["Jwt:Issuer"],
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 

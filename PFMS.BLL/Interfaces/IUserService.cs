@@ -19,5 +19,7 @@ namespace PFMS.BLL.Interfaces
         public Task UpdatePassword(string oldPassword, string newPassword, Guid userId);
 
         public Task<UserBo> GetUserProfile(Guid userId);
+
+        public Task<string> RefreshAccessToken();
     }
 }

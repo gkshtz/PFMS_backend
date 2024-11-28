@@ -1,7 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -20,13 +22,16 @@ namespace PFMS.BLL.Services
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher<UserBo> _passwordHasher;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
         public UserService(IUserRepository userRepository, IMapper mapper, IPasswordHasher<UserBo> passwordHasher,
-            IConfiguration configuration)
+            IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<List<UserBo>> GetAllUsers()
@@ -118,6 +123,43 @@ namespace PFMS.BLL.Services
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
             }
             return _mapper.Map<UserBo>(userDto);
+        }
+
+        public async Task<string> RefreshAccessToken()
+        {
+            HttpContext context = _httpContextAccessor.HttpContext;
+            var refreshToken = context.Request.Cookies["refresh-token"];
+            if(refreshToken == null)
+            {
+                throw new BadRequestException(ErrorMessages.RefreshTokenIsNotPresnt);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        private ClaimsPrincipal? ValidateRefreshToken(string token)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["RefreshToken:Key"]!));
+
+            try
+            {
+                var principal = new JwtSecurityTokenHandler().ValidateToken(token, new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = key,
+                    ValidAudience = _configuration["RefreshToken:Audience"],
+                    ValidIssuer = _configuration["RefreshToken:Issuer"],
+                }, out SecurityToken validatedToken);
+
+                return principal;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private TokenBo GenerateToken(UserBo userBo)

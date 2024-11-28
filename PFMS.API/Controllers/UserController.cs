@@ -16,6 +16,7 @@ namespace PFMS.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+
         public UserController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
@@ -139,6 +140,12 @@ namespace PFMS.API.Controllers
             };
 
             return Ok(response);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRefreshedAccessToken()
+        {
+            
         }
     }
 }

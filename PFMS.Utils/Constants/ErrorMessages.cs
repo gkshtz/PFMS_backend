@@ -13,5 +13,6 @@
         public const string CategoryNotFound = "Category Does Not Exist";
         public const string CannotDeleteCategory = "User Cannot Delete This Category";
         public const string IncorrectOldPassword = "Old Password is Incorrect";
+        public const string RefreshTokenIsNotPresnt = "Refresh Token is not present in the cookies";
     }
 }
