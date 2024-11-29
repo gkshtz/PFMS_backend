@@ -34,6 +34,8 @@ var logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
+builder.Services.AddHttpContextAccessor();
+
 // Add services to the container.
 
 builder.Services.AddDbContext<AppDbContext>(options =>

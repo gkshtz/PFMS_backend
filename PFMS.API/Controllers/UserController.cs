@@ -143,9 +143,18 @@ namespace PFMS.API.Controllers
         }
 
         [HttpGet]
+        [Route("refreshed-access-token")]
         public async Task<IActionResult> GetRefreshedAccessToken()
         {
-            
+            var newAccessToken = await _userService.RefreshAccessToken();
+            var response = new GenericSuccessResponse<string>()
+            {
+                StatusCode = 200,
+                ResponseData = newAccessToken,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
+            return Ok(response);
         }
     }
 }
