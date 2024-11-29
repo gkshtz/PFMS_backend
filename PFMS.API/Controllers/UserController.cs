@@ -16,6 +16,7 @@ namespace PFMS.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+
         public UserController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
@@ -135,6 +136,21 @@ namespace PFMS.API.Controllers
             {
                 StatusCode = (int)HttpStatusCode.OK,
                 ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("refreshed-access-token")]
+        public async Task<IActionResult> GetRefreshedAccessToken()
+        {
+            var newAccessToken = await _userService.RefreshAccessToken();
+            var response = new GenericSuccessResponse<string>()
+            {
+                StatusCode = 200,
+                ResponseData = newAccessToken,
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
 

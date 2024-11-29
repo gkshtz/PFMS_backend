@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using PFMS.Utils.Request_Data;
 
@@ -8,7 +9,7 @@ namespace PFMS.API.Controllers
     { 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            UserId = Guid.Parse(User.FindFirst("sub")?.Value ?? Guid.Empty.ToString());
+            UserId = Guid.Parse(User.FindFirst("UserId")?.Value ?? Guid.Empty.ToString());
             base.OnActionExecuting(context);
         }
 
