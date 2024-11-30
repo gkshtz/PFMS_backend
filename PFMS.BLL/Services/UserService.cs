@@ -237,7 +237,7 @@ namespace PFMS.BLL.Services
                 _configuration["RefreshToken:Issuer"],
                 _configuration["RefreshToken:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddHours(1),
+                expires: DateTime.UtcNow.AddHours(12),
                 signingCredentials: signIn);
 
             var refreshToken = new JwtSecurityTokenHandler().WriteToken(token);
