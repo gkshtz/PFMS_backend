@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography.Xml;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 using Moq;
@@ -8,6 +9,7 @@ using PFMS.API.Models;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.Utils.Enums;
+using Xunit.Sdk;
 
 namespace PFMS.API.Tests.Controllers
 {
@@ -157,7 +159,12 @@ namespace PFMS.API.Tests.Controllers
             Mock<IUserService> userService = new Mock<IUserService>();
             Mock<IMapper> mapper = new Mock<IMapper>();
 
+            Mock<HttpContext> context = new Mock<HttpContext>();
+            Mock<HttpResponse> httpResponse = new Mock<HttpResponse>();
+            Mock<IResponseCookies> cookies = new Mock<IResponseCookies>();
+
             var userController = new UserController(userService.Object, mapper.Object);
+
 
             var userCredentialsModel = new UserCredentialsModel()
             {
@@ -171,10 +178,22 @@ namespace PFMS.API.Tests.Controllers
                 Password = "test"
             };
 
-            string token = "test-token";
+            var tokenBo = new TokenBo()
+            {
+                AccessToken = "testToken",
+                RefreshToken = "testToken"
+            };
 
-            userService.Setup(x => x.AuthenticateUser(It.IsAny<UserCredentialsBo>())).ReturnsAsync(token);
+            userService.Setup(x => x.AuthenticateUser(It.IsAny<UserCredentialsBo>())).ReturnsAsync(tokenBo);
             mapper.Setup(x => x.Map<UserCredentialsBo>(It.IsAny<UserCredentialsModel>())).Returns(userCredentialsBo);
+
+            context.Setup(x => x.Response).Returns(httpResponse.Object);
+            httpResponse.Setup(x => x.Cookies).Returns(cookies.Object);
+
+            userController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = context.Object
+            };
 
             //Act
             var response = await userController.Login(userCredentialsModel);
@@ -189,7 +208,53 @@ namespace PFMS.API.Tests.Controllers
 
             Assert.Equal(200, successResponse.StatusCode);
             Assert.NotNull(successResponse.ResponseData);
+            Assert.IsType<string>(successResponse.ResponseData);
             Assert.Equal(successResponse.ResponseMessage, ResponseMessage.Success.ToString());
+        }
+
+        [Fact]
+        public async void Update_User_Profile_Successful_Update_Test()
+        {
+            // Arrange
+            Mock<IUserService> userService = new Mock<IUserService>();
+            Mock<IMapper> mapper = new Mock<IMapper>();
+
+            UserController userController = new UserController(userService.Object, mapper.Object);
+
+            var userModel = new UserUpdateRequestModel()
+            {
+                FirstName = "Test",
+                LastName = "Test",
+                Age = 12,
+                City = "Test",
+                Email = "test@gmail.com"
+            };
+
+            var userBo = new UserBo()
+            {
+                FirstName = "Test",
+                LastName = "Test",
+                Age = 12,
+                City = "Test",
+                Email = "test@gmail.com"
+            };
+
+            userService.Setup(x => x.UpdateUserProfile(It.IsAny<UserBo>(), It.IsAny<Guid>()));
+
+            //Act
+            var response = await userController.PatchAsync(userModel);
+
+            //Assert
+            Assert.NotNull(response);
+            var okResult = response as OkObjectResult;
+            Assert.NotNull(okResult);
+
+            var successResponse = Assert.IsType<GenericSuccessResponse<bool>>(okResult.Value);
+            Assert.NotNull(successResponse);
+
+            Assert.Equal(200, successResponse.StatusCode);
+            Assert.True(successResponse.ResponseData);
+            Assert.Equal(ResponseMessage.Success.ToString(), successResponse.ResponseMessage);
         }
     }
 }
