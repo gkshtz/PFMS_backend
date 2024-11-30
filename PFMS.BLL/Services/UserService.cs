@@ -1,8 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
+using Azure.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PFMS.BLL.BOs;
@@ -20,13 +24,16 @@ namespace PFMS.BLL.Services
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher<UserBo> _passwordHasher;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
         public UserService(IUserRepository userRepository, IMapper mapper, IPasswordHasher<UserBo> passwordHasher,
-            IConfiguration configuration)
+            IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<List<UserBo>> GetAllUsers()
@@ -52,7 +59,7 @@ namespace PFMS.BLL.Services
             return _mapper.Map<UserBo>(userDto);
         }
 
-        public async Task<string> AuthenticateUser(UserCredentialsBo userCredentialsBo)
+        public async Task<TokenBo> AuthenticateUser(UserCredentialsBo userCredentialsBo)
         {
             var userDto = await _userRepository.FindUserByEmail(userCredentialsBo.Email);
 
@@ -66,8 +73,16 @@ namespace PFMS.BLL.Services
             if (isAuthenticated == PasswordVerificationResult.Success)
             {
                 var userBo = _mapper.Map<UserBo>(userDto);
-                string token = GenerateToken(userBo);
-                return token;
+                string accessToken = GenerateAccessToken(userBo);
+                string refreshToken = GenerateRefreshToken(userBo);
+
+                var accessAndRefreshTokens = new TokenBo()
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+
+                return accessAndRefreshTokens;
             }
             else
             {
@@ -120,12 +135,78 @@ namespace PFMS.BLL.Services
             return _mapper.Map<UserBo>(userDto);
         }
 
-        private string GenerateToken(UserBo userBo)
+        public async Task<string> RefreshAccessToken()
         {
+            HttpContext context = _httpContextAccessor.HttpContext;
+            var refreshToken = context.Request.Cookies[ApplicationConstsants.RefreshToken];
+            if(refreshToken == null)
+            {
+                throw new BadRequestException(ErrorMessages.RefreshTokenIsNotPresnt);
+            }
+
+            var principal = ValidateRefreshToken(refreshToken);
+            if(principal == null)
+            {
+                context.Response.Cookies.Append(ApplicationConstsants.RefreshToken, refreshToken, new CookieOptions()
+                {
+                    Expires = DateTime.UtcNow.AddDays(-1),
+                    HttpOnly = true
+                });
+                throw new UnauthorizedException(ErrorMessages.InvalidRefreshToken);
+            }
+
+            var userId = principal.FindFirst("UserId")?.Value;
+            if(userId == null)
+            {
+                context.Response.Cookies.Append(ApplicationConstsants.RefreshToken, refreshToken, new CookieOptions()
+                {
+                    Expires = DateTime.UtcNow.AddDays(-1),
+                    HttpOnly = true
+                });
+                throw new BadRequestException(ErrorMessages.UserIdNotPresentInRefreshToken);
+            }
+
+            var userDto = await _userRepository.GetUserById(Guid.Parse(userId));
+            var userBo = _mapper.Map<UserBo>(userDto);
+
+            string accessToken = GenerateAccessToken(userBo);
+            return accessToken;
+        }
+
+        private ClaimsPrincipal? ValidateRefreshToken(string token)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["RefreshToken:Key"]!));
+
+            try
+            {
+                var principal = new JwtSecurityTokenHandler().ValidateToken(token, new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = key,
+                    ValidAudience = _configuration["RefreshToken:Audience"],
+                    ValidIssuer = _configuration["RefreshToken:Issuer"],
+                }, out SecurityToken validatedToken);
+
+                return principal;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private string GenerateAccessToken(UserBo userBo)
+        {
+            //Generate Access Token
             var claims = new List<Claim> {
-                        new Claim(JwtRegisteredClaimNames.Sub,_configuration["Jwt:Subject"]!),
-                        new Claim("UserId", userBo.UserId.ToString()!),
+                        new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]!),
+                        new Claim("UserId", userBo.UserId.ToString()),
                         new Claim("Email",userBo.Email),
+                        new Claim("FirstName", userBo.FirstName),
+                        new Claim("LastName", userBo.LastName)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
@@ -135,11 +216,33 @@ namespace PFMS.BLL.Services
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddHours(10),
+                expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: signIn
                 );
-            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwtToken;
+            var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return accessToken;
+        }
+        private string GenerateRefreshToken(UserBo userBo)
+        {
+            var claims = new List<Claim>()
+            {
+                new Claim("UserId", userBo.UserId.ToString()),
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["RefreshToken:Key"]!));
+            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                _configuration["RefreshToken:Issuer"],
+                _configuration["RefreshToken:Audience"],
+                claims,
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: signIn);
+
+            var refreshToken = new JwtSecurityTokenHandler().WriteToken(token);
+            
+            return refreshToken;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace PFMS.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+
         public UserController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
@@ -87,13 +88,25 @@ namespace PFMS.API.Controllers
         public async Task<IActionResult> Login(UserCredentialsModel credentialsModel)
         {
             var credentialsBo = _mapper.Map<UserCredentialsBo>(credentialsModel);
-            string token = await _userService.AuthenticateUser(credentialsBo);
+            TokenBo accessAndRefreshToken = await _userService.AuthenticateUser(credentialsBo);
+            var accessToken = accessAndRefreshToken.AccessToken;
+            var refreshToken = accessAndRefreshToken.RefreshToken;
             GenericSuccessResponse<string> response = new GenericSuccessResponse<string>()
             {
                 StatusCode = 200,
-                ResponseData = token,
+                ResponseData = accessToken,
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
+
+            Response.Cookies.Append("refresh-token", refreshToken, new CookieOptions()
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Path = "/refresh",
+                Expires = DateTime.UtcNow.AddHours(1)
+            });
+
+
             return Ok(response);
         }
 
@@ -123,6 +136,21 @@ namespace PFMS.API.Controllers
             {
                 StatusCode = (int)HttpStatusCode.OK,
                 ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("refreshed-access-token")]
+        public async Task<IActionResult> GetRefreshedAccessToken()
+        {
+            var newAccessToken = await _userService.RefreshAccessToken();
+            var response = new GenericSuccessResponse<string>()
+            {
+                StatusCode = 200,
+                ResponseData = newAccessToken,
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
 

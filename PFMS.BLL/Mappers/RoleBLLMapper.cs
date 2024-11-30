@@ -14,6 +14,7 @@ namespace PFMS.BLL.Mappers
         public RoleBLLMapper()
         {
             CreateMap<RoleBo, RoleDto>().ReverseMap();
+            CreateMap<UserRoleBo, UserRoleDto>();
         }
     }
 }
