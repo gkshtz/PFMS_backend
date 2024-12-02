@@ -180,5 +180,10 @@ namespace PFMS.BLL.Services
             await _totalTransactionAmountRepository.UpdateTotalTransactionAmount(totalTransactionAmountDto);
         }
 
+        public async Task<TotalTransactionAmountBo> GetTotalTransactionAmountAsync(Guid userId)
+        {
+            var totalTransactionAmountDto = await _transactionRepository.GetTotalTransactionAmountByUserId(userId);
+            return _mapper.Map<TotalTransactionAmountBo>(totalTransactionAmountDto);
+        }
     }
 }

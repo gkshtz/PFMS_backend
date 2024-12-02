@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using Microsoft.Identity.Client;
 using PFMS.API.Models;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
@@ -99,5 +101,24 @@ namespace PFMS.API.Controllers
             };
             return Ok(response);
         }
+
+        [HttpGet]
+        [Route("total-transaction-amount")]
+        public async Task<IActionResult> GetTotalTransactionAmount()
+        {
+            var totalTransactionAmountBo = await _transactionService.GetTotalTransactionAmountAsync(UserId);
+            var totalTransactionAmountModel = _mapper.Map<TotalTransactionAmountModel>(totalTransactionAmountBo);
+
+            var response = new GenericSuccessResponse<TotalTransactionAmountModel>()
+            {
+                StatusCode = 200,
+                ResponseData = totalTransactionAmountModel,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
+            return Ok(response);
+
+        }
+
     }
 }

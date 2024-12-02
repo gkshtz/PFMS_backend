@@ -19,5 +19,7 @@ namespace PFMS.BLL.Interfaces
         public Task UpdateTransaction(TransactionBo transactionBo, Guid userId, Guid transactionId);
 
         public Task DeleteTransaction(Guid transactionId, Guid userId);
+
+        public Task<TotalTransactionAmountBo> GetTotalTransactionAmountAsync(Guid userId);
     }
 }
