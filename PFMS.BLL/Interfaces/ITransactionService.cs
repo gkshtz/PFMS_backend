@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PFMS.BLL.BOs;
-using PFMS.Utils.Request_Data;
+﻿using PFMS.BLL.BOs;
+using PFMS.Utils.RequestData;
 
 namespace PFMS.BLL.Interfaces
 {

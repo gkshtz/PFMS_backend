@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PFMS.Utils.Custom_Exceptions
+namespace PFMS.Utils.CustomExceptions
 {
     public class CustomException: Exception
     {

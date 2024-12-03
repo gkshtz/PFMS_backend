@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.DAL.DTOs;
@@ -37,6 +32,12 @@ namespace PFMS.BLL.Services
         {
             var userRoleDto = _mapper.Map<UserRoleDto>(userRoleBo);
             await _rolesRepository.AddUserRole(userRoleDto);
+        }
+
+        public async Task<List<string>> GetRoleNamesAssignedToUser(Guid userId)
+        {
+            List<string> roleNames = await _rolesRepository.GetRoleNamesAssignedToUser(userId);
+            return roleNames;
         }
     }
 }

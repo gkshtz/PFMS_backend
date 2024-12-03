@@ -14,5 +14,7 @@ namespace PFMS.DAL.Interfaces
         public Task AddRole(RoleDto roleDto);
 
         public Task AddUserRole(UserRoleDto userRoleDto);
+
+        public Task<List<string>> GetRoleNamesAssignedToUser(Guid userId);
     }
 }
