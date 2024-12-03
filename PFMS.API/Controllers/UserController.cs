@@ -157,5 +157,13 @@ namespace PFMS.API.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            _userService.Logout();
+            return Ok();
+        }
     }
 }

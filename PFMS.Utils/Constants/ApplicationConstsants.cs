@@ -8,7 +8,8 @@ namespace PFMS.Utils.Constants
         {
             "/api/users/login",
             "/api/users",
-            "/api/users/refreshed-access-token"
+            "/api/users/refreshed-access-token",
+            "/api/users/logout"
         };
 
         public const string RefreshToken = "refresh-token";

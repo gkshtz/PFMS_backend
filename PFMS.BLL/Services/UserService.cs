@@ -173,6 +173,24 @@ namespace PFMS.BLL.Services
             return accessToken;
         }
 
+        public void Logout()
+        {
+            var context = _httpContextAccessor.HttpContext;
+
+            var refreshToken = context.Request.Cookies[ApplicationConstsants.RefreshToken];
+
+            if(refreshToken == null)
+            {
+                return;
+            }
+
+            context.Response.Cookies.Append(ApplicationConstsants.RefreshToken, refreshToken, new CookieOptions()
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(-1)
+            });
+        }
+
         private ClaimsPrincipal? ValidateRefreshToken(string token)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["RefreshToken:Key"]!));
