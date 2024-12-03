@@ -21,5 +21,7 @@ namespace PFMS.BLL.Interfaces
         public Task<UserBo> GetUserProfile(Guid userId);
 
         public Task<string> RefreshAccessToken();
+
+        public void Logout();
     }
 }
