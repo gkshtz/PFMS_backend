@@ -6,6 +6,7 @@ using PFMS.API.Models;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.BLL.Services;
+using PFMS.Utils.Constants;
 using PFMS.Utils.Enums;
 
 namespace PFMS.API.Controllers
@@ -98,12 +99,12 @@ namespace PFMS.API.Controllers
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
 
-            Response.Cookies.Append("refresh-token", refreshToken, new CookieOptions()
+            Response.Cookies.Append(ApplicationConstsants.RefreshToken, refreshToken, new CookieOptions()
             {
                 HttpOnly = true,
                 SameSite = SameSiteMode.Strict,
-                Path = "/refresh",
-                Expires = DateTime.UtcNow.AddHours(1)
+                Path = "/api/users/refreshed-access-token",
+                Expires = DateTime.UtcNow.AddHours(12)
             });
 
 
@@ -155,6 +156,14 @@ namespace PFMS.API.Controllers
             };
 
             return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            _userService.Logout();
+            return Ok();
         }
     }
 }
