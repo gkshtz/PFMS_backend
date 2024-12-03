@@ -256,5 +256,39 @@ namespace PFMS.API.Tests.Controllers
             Assert.True(successResponse.ResponseData);
             Assert.Equal(ResponseMessage.Success.ToString(), successResponse.ResponseMessage);
         }
+
+        [Fact]
+        public async void Update_Password_Updates_Successfully_Test()
+        {
+            //Arrange
+            Mock<IUserService> userService = new Mock<IUserService>();
+            Mock<IMapper> mapper = new Mock<IMapper>();
+
+            UserController userController = new UserController(userService.Object, mapper.Object);
+
+            var passwordUpdateModel = new PasswordUpdateRequestModel()
+            {
+                NewPassword = "testNewPassword",
+                OldPassword = "testOldPassword"
+            };
+
+            userService.Setup(x => x.UpdatePassword(It.IsAny<string>(), It.IsAny<string>(), Guid.NewGuid()));
+
+            //Act
+            var response = await userController.UpdatePassword(passwordUpdateModel);
+
+            //Assert
+            userService.Verify(x => x.UpdatePassword(passwordUpdateModel.OldPassword, passwordUpdateModel.NewPassword, It.IsAny<Guid>()), Times.Once);
+
+            Assert.NotNull(response);
+
+            var okResult = response as OkObjectResult;
+
+            Assert.NotNull(okResult);
+
+            var successResponse = Assert.IsType<GenericSuccessResponse<bool>>(okResult.Value);
+            Assert.Equal(200, successResponse.StatusCode);
+            Assert.True(successResponse.ResponseData);
+        }
     }
 }
