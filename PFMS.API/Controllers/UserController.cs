@@ -8,6 +8,7 @@ using PFMS.BLL.Interfaces;
 using PFMS.BLL.Services;
 using PFMS.Utils.Constants;
 using PFMS.Utils.Enums;
+using PFMS.API.ActionFilters;
 
 namespace PFMS.API.Controllers
 {
@@ -71,6 +72,7 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPost]
+        [AllowedRole("ADMIN")]
         public async Task<IActionResult> AddAsync([FromBody] UserRequestModel userRequestModel)
         {
             var userBo = _mapper.Map<UserBo>(userRequestModel);
