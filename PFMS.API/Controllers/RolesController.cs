@@ -8,6 +8,7 @@ using PFMS.API.Models;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.Utils.Enums;
+using PFMS.API.ActionFilters;
 
 namespace PFMS.API.Controllers
 {
@@ -24,6 +25,7 @@ namespace PFMS.API.Controllers
         }
 
         [HttpGet]
+        [AllowedRole(RoleNames.ADMIN)]
         public async Task<IActionResult> GetAllAsync()
         {
             var roleBos = await _rolesService.GetAllRoles();
@@ -40,6 +42,7 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPost]
+        [AllowedRole(RoleNames.ADMIN)]
         public async Task<IActionResult> PostAsync([FromBody] RoleRequestModel roleModel)
         {
             var roleBo = _mapper.Map<RoleBo>(roleModel);
@@ -55,6 +58,7 @@ namespace PFMS.API.Controllers
 
         [HttpPost]
         [Route("user-roles")]
+        [AllowedRole(RoleNames.ADMIN)]
         public async Task<IActionResult> AddUserRole([FromBody] UserRoleModel userRoleModel)
         {
             var userRoleBo = _mapper.Map<UserRoleBo>(userRoleModel);

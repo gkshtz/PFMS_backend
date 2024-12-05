@@ -4,13 +4,14 @@ using Microsoft.Identity.Client;
 using PFMS.BLL.Interfaces;
 using PFMS.Utils.Constants;
 using PFMS.Utils.CustomExceptions;
+using PFMS.Utils.Enums;
 
 namespace PFMS.API.ActionFilters
 {
     public class AllowedRole: ActionFilterAttribute
     {
-        private readonly string _requiredRole;
-        public AllowedRole(string requiredRole)
+        private readonly RoleNames _requiredRole;
+        public AllowedRole(RoleNames requiredRole)
         {
             _requiredRole = requiredRole;
         }
@@ -33,7 +34,7 @@ namespace PFMS.API.ActionFilters
 
             List<string> roleNames = await _rolesService!.GetRoleNamesAssignedToUser(Guid.Parse(userId));
 
-            if(!roleNames.Contains(_requiredRole))
+            if(!roleNames.Any(role => role.Equals(_requiredRole.ToString(), StringComparison.OrdinalIgnoreCase)))
             {
                 throw new ForbiddenException(ErrorMessages.ActionNotAllowed);
             }
