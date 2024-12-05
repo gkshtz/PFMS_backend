@@ -9,5 +9,7 @@ namespace PFMS.BLL.Interfaces
         public Task AddRole(RoleBo roleBo);
 
         public Task AddUserRole(UserRoleBo userRoleBo);
+
+        public Task<List<string>> GetRoleNamesAssignedToUser(Guid userId);
     }
 }

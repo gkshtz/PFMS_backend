@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PFMS.Utils.Request_Data
+namespace PFMS.Utils.RequestData
 {
     public class Sort
     {

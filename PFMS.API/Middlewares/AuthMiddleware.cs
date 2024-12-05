@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using PFMS.Utils.Constants;
-using PFMS.Utils.Custom_Exceptions;
+using PFMS.Utils.CustomExceptions;
 using PFMS.Utils.Enums;
 
 namespace PFMS.API.Middlewares

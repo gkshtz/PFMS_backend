@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using PFMS.API.Models;
-using PFMS.Utils.Custom_Exceptions;
+using PFMS.Utils.CustomExceptions;
 using PFMS.Utils.Enums;
 
 namespace PFMS.API.Middlewares

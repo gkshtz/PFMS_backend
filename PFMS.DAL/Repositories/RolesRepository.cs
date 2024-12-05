@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;
@@ -40,6 +35,12 @@ namespace PFMS.DAL.Repositories
             var userRole = _mapper.Map<UserRole>(userRoleDto);
             await _appDbContext.UserRoles.AddAsync(userRole);
             await _appDbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<string>> GetRoleNamesAssignedToUser(Guid userId)
+        {
+            var roleNames = await _appDbContext.UserRoles.Include(x => x.Role).Where(x => x.UserId == userId).Select(x => x.Role!.RoleName).ToListAsync();
+            return roleNames;
         }
     }
 }

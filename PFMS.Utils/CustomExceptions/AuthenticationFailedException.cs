@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PFMS.Utils.Enums;
 
-namespace PFMS.Utils.Custom_Exceptions
+namespace PFMS.Utils.CustomExceptions
 {
     public class AuthenticationFailedException: CustomException
     {

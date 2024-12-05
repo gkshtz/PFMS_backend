@@ -1,4 +1,4 @@
-﻿namespace PFMS.Utils.Request_Data
+﻿namespace PFMS.Utils.RequestData
 {
     public class Pagination
     {

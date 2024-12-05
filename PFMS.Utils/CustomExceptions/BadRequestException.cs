@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using PFMS.Utils.Enums;
 
-namespace PFMS.Utils.Custom_Exceptions
+namespace PFMS.Utils.CustomExceptions
 {
     public class BadRequestException: CustomException
     {

@@ -16,5 +16,6 @@
         public const string RefreshTokenIsNotPresnt = "Refresh Token is not present in the cookies";
         public const string InvalidRefreshToken = "Refresh Token is invalid";
         public const string UserIdNotPresentInRefreshToken = "User ID is not present in the refresh token claims";
+        public const string ActionNotAllowed = "User does not has permission";
     }
 }
