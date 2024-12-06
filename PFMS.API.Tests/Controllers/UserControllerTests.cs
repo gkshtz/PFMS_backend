@@ -290,5 +290,33 @@ namespace PFMS.API.Tests.Controllers
             Assert.Equal(200, successResponse.StatusCode);
             Assert.True(successResponse.ResponseData);
         }
+
+        [Fact]
+        public async void Refresh_Access_Token_Refreshes_Successfully_Test()
+        {
+            //Arrange
+            Mock<IUserService> userService = new Mock<IUserService>();
+            Mock<IMapper> mapper = new Mock<IMapper>();
+
+            UserController userController = new UserController(userService.Object, mapper.Object);
+
+            string testRefreshAccessToken = "Test Refresh Access Token";
+
+            userService.Setup(x => x.RefreshAccessToken()).ReturnsAsync(testRefreshAccessToken);
+
+            //Act
+            var response = await userController.GetRefreshedAccessToken();
+
+            //Assert
+            Assert.NotNull(response);
+            var okResult = response as OkObjectResult;
+
+            Assert.NotNull(okResult);
+
+            var successResponse = Assert.IsType<GenericSuccessResponse<string>>(okResult.Value);
+
+            Assert.Equal(200, successResponse.StatusCode);
+            Assert.Equal(testRefreshAccessToken, successResponse.ResponseData);
+        }
     }
 }
