@@ -8,6 +8,7 @@ using PFMS.BLL.Interfaces;
 using PFMS.BLL.Services;
 using PFMS.Utils.Constants;
 using PFMS.Utils.Enums;
+using PFMS.API.ActionFilters;
 
 namespace PFMS.API.Controllers
 {
@@ -26,6 +27,7 @@ namespace PFMS.API.Controllers
 
         [HttpGet]
         [Route("list")]
+        [AllowedRole(RoleNames.ADMIN)]
         public async Task<IActionResult> GetAllAsync()
         {
             var userBos = await _userService.GetAllUsers();
@@ -41,6 +43,7 @@ namespace PFMS.API.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
+        [AllowedRole(RoleNames.ADMIN)]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var userBo = await _userService.GetUserProfile(id);
@@ -71,6 +74,7 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPost]
+        [AllowedRole(RoleNames.ADMIN)]
         public async Task<IActionResult> AddAsync([FromBody] UserRequestModel userRequestModel)
         {
             var userBo = _mapper.Map<UserBo>(userRequestModel);

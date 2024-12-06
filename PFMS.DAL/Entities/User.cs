@@ -21,7 +21,7 @@ namespace PFMS.DAL.Entities
         public string LastName { get; set; }
 
         [Column("age")]
-        public int? Age { get; set; }
+        public int Age { get; set; }
 
         [Column("email")]
         public string Email { get; set; }

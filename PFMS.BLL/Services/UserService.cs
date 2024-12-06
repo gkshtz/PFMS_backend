@@ -1,12 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
-using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PFMS.BLL.BOs;
@@ -14,7 +11,7 @@ using PFMS.BLL.Interfaces;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Interfaces;
 using PFMS.Utils.Constants;
-using PFMS.Utils.Custom_Exceptions;
+using PFMS.Utils.CustomExceptions;
 
 namespace PFMS.BLL.Services
 {

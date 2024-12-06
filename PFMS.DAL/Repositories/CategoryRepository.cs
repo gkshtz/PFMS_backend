@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Xml.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;

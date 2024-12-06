@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.Identity.Client;
+﻿using AutoMapper;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Interfaces;
 using PFMS.Utils.Constants;
-using PFMS.Utils.Custom_Exceptions;
+using PFMS.Utils.CustomExceptions;
 using PFMS.Utils.Enums;
 
 namespace PFMS.BLL.Services

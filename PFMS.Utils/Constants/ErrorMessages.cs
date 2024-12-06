@@ -16,5 +16,12 @@
         public const string RefreshTokenIsNotPresnt = "Refresh Token is not present in the cookies";
         public const string InvalidRefreshToken = "Refresh Token is invalid";
         public const string UserIdNotPresentInRefreshToken = "User ID is not present in the refresh token claims";
+        public const string ActionNotAllowed = "User does not has permission";
+        public const string FieldMustContainsAlphabeticCharacters = "The field must contain only alphabetic characters";
+        public const string OutOfAgeRange = "Age must be greater than 15 and less than or equal to 100";
+        public const string ShortPassword = "Password length cannot be lesser than 8";
+        public const string LongTransactionNameLength = "Length of transaction name must not exceed 100";
+        public const string LongTransactionDescriptionLength = "Length of description name must not exceed 100";
+        public const string InvalidTransactionType = "Invalid transaction type";
     }
 }
