@@ -3,11 +3,11 @@ using PFMS.DAL.Entities;
 
 namespace PFMS.DAL.Data
 {
-    public class AppDbContext: DbContext
+    public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options): base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            
+
         }
         public DbSet<User> Users { get; set; }
         public DbSet<TransactionCategory> TransactionCategories { get; set; }
@@ -17,6 +17,7 @@ namespace PFMS.DAL.Data
         public DbSet<CategoryToUser> CategoryToUser { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<OneTimePassword> OneTimePasswords { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

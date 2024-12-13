@@ -169,5 +169,28 @@ namespace PFMS.API.Controllers
             _userService.Logout();
             return Ok();
         }
+
+        [HttpPost]
+        [Route("otp")]
+        public async Task<IActionResult> SendOtpAsync([FromBody] SendOtpRequest otpRequest)
+        {
+            var uniqueDeviceId = await _userService.GenerateAndSendOtp(otpRequest.EmailAddress);
+            Response.Cookies.Append(ApplicationConstsants.UniqueDeviceId, uniqueDeviceId.ToString(), new CookieOptions()
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Path = "/api/users/new-password",
+                Expires = DateTime.UtcNow.AddMinutes(7)
+            });
+
+            GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = 200,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
+            return Ok(response);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
@@ -22,15 +23,19 @@ namespace PFMS.BLL.Services
         private readonly IPasswordHasher<UserBo> _passwordHasher;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IOneTimePasswordsRespository _otpRepository;
+        private readonly IEmailService _emailService;
 
         public UserService(IUserRepository userRepository, IMapper mapper, IPasswordHasher<UserBo> passwordHasher,
-            IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+            IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IOneTimePasswordsRespository otpRepository, IEmailService emailService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+            _emailService = emailService;
+            _otpRepository = otpRepository;
         }
 
         public async Task<List<UserBo>> GetAllUsers()
@@ -186,6 +191,42 @@ namespace PFMS.BLL.Services
                 HttpOnly = true,
                 Expires = DateTime.UtcNow.AddDays(-1)
             });
+        }
+
+        public async Task<Guid> GenerateAndSendOtp(string email)
+        {
+            var userDto = await _userRepository.FindUserByEmail(email);
+
+            if(userDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
+            var userBo = _mapper.Map<UserBo>(userDto);
+
+            var otp = new Random().Next(100000, 999999).ToString();
+
+            var deviceId = Guid.NewGuid();
+
+            var otpBo = new OneTimePasswordBo()
+            {
+                OtpId = Guid.NewGuid(),
+                Otp = otp,
+                UserId = userBo.UserId,
+                Expires = DateTime.UtcNow.AddMinutes(7),
+                UniqueDeviceId = deviceId
+            };
+
+            var otpDto = _mapper.Map<OneTimePasswordDto>(otpBo);
+
+            await _otpRepository.AddOtp(otpDto);
+
+            string emailSubject = ApplicationConstsants.OtpEmailSubject;
+            string emailBody = ApplicationConstsants.GenerateOtpEmailBody(otp, userBo.FirstName, 7);
+
+            await _emailService.SendEmail(email, emailSubject, emailBody);
+
+            return deviceId;
         }
 
         private ClaimsPrincipal? ValidateRefreshToken(string token)
