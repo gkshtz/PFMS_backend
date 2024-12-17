@@ -54,6 +54,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
+builder.Services.AddScoped<IOneTimePasswordsRespository, OneTimePasswordsRepository>();
 
 builder.Services.AddScoped<ITotalTransactionAmountRespository, TotalTransactionAmountRepository>();
 
@@ -76,6 +77,9 @@ builder.Services.AddAutoMapper(typeof(TransactionCategoryDALMapper));
 builder.Services.AddAutoMapper(typeof(RoleMapper));
 builder.Services.AddAutoMapper(typeof(RoleBLLMapper));
 builder.Services.AddAutoMapper(typeof(RoleDALMapper));
+
+builder.Services.AddAutoMapper(typeof(OneTimePasswordBLLMapper));
+builder.Services.AddAutoMapper(typeof(OneTimePasswordDALMapper));
 
 
 builder.Services.AddScoped<IPasswordHasher<UserBo>, PasswordHasher<UserBo>>();
