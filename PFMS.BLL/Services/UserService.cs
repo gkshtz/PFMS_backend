@@ -213,6 +213,7 @@ namespace PFMS.BLL.Services
                 OtpId = Guid.NewGuid(),
                 Otp = otp,
                 UserId = userBo.UserId,
+                IsVerified = false,
                 Expires = DateTime.UtcNow.AddMinutes(7),
                 UniqueDeviceId = deviceId
             };

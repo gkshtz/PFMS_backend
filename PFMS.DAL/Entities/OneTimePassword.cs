@@ -22,6 +22,9 @@ namespace PFMS.DAL.Entities
         [Column("uniqueDeviceId")]
         public Guid UniqueDeviceId { get; set; }
 
+        [Column("isVerified")]
+        public bool IsVerified { get; set; }
+
         #region Navigation Properties
         public User? User { get; set; }
         #endregion
