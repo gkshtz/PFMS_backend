@@ -11,7 +11,8 @@ namespace PFMS.Utils.Constants
             "/api/users/login",
             "/api/users/refreshed-access-token",
             "/api/users/logout",
-            "/api/users/otp"
+            "/api/users/otp/send",
+            "/api/users/otp/verify"
         };
 
         public const string RefreshToken = "refresh-token";

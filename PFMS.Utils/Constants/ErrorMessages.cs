@@ -1,4 +1,6 @@
-﻿namespace PFMS.Utils.Constants
+﻿using System.Diagnostics.Contracts;
+
+namespace PFMS.Utils.Constants
 {
     public static class ErrorMessages
     {
@@ -23,5 +25,12 @@
         public const string LongTransactionNameLength = "Length of transaction name must not exceed 100";
         public const string LongTransactionDescriptionLength = "Length of description name must not exceed 100";
         public const string InvalidTransactionType = "Invalid transaction type";
+        public const string OtpShouldContainDigits = "One Time Password can only contain digits";
+        public const string OtpLengthShouldBeSix = "Length of One Time Password should be six only";
+        public const string OtpDoesNotFound = "Otp does not exist";
+        public const string UniqueDeviceIdNotMatch = "Cannot verify otp with this device.";
+        public const string UniqueDeviceIdNotPresentInCookies = "Unique Device Id is not present in the cookies";
+        public const string UserNotAllowedToResetPassword = "User cannot reset other user's password.";
+        public const string OtpIsExpired = "OTP is Expired.";
     }
 }

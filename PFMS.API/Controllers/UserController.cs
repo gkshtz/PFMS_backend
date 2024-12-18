@@ -18,10 +18,12 @@ namespace PFMS.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly IOneTimePasswordsService _otpService;
 
-        public UserController(IUserService userService, IMapper mapper)
+        public UserController(IUserService userService, IMapper mapper, IOneTimePasswordsService otpService)
         {
             _userService = userService;
+            _otpService = otpService;
             _mapper = mapper;
         }
 
@@ -171,7 +173,7 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPost]
-        [Route("otp")]
+        [Route("otp/send")]
         public async Task<IActionResult> SendOtpAsync([FromBody] SendOtpRequest otpRequest)
         {
             var uniqueDeviceId = await _userService.GenerateAndSendOtp(otpRequest.EmailAddress);
@@ -184,6 +186,21 @@ namespace PFMS.API.Controllers
             });
 
             GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = 200,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
+            return Ok(response);
+        }
+
+        [HttpPatch]
+        [Route("otp/verify")]
+        public async Task<IActionResult> VerifyOtpAsync([FromBody] VerifyOtpRequestModel verifyOtpModel)
+        {
+            await _otpService.VerifyOtp(verifyOtpModel.Otp, verifyOtpModel.EmailAddress);
+            var response = new GenericSuccessResponse<bool>()
             {
                 StatusCode = 200,
                 ResponseData = true,

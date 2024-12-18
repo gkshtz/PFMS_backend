@@ -13,7 +13,7 @@ namespace PFMS.BLL.Mappers
     {
         public OneTimePasswordBLLMapper()
         {
-            CreateMap<OneTimePasswordBo, OneTimePasswordDto>();
+            CreateMap<OneTimePasswordBo, OneTimePasswordDto>().ReverseMap();
         }
     }
 }
