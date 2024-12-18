@@ -13,7 +13,7 @@ namespace PFMS.DAL.Mapper
     {
         public OneTimePasswordDALMapper()
         {
-            CreateMap<OneTimePasswordDto, OneTimePassword>();
+            CreateMap<OneTimePasswordDto, OneTimePassword>().ReverseMap();
         }
     }
 }
