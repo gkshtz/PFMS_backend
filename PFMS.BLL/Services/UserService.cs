@@ -189,6 +189,8 @@ namespace PFMS.BLL.Services
             context.Response.Cookies.Append(ApplicationConstsants.RefreshToken, refreshToken, new CookieOptions()
             {
                 HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Path = "/api/users/refresh-token",
                 Expires = DateTime.UtcNow.AddDays(-1)
             });
         }

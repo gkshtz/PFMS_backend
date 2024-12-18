@@ -109,7 +109,7 @@ namespace PFMS.API.Controllers
             {
                 HttpOnly = true,
                 SameSite = SameSiteMode.Strict,
-                Path = "/api/users/refreshed-access-token",
+                Path = "/api/users/refresh-token",
                 Expires = DateTime.UtcNow.AddHours(12)
             });
 
@@ -150,7 +150,7 @@ namespace PFMS.API.Controllers
         }
 
         [HttpGet]
-        [Route("refreshed-access-token")]
+        [Route("refresh-token/refresh")]
         public async Task<IActionResult> GetRefreshedAccessToken()
         {
             var newAccessToken = await _userService.RefreshAccessToken();
@@ -165,11 +165,17 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPost]
-        [Route("logout")]
+        [Route("refresh-token/logout")]
         public async Task<IActionResult> Logout()
         {
             _userService.Logout();
-            return Ok();
+            var response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = 200,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
         }
 
         [HttpPost]
