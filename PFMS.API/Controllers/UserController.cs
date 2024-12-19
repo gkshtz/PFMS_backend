@@ -187,7 +187,7 @@ namespace PFMS.API.Controllers
             {
                 HttpOnly = true,
                 SameSite = SameSiteMode.Strict,
-                Path = "/api/users/new-password",
+                Path = "/api/users/otp",
                 Expires = DateTime.UtcNow.AddMinutes(7)
             });
 
@@ -213,6 +213,20 @@ namespace PFMS.API.Controllers
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
 
+            return Ok(response);
+        }
+
+        [HttpPatch]
+        [Route("otp/reset-password")]
+        public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordRequestModel resetPasswordModel)
+        {
+            await _otpService.ResetPassword(resetPasswordModel.NewPassword);
+            var response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
             return Ok(response);
         }
     }

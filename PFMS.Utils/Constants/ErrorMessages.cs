@@ -32,5 +32,6 @@ namespace PFMS.Utils.Constants
         public const string UniqueDeviceIdNotPresentInCookies = "Unique Device Id is not present in the cookies";
         public const string UserNotAllowedToResetPassword = "User cannot reset other user's password.";
         public const string OtpIsExpired = "OTP is Expired.";
+        public const string OtpNotVerified = "OTP is not verified yet.";
     }
 }
