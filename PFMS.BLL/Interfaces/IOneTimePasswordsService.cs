@@ -9,5 +9,7 @@ namespace PFMS.BLL.Interfaces
     public interface IOneTimePasswordsService
     {
         public Task VerifyOtp(string otp, string email);
+
+        public Task ResetPassword(string password);
     }
 }
