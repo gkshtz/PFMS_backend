@@ -45,7 +45,7 @@ namespace PFMS.DAL.Repositories
 
         public async Task<OneTimePasswordDto> FetchByUniqueDeviceId(Guid uniqueDeviceId)
         {
-            var oneTimePassword = await _appDbContext.OneTimePasswords.FirstOrDefaultAsync(x => x.UniqueDeviceId == uniqueDeviceId);
+            var oneTimePassword = await _appDbContext.OneTimePasswords.AsNoTracking().FirstOrDefaultAsync(x => x.UniqueDeviceId == uniqueDeviceId);
             var otpDto = _mapper.Map<OneTimePasswordDto>(oneTimePassword);
             return otpDto;
         }

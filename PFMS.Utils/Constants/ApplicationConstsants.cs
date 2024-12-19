@@ -13,7 +13,7 @@ namespace PFMS.Utils.Constants
             "/api/users/logout",
             "/api/users/otp/send",
             "/api/users/otp/verify",
-            "api/users/otp/reset-password"
+            "/api/users/otp/reset-password"
         };
 
         public const string RefreshToken = "refresh-token";
