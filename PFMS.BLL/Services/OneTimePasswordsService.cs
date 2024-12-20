@@ -24,13 +24,52 @@ namespace PFMS.BLL.Services
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IPasswordHasher<UserBo> _passwordHasher;
-        public OneTimePasswordsService(IUserRepository userRepository, IMapper mapper, IOneTimePasswordsRespository otpRepository, IHttpContextAccessor httpContextAccessor, IPasswordHasher<UserBo> passwordHasher)
+        private readonly IEmailService _emailService;
+        public OneTimePasswordsService(IUserRepository userRepository, IMapper mapper, IOneTimePasswordsRespository otpRepository, IHttpContextAccessor httpContextAccessor, IPasswordHasher<UserBo> passwordHasher, IEmailService emailService)
         {
             _userRepository = userRepository;
             _otpRepository = otpRepository;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
+            _emailService = emailService;
+        }
+
+        public async Task<Guid> GenerateAndSendOtp(string email)
+        {
+            var userDto = await _userRepository.FindUserByEmail(email);
+
+            if (userDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
+            var userBo = _mapper.Map<UserBo>(userDto);
+
+            var otp = new Random().Next(100000, 999999).ToString();
+
+            var deviceId = Guid.NewGuid();
+
+            var otpBo = new OneTimePasswordBo()
+            {
+                OtpId = Guid.NewGuid(),
+                Otp = otp,
+                UserId = userBo.UserId,
+                IsVerified = false,
+                Expires = DateTime.UtcNow.AddMinutes(7),
+                UniqueDeviceId = deviceId
+            };
+
+            var otpDto = _mapper.Map<OneTimePasswordDto>(otpBo);
+
+            await _otpRepository.AddOtp(otpDto);
+
+            string emailSubject = ApplicationConstsants.OtpEmailSubject;
+            string emailBody = ApplicationConstsants.GenerateOtpEmailBody(otp, userBo.FirstName, 7);
+
+            await _emailService.SendEmail(email, emailSubject, emailBody);
+
+            return deviceId;
         }
 
         public async Task VerifyOtp(string otp, string email)

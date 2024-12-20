@@ -11,5 +11,7 @@ namespace PFMS.BLL.Interfaces
         public Task VerifyOtp(string otp, string email);
 
         public Task ResetPassword(string password);
+
+        public Task<Guid> GenerateAndSendOtp(string email);
     }
 }

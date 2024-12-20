@@ -195,43 +195,6 @@ namespace PFMS.BLL.Services
             });
         }
 
-        public async Task<Guid> GenerateAndSendOtp(string email)
-        {
-            var userDto = await _userRepository.FindUserByEmail(email);
-
-            if(userDto == null)
-            {
-                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
-            }
-
-            var userBo = _mapper.Map<UserBo>(userDto);
-
-            var otp = new Random().Next(100000, 999999).ToString();
-
-            var deviceId = Guid.NewGuid();
-
-            var otpBo = new OneTimePasswordBo()
-            {
-                OtpId = Guid.NewGuid(),
-                Otp = otp,
-                UserId = userBo.UserId,
-                IsVerified = false,
-                Expires = DateTime.UtcNow.AddMinutes(7),
-                UniqueDeviceId = deviceId
-            };
-
-            var otpDto = _mapper.Map<OneTimePasswordDto>(otpBo);
-
-            await _otpRepository.AddOtp(otpDto);
-
-            string emailSubject = ApplicationConstsants.OtpEmailSubject;
-            string emailBody = ApplicationConstsants.GenerateOtpEmailBody(otp, userBo.FirstName, 7);
-
-            await _emailService.SendEmail(email, emailSubject, emailBody);
-
-            return deviceId;
-        }
-
         private ClaimsPrincipal? ValidateRefreshToken(string token)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["RefreshToken:Key"]!));

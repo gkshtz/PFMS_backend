@@ -23,6 +23,5 @@ namespace PFMS.BLL.Interfaces
         public Task<string> RefreshAccessToken();
 
         public void Logout();
-        public Task<Guid> GenerateAndSendOtp(string email);
     }
 }
