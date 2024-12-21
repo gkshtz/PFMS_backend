@@ -20,9 +20,10 @@ namespace PFMS.API.Tests.Controllers
         {
             // Arrange
             Mock<IUserService> userService = new Mock<IUserService>();
-            Mock<IMapper> mapper = new Mock<IMapper>(); 
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<IOneTimePasswordsService> otpService = new Mock<IOneTimePasswordsService>();
             
-            UserController userController = new UserController(userService.Object, mapper.Object);
+            UserController userController = new UserController(userService.Object, mapper.Object, otpService.Object);
 
             userService.Setup(x => x.GetAllUsers()).ReturnsAsync(new List<UserBo>());
             mapper.Setup(x => x.Map<List<UserResponseModel>>(It.IsAny<List<UserBo>>())).Returns(new List<UserResponseModel>());
@@ -45,7 +46,9 @@ namespace PFMS.API.Tests.Controllers
             //Arrange
             Mock<IUserService> userService = new Mock<IUserService>();
             Mock<IMapper> mapper = new Mock<IMapper>();
-            UserController userController = new UserController(userService.Object, mapper.Object);
+            Mock<IOneTimePasswordsService> otpService = new Mock<IOneTimePasswordsService>();
+
+            UserController userController = new UserController(userService.Object, mapper.Object, otpService.Object);
 
             userService.Setup(x => x.GetUserProfile(It.IsAny<Guid>())).ReturnsAsync(new UserBo());
             mapper.Setup(x => x.Map<UserResponseModel>(It.IsAny<UserBo>())).Returns(new UserResponseModel());
@@ -68,7 +71,9 @@ namespace PFMS.API.Tests.Controllers
             //Arrange
             Mock<IUserService> userService = new Mock<IUserService>();
             Mock<IMapper> mapper = new Mock<IMapper>();
-            UserController userController = new UserController(userService.Object, mapper.Object);
+            Mock<IOneTimePasswordsService> otpService = new Mock<IOneTimePasswordsService>();
+
+            UserController userController = new UserController(userService.Object, mapper.Object, otpService.Object);
 
             userService.Setup(x => x.GetUserProfile(It.IsAny<Guid>())).ReturnsAsync(new UserBo());
             mapper.Setup(x => x.Map<UserResponseModel>(It.IsAny<UserBo>())).Returns(new UserResponseModel());
@@ -91,8 +96,9 @@ namespace PFMS.API.Tests.Controllers
             //Arrange
             Mock<IUserService> userService = new Mock<IUserService>();
             Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<IOneTimePasswordsService> otpService = new Mock<IOneTimePasswordsService>();
 
-            var userController = new UserController(userService.Object, mapper.Object);
+            UserController userController = new UserController(userService.Object, mapper.Object, otpService.Object);
             var userRequestModel = new UserRequestModel()
             {
                 FirstName = "Test",
@@ -162,8 +168,9 @@ namespace PFMS.API.Tests.Controllers
             Mock<HttpContext> context = new Mock<HttpContext>();
             Mock<HttpResponse> httpResponse = new Mock<HttpResponse>();
             Mock<IResponseCookies> cookies = new Mock<IResponseCookies>();
+            Mock<IOneTimePasswordsService> otpService = new Mock<IOneTimePasswordsService>();
 
-            var userController = new UserController(userService.Object, mapper.Object);
+            UserController userController = new UserController(userService.Object, mapper.Object, otpService.Object);
 
 
             var userCredentialsModel = new UserCredentialsModel()
@@ -218,8 +225,9 @@ namespace PFMS.API.Tests.Controllers
             // Arrange
             Mock<IUserService> userService = new Mock<IUserService>();
             Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<IOneTimePasswordsService> otpService = new Mock<IOneTimePasswordsService>();
 
-            UserController userController = new UserController(userService.Object, mapper.Object);
+            UserController userController = new UserController(userService.Object, mapper.Object, otpService.Object);
 
             var userModel = new UserUpdateRequestModel()
             {
@@ -263,8 +271,9 @@ namespace PFMS.API.Tests.Controllers
             //Arrange
             Mock<IUserService> userService = new Mock<IUserService>();
             Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<IOneTimePasswordsService> otpService = new Mock<IOneTimePasswordsService>();
 
-            UserController userController = new UserController(userService.Object, mapper.Object);
+            UserController userController = new UserController(userService.Object, mapper.Object, otpService.Object);
 
             var passwordUpdateModel = new PasswordUpdateRequestModel()
             {
@@ -297,8 +306,9 @@ namespace PFMS.API.Tests.Controllers
             //Arrange
             Mock<IUserService> userService = new Mock<IUserService>();
             Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<IOneTimePasswordsService> otpService = new Mock<IOneTimePasswordsService>();
 
-            UserController userController = new UserController(userService.Object, mapper.Object);
+            UserController userController = new UserController(userService.Object, mapper.Object, otpService.Object);
 
             string testRefreshAccessToken = "Test Refresh Access Token";
 
@@ -317,6 +327,49 @@ namespace PFMS.API.Tests.Controllers
 
             Assert.Equal(200, successResponse.StatusCode);
             Assert.Equal(testRefreshAccessToken, successResponse.ResponseData);
+        }
+
+        [Fact]
+        public async void Send_Otp_Successfuly_Sent_Test()
+        {
+            //Arrange
+            Mock<IUserService> userService = new Mock<IUserService>();
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<IOneTimePasswordsService> otpService = new Mock<IOneTimePasswordsService>();
+            Mock<HttpContext> httpContext = new Mock<HttpContext>();
+            Mock<HttpResponse> httpResponse = new Mock<HttpResponse>();
+            Mock<IResponseCookies> cookies = new Mock<IResponseCookies>();
+
+            UserController userController = new UserController(userService.Object, mapper.Object, otpService.Object);
+
+            var sendOtpModel = new SendOtpRequestModel()
+            {
+                EmailAddress = "test@gmail.com"
+            };
+            var uniqueDeviceId = Guid.Parse("24d7f0b1-a608-4de2-a6a8-efe49622a4d8");
+
+            otpService.Setup(x => x.GenerateAndSendOtp(It.IsAny<string>())).ReturnsAsync(uniqueDeviceId);
+
+            httpContext.Setup(x => x.Response).Returns(httpResponse.Object);
+            httpResponse.Setup(x=>x.Cookies).Returns(cookies.Object);
+
+            userController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext.Object
+            };
+
+            //Act
+            var response = await userController.SendOtpAsync(sendOtpModel);
+
+            //Assert
+            Assert.NotNull(response);
+
+            var okResult = response as OkObjectResult;
+            Assert.NotNull(okResult);
+
+            var successResponse = Assert.IsType<GenericSuccessResponse<bool>>(okResult.Value);
+            Assert.True(successResponse.ResponseData);
+            Assert.Equal(200, successResponse.StatusCode);
         }
     }
 }
