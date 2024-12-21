@@ -2,7 +2,7 @@
 
 namespace PFMS.API.Models
 {
-    public class SendOtpRequest
+    public class SendOtpRequestModel
     {
         [Required]
         [EmailAddress]

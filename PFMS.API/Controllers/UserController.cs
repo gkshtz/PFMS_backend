@@ -180,7 +180,7 @@ namespace PFMS.API.Controllers
 
         [HttpPost]
         [Route("otp/send")]
-        public async Task<IActionResult> SendOtpAsync([FromBody] SendOtpRequest otpRequest)
+        public async Task<IActionResult> SendOtpAsync([FromBody] SendOtpRequestModel otpRequest)
         {
             var uniqueDeviceId = await _otpService.GenerateAndSendOtp(otpRequest.EmailAddress);
             Response.Cookies.Append(ApplicationConstsants.UniqueDeviceId, uniqueDeviceId.ToString(), new CookieOptions()
