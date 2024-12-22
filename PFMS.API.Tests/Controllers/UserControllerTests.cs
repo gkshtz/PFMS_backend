@@ -371,5 +371,68 @@ namespace PFMS.API.Tests.Controllers
             Assert.True(successResponse.ResponseData);
             Assert.Equal(200, successResponse.StatusCode);
         }
+
+        [Fact]
+        public async void Verify_OTP_Successfuly_Verified()
+        {
+            //Arrange
+            Mock<IUserService> userService = new Mock<IUserService>();
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<IOneTimePasswordsService> otpService = new Mock<IOneTimePasswordsService>();
+            var userController = new UserController(userService.Object, mapper.Object, otpService.Object);
+
+            otpService.Setup(x => x.VerifyOtp(It.IsAny<string>(), It.IsAny<string>()));
+
+            var verifyOtpModel = new VerifyOtpRequestModel()
+            {
+                EmailAddress = "test@gmail.com",
+                Otp = "123456"
+            };
+
+            //Act
+            var response = await userController.VerifyOtpAsync(verifyOtpModel);
+
+            //Assert
+            Assert.NotNull(response);
+
+            var okResult = response as OkObjectResult;
+            Assert.NotNull(okResult);
+
+            var successResponse = Assert.IsType<GenericSuccessResponse<bool>>(okResult.Value);
+
+            Assert.True(successResponse.ResponseData);
+            Assert.Equal(200, successResponse.StatusCode);
+            Assert.Equal(ResponseMessage.Success.ToString(), successResponse.ResponseMessage);
+        }
+
+        [Fact]
+        public async void Reset_Password_Successfull_Reset()
+        {
+            //Arrange
+            Mock<IUserService> userService = new Mock<IUserService>();
+            Mock<IMapper> mapper = new Mock<IMapper>();
+            Mock<IOneTimePasswordsService> otpService = new Mock<IOneTimePasswordsService>();
+            var userController = new UserController(userService.Object, mapper.Object, otpService.Object);
+
+            var resetPasswordModel = new ResetPasswordRequestModel()
+            {
+                NewPassword = "testPassword"
+            };
+            
+            //Act
+            var response = await userController.ResetPasswordAsync(resetPasswordModel);
+
+            //Assert
+            Assert.NotNull(response);
+
+            var okResult = response as OkObjectResult;
+            Assert.NotNull(okResult);
+
+            var successResponse = Assert.IsType<GenericSuccessResponse<bool>>(okResult.Value);
+
+            Assert.True(successResponse.ResponseData);
+            Assert.Equal(200, successResponse.StatusCode);
+            Assert.Equal(ResponseMessage.Success.ToString(), successResponse.ResponseMessage);
+        }
     }
 }
