@@ -18,6 +18,7 @@ namespace PFMS.DAL.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<OneTimePassword> OneTimePasswords { get; set; }
+        public DbSet<Budget> Budgets { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
