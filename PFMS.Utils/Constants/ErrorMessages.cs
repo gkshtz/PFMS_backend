@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.Contracts;
+using System.Runtime.CompilerServices;
 
 namespace PFMS.Utils.Constants
 {
@@ -33,5 +34,8 @@ namespace PFMS.Utils.Constants
         public const string UserNotAllowedToResetPassword = "User cannot reset other user's password.";
         public const string OtpIsExpired = "OTP is Expired.";
         public const string OtpNotVerified = "OTP is not verified yet.";
+        public const string InvalidMonth = "Month is invalid.";
+        public const string InvalidYear = "Year is invalid.";
+        public const string BudgetAmountRageExceeded = "Budget amount is out of range.";
     }
 }
