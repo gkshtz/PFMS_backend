@@ -5,9 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace PFMS.DAL.Entities
 {
+    [Index(nameof(Month), nameof(Year), IsUnique = true)]
     public class Budget
     {
         [Key]
