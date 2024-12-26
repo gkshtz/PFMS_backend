@@ -13,7 +13,7 @@ namespace PFMS.BLL.Mappers
     {
         public BudgetBLLMapper()
         {
-            CreateMap<BudgetBo, BudgetDto>();
+            CreateMap<BudgetBo, BudgetDto>().ReverseMap();
         }
     }
 }

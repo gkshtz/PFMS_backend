@@ -13,5 +13,7 @@ namespace PFMS.DAL.Interfaces
         public Task<bool> UpdateTotalTransactionAmount(TotalTransactionAmountDto totalTransactionAmountDto);
 
         public Task<TotalMonthlyAmountDto> AddTotalMonthlyAmount(TotalMonthlyAmountDto totalMonthlyAmountDto);
+
+        public Task<TotalMonthlyAmountDto?> GetTotalMonthlyAmountOfParticularMonthAndYear(Guid totalTransactionAmountId, int month, int year);
     }
 }
