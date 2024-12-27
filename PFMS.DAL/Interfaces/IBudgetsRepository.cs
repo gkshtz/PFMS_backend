@@ -10,5 +10,6 @@ namespace PFMS.DAL.Interfaces
     public interface IBudgetsRepository
     {
         public Task AddBudget(BudgetDto budgetDto);
+        public Task<BudgetDto?> GetBudgetByUserId(Guid userId, int month, int year);
     }
 }

@@ -9,6 +9,7 @@ namespace PFMS.API.Mappers
         public BudgetMapper()
         {
             CreateMap<BudgetRequestModel, BudgetBo>();
+            CreateMap<BudgetBo, BudgetResponseModel>();
         }
     }
 }

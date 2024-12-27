@@ -37,5 +37,11 @@ namespace PFMS.DAL.Repositories
             await _appDbContext.SaveChangesAsync();
             return _mapper.Map<TotalMonthlyAmountDto>(totalMonthlyAmount);
         }
+
+        public async Task<TotalMonthlyAmountDto?> GetTotalMonthlyAmountOfParticularMonthAndYear(Guid totalTransactionAmountId, int month, int year)
+        {
+            var totalMonthlyAmount = await _appDbContext.TotalMonthlyAmounts.FirstOrDefaultAsync(x => x.TotalTransactionAmountId == totalTransactionAmountId && x.Month == month && x.Year == year);
+            return _mapper.Map<TotalMonthlyAmountDto?>(totalMonthlyAmount);
+        }
     }
 }

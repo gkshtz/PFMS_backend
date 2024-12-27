@@ -12,6 +12,7 @@ namespace PFMS.BLL.BOs
         public decimal BudgetAmount { get; set; }
         public int Month { get; set; }
         public int Year { get; set; }
+        public decimal SpentPercentage { get; set; }
         public Guid UserId { get; set; }
     }
 }

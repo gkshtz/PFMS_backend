@@ -35,5 +35,20 @@ namespace PFMS.API.Controllers
             };
             return Ok(response);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBudgetAsync([FromQuery] int month, [FromQuery] int year)
+        {
+            var budgetBo = await _budgetService.GetBudget(UserId, month, year);
+            var budgetModel = _mapper.Map<BudgetResponseModel>(budgetBo);
+
+            var response = new GenericSuccessResponse<BudgetResponseModel>()
+            {
+                StatusCode = 200,
+                ResponseData = budgetModel,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
+        }
     }
 }

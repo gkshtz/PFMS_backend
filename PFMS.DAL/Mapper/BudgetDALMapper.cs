@@ -13,7 +13,7 @@ namespace PFMS.DAL.Mapper
     {
         public BudgetDALMapper()
         {
-            CreateMap<BudgetDto, Budget>();
+            CreateMap<BudgetDto, Budget>().ReverseMap();
         }
     }
 }

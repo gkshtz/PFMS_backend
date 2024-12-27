@@ -37,5 +37,8 @@ namespace PFMS.Utils.Constants
         public const string InvalidMonth = "Month is invalid.";
         public const string InvalidYear = "Year is invalid.";
         public const string BudgetAmountRageExceeded = "Budget amount is out of range.";
+        public const string InvalidMonthOrYear = "Invalid month or year.";
+        public const string BudgetNotFound = "Budget Not Found.";
+        public const string BudgetMonthCannotBeOfFuture = "Budget month cannot be of future.";
     }
 }
