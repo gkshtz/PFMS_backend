@@ -7,7 +7,7 @@ namespace PFMS.BLL.Interfaces
     {
         public Task<List<TransactionBo>> GetAllTransactionsAsync(Guid userId, Filter? filter, Sort? sort, Pagination pagination);
 
-        public Task<TransactionBo> AddTransaction(TransactionBo transactionBo, Guid userId);
+        public Task<Guid> AddTransaction(TransactionBo transactionBo, Guid userId);
 
         public Task<TransactionBo> GetByTransactionId(Guid transactionId, Guid userId);
 

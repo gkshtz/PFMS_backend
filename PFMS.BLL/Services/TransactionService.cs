@@ -25,7 +25,7 @@ namespace PFMS.BLL.Services
             List<TransactionDto> transactionsDto = await _transactionRepository.GetAllTransactionsAsync(userId, filter, sort, pagination);
             return _mapper.Map<List<TransactionBo>>(transactionsDto);
         }
-        public async Task<TransactionBo> AddTransaction(TransactionBo transactionBo, Guid userId)
+        public async Task<Guid> AddTransaction(TransactionBo transactionBo, Guid userId)
         {
             var totalTransactionAmountDto = await _transactionRepository.GetTotalTransactionAmountByUserId(userId);
 
@@ -33,6 +33,11 @@ namespace PFMS.BLL.Services
 
             int currentMonth = DateTime.UtcNow.Month;
             int currentYear = DateTime.UtcNow.Year;
+
+            if(transactionBo.TransactionDate.Month!=currentMonth || transactionBo.TransactionDate.Year!=currentYear)
+            {
+                throw new BadRequestException(ErrorMessages.TransactionCanOnlyBeSetOfPresentMonth);
+            }
 
             if (totalTransactionAmountBo.LastTransactionDate.Month < currentMonth || totalTransactionAmountBo.LastTransactionDate.Year < currentYear)
             {
@@ -62,7 +67,9 @@ namespace PFMS.BLL.Services
                 totalTransactionAmountBo.TotalExpence += transactionBo.TransactionAmount;
             }
 
-            totalTransactionAmountBo.LastTransactionDate = transactionBo.TransactionDate;
+            var lastTransactionDate = (await _transactionRepository.GetTransactionWithLatestDate(totalTransactionAmountBo.TotalTransactionAmountId)).TransactionDate;
+
+            totalTransactionAmountBo.LastTransactionDate = lastTransactionDate;
 
             await _totalTransactionAmountRepository.UpdateTotalTransactionAmount(_mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo));
 
@@ -70,9 +77,9 @@ namespace PFMS.BLL.Services
             transactionBo.TransactionId = Guid.NewGuid();
 
             var transactionDto = _mapper.Map<TransactionDto>(transactionBo);
-            transactionDto = await _transactionRepository.AddTransaction(transactionDto);
+            await _transactionRepository.AddTransaction(transactionDto);
 
-            return _mapper.Map<TransactionBo>(transactionDto);
+            return transactionBo.TransactionId;
         }
 
         public async Task<TransactionBo> GetByTransactionId(Guid transactionId, Guid userId)

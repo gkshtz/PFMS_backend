@@ -40,5 +40,6 @@ namespace PFMS.Utils.Constants
         public const string InvalidMonthOrYear = "Invalid month or year.";
         public const string BudgetNotFound = "Budget Not Found.";
         public const string BudgetMonthCannotBeOfFuture = "Budget month cannot be of future.";
+        public const string TransactionCanOnlyBeSetOfPresentMonth = "Transaction can only be set for present month.";
     }
 }

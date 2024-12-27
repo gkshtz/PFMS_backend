@@ -58,18 +58,15 @@ namespace PFMS.API.Controllers
         public async Task<IActionResult> PostAsync([FromBody] TransactionRequestModel transactionRequest)        
         {
             var transactionBo = _mapper.Map<TransactionBo>(transactionRequest);
-            transactionBo = await _transactionService.AddTransaction(transactionBo, UserId);
-
-            var transactionResponse = _mapper.Map<TransactionResponseModel>(transactionBo);
-
-            GenericSuccessResponse<TransactionResponseModel> response = new GenericSuccessResponse<TransactionResponseModel>()
+            var transactionId = await _transactionService.AddTransaction(transactionBo, UserId);
+            GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
             {
                 StatusCode = 200,
-                ResponseData = transactionResponse,
+                ResponseData = true,
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
 
-            return CreatedAtAction(nameof(GetById), new { id = transactionResponse.TransactionId}, response);
+            return CreatedAtAction(nameof(GetById), new { id = transactionId}, response);
         }
 
 
