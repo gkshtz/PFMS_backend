@@ -5,6 +5,7 @@ using PFMS.DAL.DTOs;
 using PFMS.DAL.Interfaces;
 using PFMS.Utils.Constants;
 using PFMS.Utils.CustomExceptions;
+using PFMS.Utils.Enums;
 using PFMS.Utils.RequestData;
 
 namespace PFMS.BLL.Services
@@ -14,11 +15,17 @@ namespace PFMS.BLL.Services
         private readonly ITotalTransactionAmountRespository _totalTransactionAmountRepository;
         private readonly ITransactionRepository _transactionRepository;
         private readonly IMapper _mapper;
-        public TransactionService(ITransactionRepository transactionRepository, IMapper mapper, ITotalTransactionAmountRespository totalTransactionAmountRespository)
+        private readonly IBudgetsRepository _budgetsRepository;
+        private readonly IEmailService _emailService;
+        private readonly IUserRepository _userRepository;
+        public TransactionService(ITransactionRepository transactionRepository, IMapper mapper, ITotalTransactionAmountRespository totalTransactionAmountRespository, IBudgetsRepository budgetsRepository, IEmailService emailService, IUserRepository userRepository)
         {
             _transactionRepository = transactionRepository;
             _mapper = mapper;
             _totalTransactionAmountRepository = totalTransactionAmountRespository;
+            _budgetsRepository = budgetsRepository;
+            _emailService = emailService;
+            _userRepository = userRepository;
         }
         public async Task<List<TransactionBo>> GetAllTransactionsAsync(Guid userId, Filter? filter, Sort? sort, Pagination pagination)
         {
@@ -79,6 +86,24 @@ namespace PFMS.BLL.Services
             var transactionDto = _mapper.Map<TransactionDto>(transactionBo);
             await _transactionRepository.AddTransaction(transactionDto);
 
+            var budgetDto = await _budgetsRepository.GetBudgetByUserId(userId, transactionBo.TransactionDate.Month, transactionBo.TransactionDate.Year);
+            if(budgetDto != null)
+            {
+                var budgetBo = _mapper.Map<BudgetBo>(budgetDto);
+                if(totalTransactionAmountBo.TotalExpence > budgetBo.BudgetAmount)
+                {
+                    var userDto = await _userRepository.GetUserById(userId);
+                    var userBo = _mapper.Map<UserBo>(userDto);
+
+                    var subject = ApplicationConstsants.BudgetExceededMailSubject;
+                    decimal exceededAmount = totalTransactionAmountBo.TotalExpence - budgetBo.BudgetAmount;
+
+                    var body = ApplicationConstsants.GenerateBudgetExceededMailBody(userBo.FirstName, (Months)(transactionBo.TransactionDate.Month-1), transactionBo.TransactionDate.Year, exceededAmount);
+
+                    await _emailService.SendEmail(userBo.Email, subject, body);
+                }
+            }
+            
             return transactionBo.TransactionId;
         }
 
