@@ -97,7 +97,7 @@ namespace PFMS.BLL.Services
             var spentPercentage = (totalExpence / budgetBo.BudgetAmount) * 100;
 
             var subject = ApplicationConstsants.BudgetMailSubject;
-            var body = ApplicationConstsants.GenerateBudgetSetEmailBody(userBo.FirstName, budgetBo.BudgetAmount, spentPercentage, (Months)budgetBo.Month, budgetBo.Year);
+            var body = ApplicationConstsants.GenerateBudgetSetEmailBody(userBo.FirstName, budgetBo.BudgetAmount, spentPercentage, (Months)(budgetBo.Month-1), budgetBo.Year);
 
             await _emailService.SendEmail(userBo.Email, subject, body);
         }

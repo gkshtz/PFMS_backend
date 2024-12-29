@@ -98,7 +98,7 @@ namespace PFMS.BLL.Services
                     var subject = ApplicationConstsants.BudgetExceededMailSubject;
                     decimal exceededAmount = totalTransactionAmountBo.TotalExpence - budgetBo.BudgetAmount;
 
-                    var body = ApplicationConstsants.GenerateBudgetExceededMailBody(userBo.FirstName, (Months)transactionBo.TransactionDate.Month, transactionBo.TransactionDate.Year, exceededAmount);
+                    var body = ApplicationConstsants.GenerateBudgetExceededMailBody(userBo.FirstName, (Months)(transactionBo.TransactionDate.Month-1), transactionBo.TransactionDate.Year, exceededAmount);
 
                     await _emailService.SendEmail(userBo.Email, subject, body);
                 }
