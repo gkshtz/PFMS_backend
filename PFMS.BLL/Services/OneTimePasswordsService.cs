@@ -113,8 +113,19 @@ namespace PFMS.BLL.Services
                 throw new BadRequestException(ErrorMessages.OtpIsExpired);
             }
 
+            //If OTP is already verified then we don't want to verify it again and for security reasons we will make it expired.
+            if(otpBo.IsVerified)
+            {
+                otpBo.Expires = DateTime.UtcNow;
+                otpDto = _mapper.Map<OneTimePasswordDto>(otpBo);
+
+                await _otpRepository.UpdateOtp(otpDto);
+
+                throw new BadRequestException(ErrorMessages.OtpAlreadyVerified);
+            }
+
             otpBo.IsVerified = true;
-            otpBo.Expires = DateTime.UtcNow.AddMinutes(3);
+            otpBo.Expires = DateTime.UtcNow.AddMinutes(3); // Now the password can be updated for next three minutes only
 
             otpDto = _mapper.Map<OneTimePasswordDto>(otpBo);
 
@@ -141,7 +152,7 @@ namespace PFMS.BLL.Services
                 throw new BadRequestException(ErrorMessages.OtpNotVerified);   
             }
 
-            if(otpBo.Expires < DateTime.UtcNow)
+            if(otpBo.Expires <= DateTime.UtcNow)
             {
                 throw new BadRequestException(ErrorMessages.OtpIsExpired);
             }
