@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Formats.Asn1;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.Json;
 using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Entities;
@@ -31,8 +33,15 @@ namespace PFMS.DAL.Repositories
 
         public async Task<BudgetDto?> GetBudgetByUserId(Guid userId, int month, int year)
         {
-            var budget = await _appDbcontext.Budgets.FirstOrDefaultAsync(x => x.UserId == userId && x.Month == month && x.Year == year);
+            var budget = await _appDbcontext.Budgets.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId && x.Month == month && x.Year == year);
             return _mapper.Map<BudgetDto?>(budget);
+        }
+
+        public async Task UpdateBudget(BudgetDto budgetDto)
+        {
+            var budget = _mapper.Map<Budget>(budgetDto);
+            _appDbcontext.Budgets.Update(budget);
+            await _appDbcontext.SaveChangesAsync();
         }
     }
 }

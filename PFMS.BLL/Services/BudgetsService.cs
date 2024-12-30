@@ -88,6 +88,33 @@ namespace PFMS.BLL.Services
             return budgetBo;
         }
 
+        public async Task UpdateBudget(BudgetBo budgetBo, Guid userId)
+        {
+            // check to ensure that budget with this user ID and month-year pair exists.
+            Guid? budgetId = (await _budgetRepository.GetBudgetByUserId(userId, budgetBo.Month, budgetBo.Year))?.BudgetId;
+            if(budgetId == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.BudgetNotFound);
+            }
+
+            //update the budget
+            budgetBo.BudgetId = (Guid)budgetId;
+            budgetBo.UserId = userId;
+            var budgetDto = _mapper.Map<BudgetDto>(budgetBo);
+
+            await _budgetRepository.UpdateBudget(budgetDto);
+
+            //send the email that budget is updated
+            var userDto = await _userRepository.GetUserById(userId);
+            var userBo = _mapper.Map<UserBo>(userDto);
+
+            var subject = ApplicationConstsants.BudgetUpdateMailSubject;
+            var body = ApplicationConstsants.GenerateBudgetUpdateEmailSubject(userBo.FirstName, (Months)(budgetBo.Month-1), budgetBo.Year);
+
+            await _emailService.SendEmail(userBo.Email, subject, body);
+        }
+
+
         private async Task SendMailForBudgetSet(UserBo userBo, BudgetBo budgetBo)
         {
             var totalTransactionAmountDto = await _transactionRepository.GetTotalTransactionAmountByUserId(userBo.UserId);

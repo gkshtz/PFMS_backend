@@ -16,7 +16,7 @@ namespace PFMS.Utils.Constants
             "/api/users/otp/verify",
             "/api/users/otp/reset-password"
         };
-
+    
         public const string RefreshToken = "refresh-token";
 
         public const string UniqueDeviceId = "unique-device-id";
@@ -26,6 +26,15 @@ namespace PFMS.Utils.Constants
         public const string BudgetMailSubject = "Budget Alert";
 
         public const string BudgetExceededMailSubject = "Your Budget Exceeded!";
+
+        public const string BudgetUpdateMailSubject = "Budget Updated!";
+
+        public static string GenerateBudgetUpdateEmailSubject(string username, Months month, int year)
+        {
+            string body;
+            body = $"<p>Hi {username},</p>\r\n<div>Your Budget for {char.ToUpper(month.ToString()[0]) + month.ToString().Substring(1).ToLower()}, {year} has been updated!</div>\r\n<div>Thanks.</div>";
+            return body;
+        }
 
         public static string GenerateBudgetSetEmailBody(string userName, decimal budgetAmount, decimal spentPercentage, Months month, int year)
         { 

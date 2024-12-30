@@ -50,5 +50,20 @@ namespace PFMS.API.Controllers
             };
             return Ok(response);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateBudgetAsync([FromBody] BudgetRequestModel budgetModel)
+        {
+            var budgetBo = _mapper.Map<BudgetBo>(budgetModel);
+            await _budgetService.UpdateBudget(budgetBo, UserId);
+
+            var response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
+        }
     }
 }
