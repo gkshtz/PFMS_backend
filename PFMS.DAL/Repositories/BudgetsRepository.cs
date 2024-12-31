@@ -43,5 +43,12 @@ namespace PFMS.DAL.Repositories
             _appDbcontext.Budgets.Update(budget);
             await _appDbcontext.SaveChangesAsync();
         }
+
+        public async Task<BudgetDto> GetBudgetById(Guid budgetId)
+        {
+            var budget = await _appDbcontext.Budgets.AsNoTracking().FirstOrDefaultAsync(x => x.BudgetId == budgetId);
+            var budgetDto = _mapper.Map<BudgetDto>(budget);
+            return budgetDto;
+        }
     }
 }

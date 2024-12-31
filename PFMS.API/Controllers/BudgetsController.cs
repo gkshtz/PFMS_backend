@@ -52,10 +52,11 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateBudgetAsync([FromBody] BudgetRequestModel budgetModel)
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> UpdateBudgetAsync([FromBody] BudgetRequestModel budgetModel, [FromRoute] Guid id)
         {
             var budgetBo = _mapper.Map<BudgetBo>(budgetModel);
-            await _budgetService.UpdateBudget(budgetBo, UserId);
+            await _budgetService.UpdateBudget(budgetBo, UserId, id);
 
             var response = new GenericSuccessResponse<bool>()
             {

@@ -53,11 +53,6 @@ namespace PFMS.BLL.Services
                 throw new BadRequestException(ErrorMessages.InvalidMonthOrYear);
             }
 
-            if(year>DateTime.UtcNow.Year || (year == DateTime.UtcNow.Year && month>DateTime.UtcNow.Month))
-            {
-                throw new BadRequestException(ErrorMessages.BudgetMonthCannotBeOfFuture);
-            }
-
             month = month == 0 ? DateTime.UtcNow.Month : month;
             year = year == 0 ? DateTime.UtcNow.Year : year;
 
@@ -88,19 +83,26 @@ namespace PFMS.BLL.Services
             return budgetBo;
         }
 
-        public async Task UpdateBudget(BudgetBo budgetBo, Guid userId)
+        public async Task UpdateBudget(BudgetBo budgetBo, Guid userId, Guid budgetId)
         {
-            // check to ensure that budget with this user ID and month-year pair exists.
-            Guid? budgetId = (await _budgetRepository.GetBudgetByUserId(userId, budgetBo.Month, budgetBo.Year))?.BudgetId;
-            if(budgetId == null)
+            // check to ensure that budget with this budgetId exists.
+            var budgetDto = await _budgetRepository.GetBudgetById(budgetId);
+            if(budgetDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.BudgetNotFound);
             }
 
+            //check to ensure that the budget belongs to this user
+            var budgetBoOld = _mapper.Map<BudgetBo>(budgetDto);
+            if(budgetBoOld.UserId != userId)
+            {
+                throw new BadRequestException(ErrorMessages.BudgetDoesNotBelongToThisUser);
+            }
+
             //update the budget
-            budgetBo.BudgetId = (Guid)budgetId;
+            budgetBo.BudgetId = budgetId;
             budgetBo.UserId = userId;
-            var budgetDto = _mapper.Map<BudgetDto>(budgetBo);
+            budgetDto = _mapper.Map<BudgetDto>(budgetBo);
 
             await _budgetRepository.UpdateBudget(budgetDto);
 
