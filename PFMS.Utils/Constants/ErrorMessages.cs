@@ -42,5 +42,6 @@ namespace PFMS.Utils.Constants
         public const string BudgetMonthCannotBeOfFuture = "Budget month cannot be of future.";
         public const string TransactionCanOnlyBeSetOfPresentMonth = "Transaction can only be set for present month.";
         public const string OtpAlreadyVerified = "OTP was already verified, but now becomes expired.";
+        public const string BudgetDoesNotBelongToThisUser = "This budget does not belong to this user.";
     }
 }

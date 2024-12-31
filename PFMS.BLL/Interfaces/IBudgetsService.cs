@@ -12,5 +12,6 @@ namespace PFMS.BLL.Interfaces
     {
         public Task AddNewBudget(BudgetBo budgetBo, Guid userId);
         public Task<BudgetBo> GetBudget(Guid userId, int month, int year);
+        public Task UpdateBudget(BudgetBo budgetBo, Guid userId, Guid budgetId);
     }
 }

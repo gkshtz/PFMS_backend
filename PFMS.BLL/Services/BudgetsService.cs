@@ -53,11 +53,6 @@ namespace PFMS.BLL.Services
                 throw new BadRequestException(ErrorMessages.InvalidMonthOrYear);
             }
 
-            if(year>DateTime.UtcNow.Year || (year == DateTime.UtcNow.Year && month>DateTime.UtcNow.Month))
-            {
-                throw new BadRequestException(ErrorMessages.BudgetMonthCannotBeOfFuture);
-            }
-
             month = month == 0 ? DateTime.UtcNow.Month : month;
             year = year == 0 ? DateTime.UtcNow.Year : year;
 
@@ -87,6 +82,40 @@ namespace PFMS.BLL.Services
 
             return budgetBo;
         }
+
+        public async Task UpdateBudget(BudgetBo budgetBo, Guid userId, Guid budgetId)
+        {
+            // check to ensure that budget with this budgetId exists.
+            var budgetDto = await _budgetRepository.GetBudgetById(budgetId);
+            if(budgetDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.BudgetNotFound);
+            }
+
+            //check to ensure that the budget belongs to this user
+            var budgetBoOld = _mapper.Map<BudgetBo>(budgetDto);
+            if(budgetBoOld.UserId != userId)
+            {
+                throw new BadRequestException(ErrorMessages.BudgetDoesNotBelongToThisUser);
+            }
+
+            //update the budget
+            budgetBo.BudgetId = budgetId;
+            budgetBo.UserId = userId;
+            budgetDto = _mapper.Map<BudgetDto>(budgetBo);
+
+            await _budgetRepository.UpdateBudget(budgetDto);
+
+            //send the email that budget is updated
+            var userDto = await _userRepository.GetUserById(userId);
+            var userBo = _mapper.Map<UserBo>(userDto);
+
+            var subject = ApplicationConstsants.BudgetUpdateMailSubject;
+            var body = ApplicationConstsants.GenerateBudgetUpdateEmailSubject(userBo.FirstName, (Months)(budgetBo.Month-1), budgetBo.Year);
+
+            await _emailService.SendEmail(userBo.Email, subject, body);
+        }
+
 
         private async Task SendMailForBudgetSet(UserBo userBo, BudgetBo budgetBo)
         {
