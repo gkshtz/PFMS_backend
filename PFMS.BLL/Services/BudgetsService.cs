@@ -36,6 +36,12 @@ namespace PFMS.BLL.Services
 
             var userBo = _mapper.Map<UserBo>(userDto);
 
+            // check if the budget is being set for a past month
+            if(budgetBo.Year < DateTime.UtcNow.Year || (budgetBo.Year == DateTime.UtcNow.Year && budgetBo.Month < DateTime.UtcNow.Month))
+            {
+                throw new BadRequestException(ErrorMessages.BudgetCannotBeSetForPast);
+            }
+
             budgetBo.BudgetId = Guid.NewGuid();
             budgetBo.UserId = userId;
 
@@ -119,11 +125,20 @@ namespace PFMS.BLL.Services
 
         private async Task SendMailForBudgetSet(UserBo userBo, BudgetBo budgetBo)
         {
-            var totalTransactionAmountDto = await _transactionRepository.GetTotalTransactionAmountByUserId(userBo.UserId);
-            var totalTransactionAmountBo = _mapper.Map<TotalTransactionAmountBo>(totalTransactionAmountDto);
+            decimal spentPercentage;
+            //check if the budget is of future month
+            if(budgetBo.Year > DateTime.UtcNow.Year || (budgetBo.Year == DateTime.UtcNow.Year && budgetBo.Month > DateTime.UtcNow.Month))
+            {
+                spentPercentage = 0;
+            }
+            else
+            {
+                var totalTransactionAmountDto = await _transactionRepository.GetTotalTransactionAmountByUserId(userBo.UserId);
+                var totalTransactionAmountBo = _mapper.Map<TotalTransactionAmountBo>(totalTransactionAmountDto);
 
-            var totalExpence = totalTransactionAmountBo.TotalExpence;
-            var spentPercentage = (totalExpence / budgetBo.BudgetAmount) * 100;
+                var totalExpence = totalTransactionAmountBo.TotalExpence;
+                spentPercentage = (totalExpence / budgetBo.BudgetAmount) * 100;
+            }    
 
             var subject = ApplicationConstsants.BudgetMailSubject;
             var body = ApplicationConstsants.GenerateBudgetSetEmailBody(userBo.FirstName, budgetBo.BudgetAmount, spentPercentage, (Months)(budgetBo.Month-1), budgetBo.Year);
