@@ -5,12 +5,14 @@ using PFMS.Utils.RequestData;
 namespace PFMS.API.Controllers
 {
     public class BaseController : ControllerBase, IActionFilter
-    { 
+    {
+        [NonAction]
         public void OnActionExecuting(ActionExecutingContext context)
         {
             UserId = Guid.Parse(User.FindFirst("UserId")?.Value ?? Guid.Empty.ToString());
         }
 
+        [NonAction]
         public void OnActionExecuted(ActionExecutedContext context) { }
 
         public Guid UserId { get; set; }
