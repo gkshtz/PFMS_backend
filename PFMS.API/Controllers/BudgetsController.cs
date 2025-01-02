@@ -29,11 +29,11 @@ namespace PFMS.API.Controllers
 
             GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
             {
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int)HttpStatusCode.Created,
                 ResponseData = true,
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
-            return Ok(response);
+            return Created(String.Empty, response);
         }
 
         [HttpGet]

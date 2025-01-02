@@ -1,17 +1,17 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using PFMS.Utils.RequestData;
 
 namespace PFMS.API.Controllers
 {
-    public class BaseController : Controller
+    public class BaseController : ControllerBase, IActionFilter
     { 
-        public override void OnActionExecuting(ActionExecutingContext context)
+        public void OnActionExecuting(ActionExecutingContext context)
         {
             UserId = Guid.Parse(User.FindFirst("UserId")?.Value ?? Guid.Empty.ToString());
-            base.OnActionExecuting(context);
         }
+
+        public void OnActionExecuted(ActionExecutedContext context) { }
 
         public Guid UserId { get; set; }
         public Filter? Filter { get; set; }

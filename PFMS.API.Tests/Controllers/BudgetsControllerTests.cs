@@ -50,11 +50,12 @@ namespace PFMS.API.Tests.Controllers
             //Assert
             Assert.NotNull(response);
 
-            var okResult = response as OkObjectResult;
-            Assert.NotNull(okResult);
+            var createdResult = response as CreatedResult;
+            Assert.NotNull(createdResult);
 
-            var successResponse = Assert.IsType<GenericSuccessResponse<bool>>(okResult.Value);
-            Assert.NotNull(successResponse);
+            var successResponse = Assert.IsType<GenericSuccessResponse<bool>>(createdResult.Value);
+            Assert.Equal(201, successResponse.StatusCode);
+            Assert.True(successResponse.ResponseData);
 
             budgetService.Verify(x=>x.AddNewBudget(budgetBo, It.IsAny<Guid>()), Times.Once);
         }
