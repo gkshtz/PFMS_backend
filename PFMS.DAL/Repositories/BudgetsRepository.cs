@@ -50,5 +50,21 @@ namespace PFMS.DAL.Repositories
             var budgetDto = _mapper.Map<BudgetDto>(budget);
             return budgetDto;
         }
+
+        public async Task<bool> DeleteBudget(Guid budgetId)
+        {
+            var budgetDto = await GetBudgetById(budgetId);
+            if(budgetDto == null)
+            {
+                return false;
+            }
+
+            var budget = _mapper.Map<Budget>(budgetDto);
+
+            _appDbcontext.Budgets.Remove(budget);
+            await _appDbcontext.SaveChangesAsync();
+
+            return true;
+        }
     }
 }
