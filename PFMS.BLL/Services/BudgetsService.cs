@@ -122,6 +122,30 @@ namespace PFMS.BLL.Services
             await _emailService.SendEmail(userBo.Email, subject, body);
         }
 
+        public async Task DeleteBudget(Guid budgetId, Guid userId)
+        {
+            var userDto = await _userRepository.GetUserById(userId);
+            if(userDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
+            var budgetDto = await _budgetRepository.GetBudgetById(budgetId);
+            if(budgetDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.BudgetNotFound);
+            }
+
+            var budgetBo = _mapper.Map<BudgetBo>(budgetDto);
+           
+            //check to ensure budget belongs to this user
+            if(budgetBo.UserId != userId)
+            {
+                throw new BadRequestException(ErrorMessages.BudgetDoesNotBelongToThisUser);
+            }
+
+            await _budgetRepository.DeleteBudget(budgetId);
+        }
 
         private async Task SendMailForBudgetSet(UserBo userBo, BudgetBo budgetBo)
         {

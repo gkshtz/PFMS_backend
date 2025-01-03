@@ -66,5 +66,20 @@ namespace PFMS.API.Controllers
             };
             return Ok(response);
         }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> DeleteBudgetAsync([FromRoute] Guid id)
+        {
+            await _budgetService.DeleteBudget(id, UserId);
+
+            var response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
+        }
     }
 }
