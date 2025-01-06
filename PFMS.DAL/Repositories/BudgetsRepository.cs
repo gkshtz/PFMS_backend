@@ -28,7 +28,6 @@ namespace PFMS.DAL.Repositories
         {
             var budget = _mapper.Map<Budget>(budgetDto);
             await _appDbcontext.Budgets.AddAsync(budget);
-            await _appDbcontext.SaveChangesAsync();
         }
 
         public async Task<BudgetDto?> GetBudgetByUserId(Guid userId, int month, int year)
@@ -41,7 +40,6 @@ namespace PFMS.DAL.Repositories
         {
             var budget = _mapper.Map<Budget>(budgetDto);
             _appDbcontext.Budgets.Update(budget);
-            await _appDbcontext.SaveChangesAsync();
         }
 
         public async Task<BudgetDto> GetBudgetById(Guid budgetId)
@@ -62,7 +60,6 @@ namespace PFMS.DAL.Repositories
             var budget = _mapper.Map<Budget>(budgetDto);
 
             _appDbcontext.Budgets.Remove(budget);
-            await _appDbcontext.SaveChangesAsync();
 
             return true;
         }

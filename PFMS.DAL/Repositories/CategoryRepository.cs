@@ -27,14 +27,12 @@ namespace PFMS.DAL.Repositories
         {
             var category = _mapper.Map<TransactionCategory>(categoryDto);
             await _appDbContext.TransactionCategories.AddAsync(category);
-            await _appDbContext.SaveChangesAsync();
         }
 
         public async Task AddCategoryToUser(CategoryToUserDto categoryToUserDto)
         {
             var categoryToUser = _mapper.Map<CategoryToUser>(categoryToUserDto);
             await _appDbContext.CategoryToUser.AddAsync(categoryToUser);
-            await _appDbContext.SaveChangesAsync();
         }
 
         public async Task<bool> DeleteCategory(Guid categoryId)
@@ -45,7 +43,6 @@ namespace PFMS.DAL.Repositories
                 return false;
             }
             _appDbContext.TransactionCategories.Remove(category);
-            await _appDbContext.SaveChangesAsync();
             return true;
         }
 
@@ -57,7 +54,6 @@ namespace PFMS.DAL.Repositories
                 return false;
             }
             _appDbContext.CategoryToUser.Remove(categoryToUser);
-            await _appDbContext.SaveChangesAsync();
             return true;
         }
 

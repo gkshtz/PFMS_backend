@@ -27,14 +27,12 @@ namespace PFMS.DAL.Repositories
         {
             var role = _mapper.Map<Role>(roleDto);
             await _appDbContext.Roles.AddAsync(role);
-            await _appDbContext.SaveChangesAsync();
         }
 
         public async Task AddUserRole(UserRoleDto userRoleDto)
         {
             var userRole = _mapper.Map<UserRole>(userRoleDto);
             await _appDbContext.UserRoles.AddAsync(userRole);
-            await _appDbContext.SaveChangesAsync();
         }
 
         public async Task<List<string>> GetRoleNamesAssignedToUser(Guid userId)

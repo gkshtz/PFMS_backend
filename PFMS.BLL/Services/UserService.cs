@@ -19,28 +19,25 @@ namespace PFMS.BLL.Services
     public class UserService: IUserService
     {
         private readonly IMapper _mapper;
-        private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher<UserBo> _passwordHasher;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IOneTimePasswordsRespository _otpRepository;
         private readonly IEmailService _emailService;
-
-        public UserService(IUserRepository userRepository, IMapper mapper, IPasswordHasher<UserBo> passwordHasher,
-            IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IOneTimePasswordsRespository otpRepository, IEmailService emailService)
+        private readonly IUnitOfWork _unitOfWork;
+        public UserService(IMapper mapper, IPasswordHasher<UserBo> passwordHasher, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IEmailService emailService,
+            IUnitOfWork unitOfWork)
         {
-            _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
             _emailService = emailService;
-            _otpRepository = otpRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<List<UserBo>> GetAllUsers()
         {
-            var userDtos = await _userRepository.GetAllUsers();
+            var userDtos = await _unitOfWork.UsersRepository.GetAllUsers();
             return _mapper.Map<List<UserBo>>(userDtos);
         }
 
@@ -57,13 +54,16 @@ namespace PFMS.BLL.Services
             var userDto = _mapper.Map<UserDto>(userBo);
             var totalTransactionAmountDto = _mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo);
                
-            userDto = await _userRepository.AddUser(userDto, totalTransactionAmountDto);
+            userDto = await _unitOfWork.UsersRepository.AddUser(userDto, totalTransactionAmountDto);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
+
             return _mapper.Map<UserBo>(userDto);
         }
 
         public async Task<TokenBo> AuthenticateUser(UserCredentialsBo userCredentialsBo)
         {
-            var userDto = await _userRepository.FindUserByEmail(userCredentialsBo.Email);
+            var userDto = await _unitOfWork.UsersRepository.FindUserByEmail(userCredentialsBo.Email);
 
             if(userDto == null)
             {
@@ -94,7 +94,7 @@ namespace PFMS.BLL.Services
 
         public async Task UpdateUserProfile(UserBo userBo, Guid userId)
         {
-            var userDto = await _userRepository.GetUserById(userId);
+            var userDto = await _unitOfWork.UsersRepository.GetUserById(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
@@ -103,12 +103,14 @@ namespace PFMS.BLL.Services
             userBo.UserId = userId;
             userDto = _mapper.Map<UserDto>(userBo);
 
-            await _userRepository.UpdateUser(userDto);
+            await _unitOfWork.UsersRepository.UpdateUser(userDto);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
         }
 
         public async Task UpdatePassword(string oldPassword, string newPassword, Guid userId)
         {
-            var userDto = await _userRepository.GetUserById(userId);
+            var userDto = await _unitOfWork.UsersRepository.GetUserById(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
@@ -119,7 +121,9 @@ namespace PFMS.BLL.Services
             if (isCorrectOldPassword == PasswordVerificationResult.Success)
             {
                 var newHashedPassword = _passwordHasher.HashPassword(null, newPassword);
-                await _userRepository.UpdatePassword(newHashedPassword, userId);
+                await _unitOfWork.UsersRepository.UpdatePassword(newHashedPassword, userId);
+
+                await _unitOfWork.SaveDatabaseChangesAsync();
             }
             else
             {
@@ -129,7 +133,7 @@ namespace PFMS.BLL.Services
 
         public async Task<UserBo> GetUserProfile(Guid userId)
         {
-            var userDto = await _userRepository.GetUserProfile(userId);
+            var userDto = await _unitOfWork.UsersRepository.GetUserProfile(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
@@ -168,7 +172,7 @@ namespace PFMS.BLL.Services
                 throw new BadRequestException(ErrorMessages.UserIdNotPresentInRefreshToken);
             }
 
-            var userDto = await _userRepository.GetUserById(Guid.Parse(userId));
+            var userDto = await _unitOfWork.UsersRepository.GetUserById(Guid.Parse(userId));
             var userBo = _mapper.Map<UserBo>(userDto);
 
             string accessToken = GenerateAccessToken(userBo);
@@ -195,6 +199,7 @@ namespace PFMS.BLL.Services
             });
         }
 
+        #region Helper Functions
         private ClaimsPrincipal? ValidateRefreshToken(string token)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["RefreshToken:Key"]!));
@@ -266,5 +271,6 @@ namespace PFMS.BLL.Services
             
             return refreshToken;
         }
+        #endregion
     }
 }

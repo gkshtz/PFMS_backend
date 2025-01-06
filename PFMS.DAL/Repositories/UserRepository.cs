@@ -11,7 +11,7 @@ namespace PFMS.DAL.Repositories
     {
         private readonly AppDbContext _appDbContext;
         private readonly IMapper _mapper;
-        public UserRepository(IMapper mapper, AppDbContext appDbContext)
+        public UserRepository(AppDbContext appDbContext, IMapper mapper)
         {
             _mapper = mapper;
             _appDbContext = appDbContext;
@@ -29,7 +29,6 @@ namespace PFMS.DAL.Repositories
             var totalTransactionAmounts = _mapper.Map<TotalTransactionAmount>(totalTransactionAmountDto);
             await _appDbContext.Users.AddAsync(user);
             await _appDbContext.TotalTransactionAmounts.AddAsync(totalTransactionAmounts);
-            await _appDbContext.SaveChangesAsync();
             return _mapper.Map<UserDto>(user);
         }
 
@@ -59,7 +58,6 @@ namespace PFMS.DAL.Repositories
             user.City = userDto.City;
             user.Age = userDto.Age;
 
-            await _appDbContext.SaveChangesAsync();
             return true;
         }
 
@@ -76,8 +74,6 @@ namespace PFMS.DAL.Repositories
             var user = _mapper.Map<User>(userDto);
 
             _appDbContext.Users.Update(user);
-
-            await _appDbContext.SaveChangesAsync();
 
             return true;
         }

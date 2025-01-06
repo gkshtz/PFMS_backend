@@ -19,25 +19,23 @@ namespace PFMS.BLL.Services
 {
     public class OneTimePasswordsService: IOneTimePasswordsService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IOneTimePasswordsRespository _otpRepository;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IPasswordHasher<UserBo> _passwordHasher;
         private readonly IEmailService _emailService;
-        public OneTimePasswordsService(IUserRepository userRepository, IMapper mapper, IOneTimePasswordsRespository otpRepository, IHttpContextAccessor httpContextAccessor, IPasswordHasher<UserBo> passwordHasher, IEmailService emailService)
+        private readonly IUnitOfWork _unitOfWork;
+        public OneTimePasswordsService(IMapper mapper, IHttpContextAccessor httpContextAccessor, IPasswordHasher<UserBo> passwordHasher, IEmailService emailService, IUnitOfWork unitOfWork)
         {
-            _userRepository = userRepository;
-            _otpRepository = otpRepository;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
             _emailService = emailService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Guid> GenerateAndSendOtp(string email)
         {
-            var userDto = await _userRepository.FindUserByEmail(email);
+            var userDto = await _unitOfWork.UsersRepository.FindUserByEmail(email);
 
             if (userDto == null)
             {
@@ -62,7 +60,9 @@ namespace PFMS.BLL.Services
 
             var otpDto = _mapper.Map<OneTimePasswordDto>(otpBo);
 
-            await _otpRepository.AddOtp(otpDto);
+            await _unitOfWork.OneTimePasswordsRepository.AddOtp(otpDto);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
 
             string emailSubject = ApplicationConstsants.OtpEmailSubject;
             string emailBody = ApplicationConstsants.GenerateOtpEmailBody(otp, userBo.FirstName, 7);
@@ -74,7 +74,7 @@ namespace PFMS.BLL.Services
 
         public async Task VerifyOtp(string otp, string email)
         {
-            var userDto = await _userRepository.FindUserByEmail(email);
+            var userDto = await _unitOfWork.UsersRepository.FindUserByEmail(email);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
@@ -82,7 +82,7 @@ namespace PFMS.BLL.Services
 
             var userBo = _mapper.Map<UserBo>(userDto);
 
-            var otpDto = await _otpRepository.FetchByOtp(otp);
+            var otpDto = await _unitOfWork.OneTimePasswordsRepository.FetchByOtp(otp);
 
             if(otpDto == null)
             {
@@ -119,7 +119,7 @@ namespace PFMS.BLL.Services
                 otpBo.Expires = DateTime.UtcNow;
                 otpDto = _mapper.Map<OneTimePasswordDto>(otpBo);
 
-                await _otpRepository.UpdateOtp(otpDto);
+                await _unitOfWork.OneTimePasswordsRepository.UpdateOtp(otpDto);
 
                 throw new BadRequestException(ErrorMessages.OtpAlreadyVerified);
             }
@@ -129,7 +129,9 @@ namespace PFMS.BLL.Services
 
             otpDto = _mapper.Map<OneTimePasswordDto>(otpBo);
 
-            await _otpRepository.UpdateOtp(otpDto);
+            await _unitOfWork.OneTimePasswordsRepository.UpdateOtp(otpDto);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
         }
 
         public async Task ResetPassword(string password)
@@ -140,7 +142,7 @@ namespace PFMS.BLL.Services
                 throw new BadRequestException(ErrorMessages.UniqueDeviceIdNotPresentInCookies);
             }
 
-            var otpDto = await _otpRepository.FetchByUniqueDeviceId(Guid.Parse(uniqueDeviceId));
+            var otpDto = await _unitOfWork.OneTimePasswordsRepository.FetchByUniqueDeviceId(Guid.Parse(uniqueDeviceId));
             if(otpDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.OtpDoesNotFound);
@@ -159,11 +161,13 @@ namespace PFMS.BLL.Services
 
             string newHashedPassword = _passwordHasher.HashPassword(null, password);
 
-            await _userRepository.UpdatePassword(newHashedPassword, otpBo.UserId);
+            await _unitOfWork.UsersRepository.UpdatePassword(newHashedPassword, otpBo.UserId);
 
             otpBo.Expires = DateTime.UtcNow.AddHours(-1);
             otpDto = _mapper.Map<OneTimePasswordDto>(otpBo);
-            await _otpRepository.UpdateOtp(otpDto);
+            await _unitOfWork.OneTimePasswordsRepository.UpdateOtp(otpDto);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
 
             _httpContextAccessor.HttpContext.Response.Cookies.Append(ApplicationConstsants.UniqueDeviceId, uniqueDeviceId, new CookieOptions()
             {

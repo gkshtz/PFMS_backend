@@ -96,7 +96,6 @@ namespace PFMS.DAL.Repositories
         {
             var transaction = _mapper.Map<Transaction>(transactionDto);
             await _appDbContext.Transactions.AddAsync(transaction);
-            await _appDbContext.SaveChangesAsync();
             return transactionDto;
         }
 
@@ -124,7 +123,6 @@ namespace PFMS.DAL.Repositories
             transaction = _mapper.Map<Transaction>(transactionDto);
 
             _appDbContext.Transactions.Update(transaction);
-            await _appDbContext.SaveChangesAsync();
             return true;
         }
 
@@ -136,7 +134,6 @@ namespace PFMS.DAL.Repositories
                 return false;
             }
             _appDbContext.Transactions.Remove(transaction);
-            await _appDbContext.SaveChangesAsync();
             return true;
         }
 

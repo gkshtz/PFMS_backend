@@ -26,7 +26,6 @@ namespace PFMS.DAL.Repositories
         {
             var otp = _mapper.Map<OneTimePassword>(otpDto);
             await _appDbContext.OneTimePasswords.AddAsync(otp);
-            await _appDbContext.SaveChangesAsync();
         }
 
         public async Task<OneTimePasswordDto> FetchByOtp(string otp)
@@ -40,7 +39,6 @@ namespace PFMS.DAL.Repositories
         {
             var otp = _mapper.Map<OneTimePassword>(otpDto);
             _appDbContext.OneTimePasswords.Update(otp);
-            await _appDbContext.SaveChangesAsync();
         }
 
         public async Task<OneTimePasswordDto> FetchByUniqueDeviceId(Guid uniqueDeviceId)

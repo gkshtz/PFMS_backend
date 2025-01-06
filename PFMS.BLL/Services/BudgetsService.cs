@@ -11,24 +11,18 @@ namespace PFMS.BLL.Services
 {
     public class BudgetsService: IBudgetsService
     {
-        private readonly IBudgetsRepository _budgetRepository;
-        private readonly ITransactionRepository _transactionRepository;
-        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
-        private readonly ITotalTransactionAmountRespository _totaltransactionAmountRepository;
-        public BudgetsService(IBudgetsRepository budgetRepository, IUserRepository userRepository, ITransactionRepository transactionRepository,IMapper mapper, IEmailService emailService, ITotalTransactionAmountRespository totalTransactionAmountRespository)
+        private readonly IUnitOfWork _unitOfWork;
+        public BudgetsService(IMapper mapper, IEmailService emailService, IUnitOfWork unitOfWork)
         {
-            _budgetRepository = budgetRepository;
             _mapper = mapper;
-            _userRepository = userRepository;
-            _transactionRepository = transactionRepository;
             _emailService = emailService;
-            _totaltransactionAmountRepository = totalTransactionAmountRespository;
+            _unitOfWork = unitOfWork;
         }
         public async Task AddNewBudget(BudgetBo budgetBo, Guid userId)
         {
-            var userDto = await _userRepository.GetUserById(userId);
+            var userDto = await _unitOfWork.UsersRepository.GetUserById(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
@@ -47,7 +41,9 @@ namespace PFMS.BLL.Services
 
             var budgetDto = _mapper.Map<BudgetDto>(budgetBo);
 
-            await _budgetRepository.AddBudget(budgetDto);
+            await _unitOfWork.BudgetsRepository.AddBudget(budgetDto);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
 
             await SendMailForBudgetSet(userBo, budgetBo);
         }
@@ -62,14 +58,14 @@ namespace PFMS.BLL.Services
             month = month == 0 ? DateTime.UtcNow.Month : month;
             year = year == 0 ? DateTime.UtcNow.Year : year;
 
-            var budgetDto = await _budgetRepository.GetBudgetByUserId(userId, month, year);
+            var budgetDto = await _unitOfWork.BudgetsRepository.GetBudgetByUserId(userId, month, year);
             if (budgetDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.BudgetNotFound);
             }
             var budgetBo = _mapper.Map<BudgetBo>(budgetDto);
 
-            var totalTransactionAmountDto = await _transactionRepository.GetTotalTransactionAmountByUserId(userId);
+            var totalTransactionAmountDto = await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId);
             var totalTransactionAmountBo = _mapper.Map<TotalTransactionAmountBo>(totalTransactionAmountDto);
 
             decimal totalExpence;
@@ -79,7 +75,7 @@ namespace PFMS.BLL.Services
             }
             else
             {
-                var totalMonthlyAmountDto = await _totaltransactionAmountRepository.GetTotalMonthlyAmountOfParticularMonthAndYear(totalTransactionAmountBo.TotalTransactionAmountId, month, year);
+                var totalMonthlyAmountDto = await _unitOfWork.TotalTransactionAmountsRespository.GetTotalMonthlyAmountOfParticularMonthAndYear(totalTransactionAmountBo.TotalTransactionAmountId, month, year);
                 var totalMonthlyAmountBo = _mapper.Map<TotalMonthlyAmountBo>(totalMonthlyAmountDto);
                 totalExpence = totalMonthlyAmountBo?.TotalExpenceOfMonth ?? 0;
             }
@@ -92,7 +88,7 @@ namespace PFMS.BLL.Services
         public async Task UpdateBudget(BudgetBo budgetBo, Guid userId, Guid budgetId)
         {
             // check to ensure that budget with this budgetId exists.
-            var budgetDto = await _budgetRepository.GetBudgetById(budgetId);
+            var budgetDto = await _unitOfWork.BudgetsRepository.GetBudgetById(budgetId);
             if(budgetDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.BudgetNotFound);
@@ -110,11 +106,13 @@ namespace PFMS.BLL.Services
             budgetBo.UserId = userId;
             budgetDto = _mapper.Map<BudgetDto>(budgetBo);
 
-            await _budgetRepository.UpdateBudget(budgetDto);
+            await _unitOfWork.BudgetsRepository.UpdateBudget(budgetDto);
 
             //send the email that budget is updated
-            var userDto = await _userRepository.GetUserById(userId);
+            var userDto = await _unitOfWork.UsersRepository.GetUserById(userId);
             var userBo = _mapper.Map<UserBo>(userDto);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
 
             var subject = ApplicationConstsants.BudgetUpdateMailSubject;
             var body = ApplicationConstsants.GenerateBudgetUpdateEmailSubject(userBo.FirstName, (Months)(budgetBo.Month-1), budgetBo.Year);
@@ -124,13 +122,13 @@ namespace PFMS.BLL.Services
 
         public async Task DeleteBudget(Guid budgetId, Guid userId)
         {
-            var userDto = await _userRepository.GetUserById(userId);
+            var userDto = await _unitOfWork.UsersRepository.GetUserById(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
             }
 
-            var budgetDto = await _budgetRepository.GetBudgetById(budgetId);
+            var budgetDto = await _unitOfWork.BudgetsRepository.GetBudgetById(budgetId);
             if(budgetDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.BudgetNotFound);
@@ -144,7 +142,9 @@ namespace PFMS.BLL.Services
                 throw new BadRequestException(ErrorMessages.BudgetDoesNotBelongToThisUser);
             }
 
-            await _budgetRepository.DeleteBudget(budgetId);
+            await _unitOfWork.BudgetsRepository.DeleteBudget(budgetId);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
         }
 
         private async Task SendMailForBudgetSet(UserBo userBo, BudgetBo budgetBo)
@@ -157,7 +157,7 @@ namespace PFMS.BLL.Services
             }
             else
             {
-                var totalTransactionAmountDto = await _transactionRepository.GetTotalTransactionAmountByUserId(userBo.UserId);
+                var totalTransactionAmountDto = await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userBo.UserId);
                 var totalTransactionAmountBo = _mapper.Map<TotalTransactionAmountBo>(totalTransactionAmountDto);
 
                 var totalExpence = totalTransactionAmountBo.TotalExpence;
