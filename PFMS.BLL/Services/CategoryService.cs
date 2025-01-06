@@ -11,16 +11,16 @@ namespace PFMS.BLL.Services
 {
     public class CategoryService: ICategoryService
     {
-        private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
-        public CategoryService(IMapper mapper, ICategoryRepository categoryRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public CategoryService(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
-            _categoryRepository = categoryRepository;
+            _unitOfWork = unitOfWork;
         }
         public async Task<List<TransactionCategoryBo>> GetAllCategories(Guid userId, TransactionType transactionType)
         {
-            List<TransactionCategoryDto> categoryDtos = await _categoryRepository.GetAllCategories(userId, transactionType);
+            List<TransactionCategoryDto> categoryDtos = await _unitOfWork.CategoriesRepository.GetAllCategories(userId, transactionType);
             return _mapper.Map<List<TransactionCategoryBo>>(categoryDtos);
         }
 
@@ -28,7 +28,7 @@ namespace PFMS.BLL.Services
         {
             categoryBo.CategoryId = Guid.NewGuid();
             var categoryDto = _mapper.Map<TransactionCategoryDto>(categoryBo);
-            await _categoryRepository.AddCategory(categoryDto);
+            await _unitOfWork.CategoriesRepository.AddCategory(categoryDto);
 
             var categoryToUserBo = new CategoryToUserBo()
             {
@@ -36,12 +36,14 @@ namespace PFMS.BLL.Services
                 UserId = userId
             };
             var categoryToUerDto = _mapper.Map<CategoryToUserDto>(categoryToUserBo);
-            await _categoryRepository.AddCategoryToUser(categoryToUerDto);
+            await _unitOfWork.CategoriesRepository.AddCategoryToUser(categoryToUerDto);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
         }
 
         public async Task DeleteCategory(Guid categoryId, Guid userId)
         {
-            var userIdOfCategory = await _categoryRepository.GetUserIdByCategoryId(categoryId);
+            var userIdOfCategory = await _unitOfWork.CategoriesRepository.GetUserIdByCategoryId(categoryId);
             if(userIdOfCategory == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.CategoryNotFound);
@@ -51,8 +53,10 @@ namespace PFMS.BLL.Services
                 throw new ForbiddenException(ErrorMessages.CannotDeleteCategory);
             }
 
-            await _categoryRepository.DeleteCategoryToUser(categoryId);
-            await _categoryRepository.DeleteCategory(categoryId);
+            await _unitOfWork.CategoriesRepository.DeleteCategoryToUser(categoryId);
+            await _unitOfWork.CategoriesRepository.DeleteCategory(categoryId);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
         }
     }
 }

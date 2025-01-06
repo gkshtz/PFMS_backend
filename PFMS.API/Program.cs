@@ -10,6 +10,7 @@ using PFMS.DAL.Data;
 using PFMS.DAL.Interfaces;
 using PFMS.DAL.Mapper;
 using PFMS.DAL.Repositories;
+using PFMS.DAL.UnitOfWork;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -58,8 +59,9 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 builder.Services.AddScoped<IOneTimePasswordsRespository, OneTimePasswordsRepository>();
 builder.Services.AddScoped<IBudgetsRepository, BudgetsRepository>();
-
 builder.Services.AddScoped<ITotalTransactionAmountRespository, TotalTransactionAmountRepository>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddAutoMapper(typeof(UserMapper));
 builder.Services.AddAutoMapper(typeof(UserBLLMapper));

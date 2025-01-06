@@ -25,7 +25,6 @@ namespace PFMS.DAL.Repositories
             }
             totalTransactionAmount = _mapper.Map<TotalTransactionAmount>(totalTransactionAmountDto);
             _appDbContext.TotalTransactionAmounts.Update(totalTransactionAmount);
-            await _appDbContext.SaveChangesAsync();
             return true;
 
         }
@@ -34,7 +33,6 @@ namespace PFMS.DAL.Repositories
         {
             var totalMonthlyAmount = _mapper.Map<TotalMonthlyAmount>(totalMonthlyAmountDto);
             await _appDbContext.TotalMonthlyAmounts.AddAsync(totalMonthlyAmount);
-            await _appDbContext.SaveChangesAsync();
             return _mapper.Map<TotalMonthlyAmountDto>(totalMonthlyAmount);
         }
 
