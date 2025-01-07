@@ -16,5 +16,7 @@ namespace PFMS.BLL.Interfaces
         public Task DeleteTransaction(Guid transactionId, Guid userId);
 
         public Task<TotalTransactionAmountBo> GetTotalTransactionAmountAsync(Guid userId);
+
+        public Task<TotalMonthlyAmountBo> GetPreviousMonthSummary(int month, int year, Guid userId);
     }
 }

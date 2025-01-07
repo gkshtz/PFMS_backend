@@ -9,6 +9,7 @@ namespace PFMS.API.Mappers
         public TotalTransactionAmountMapper()
         {
             CreateMap<TotalTransactionAmountBo, TotalTransactionAmountModel>();
+            CreateMap<TotalMonthlyAmountBo, MonthlySummaryResponseModel>();
         }
     }
 }

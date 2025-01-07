@@ -216,5 +216,45 @@ namespace PFMS.BLL.Services
             var totalTransactionAmountDto = await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId);
             return _mapper.Map<TotalTransactionAmountBo>(totalTransactionAmountDto);
         }
+
+        public async Task<TotalMonthlyAmountBo> GetPreviousMonthSummary(int month, int year, Guid userId)
+        {
+            // check to ensure the month and year are valid
+            if(month < 1 || month > 12 || year < 2000 || year > 3000)
+            {
+                throw new BadRequestException(ErrorMessages.InvalidMonthOrYear);
+            }
+
+            //fetch totalTransactionAmountId for fetching totalMonthlyAmountDto
+            var totalTransactionAmountId = (await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId))?.TotalTransactionAmountId;
+            if(totalTransactionAmountId == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
+            var totalMonthlyAmountDto = await _unitOfWork.TotalTransactionAmountsRespository.GetTotalMonthlyAmountOfParticularMonthAndYear((Guid)totalTransactionAmountId, month, year);
+
+            TotalMonthlyAmountBo totalMonthlyAmountBo;
+            if(totalMonthlyAmountDto == null)
+            {
+                totalMonthlyAmountBo = new TotalMonthlyAmountBo()
+                {
+                    TotalExpenceOfMonth = 0,
+                    TotalIncomeOfMonth = 0,
+                    Month = month,
+                    Year = year
+                };
+            }
+            else
+            {
+                totalMonthlyAmountBo = _mapper.Map<TotalMonthlyAmountBo>(totalMonthlyAmountDto);
+            }
+
+            //Fetch Budget of that particular month, if present.
+            var budgetAmount = (await _unitOfWork.BudgetsRepository.GetBudgetByUserId(userId, month, year))?.BudgetAmount;
+            totalMonthlyAmountBo.BudgetAmount = budgetAmount;
+
+            return totalMonthlyAmountBo;
+        }
     }
 }
