@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.Identity.Client;
@@ -117,5 +118,21 @@ namespace PFMS.API.Controllers
 
         }
 
+        [HttpGet]
+        [Route("{month:int}/{year:int}")]
+        public async Task<IActionResult> GetPreviousMonthSummary([FromRoute] int month, [FromRoute] int year)
+        {
+            var totalMonthlyAmountBo = await _transactionService.GetPreviousMonthSummary(month, year, UserId);
+            var monthlySummaryModel = _mapper.Map<MonthlySummaryResponseModel>(totalMonthlyAmountBo);
+
+            var response = new GenericSuccessResponse<MonthlySummaryResponseModel>()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                ResponseData = monthlySummaryModel,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
+            return Ok(response);
+        }
     }
 }

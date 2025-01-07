@@ -22,6 +22,7 @@ namespace PFMS.BLL.BOs
         public int Year { get; set; }
 
         public Guid TotalTransactionAmountId { get; set; }
+        public decimal? BudgetAmount { get; set; }
 
         #region Navigation properties
         public TotalTransactionAmount? TotalTransactionAmount { get; set; }
