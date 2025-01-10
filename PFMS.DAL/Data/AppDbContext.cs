@@ -20,6 +20,7 @@ namespace PFMS.DAL.Data
         public DbSet<OneTimePassword> OneTimePasswords { get; set; }
         public DbSet<Budget> Budgets { get; set; }
         public DbSet<TransactionNotification> TransactionNotifications { get; set; }
+        public DbSet<TransactionScreenshot> TransactionScreenshots { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
