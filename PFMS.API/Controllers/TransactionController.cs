@@ -16,10 +16,12 @@ namespace PFMS.API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ITransactionService _transactionService;
-        public TransactionController(ITransactionService transactionService, IMapper mapper)
+        private readonly IWebHostEnvironment _webHostingEnvironment;
+        public TransactionController(ITransactionService transactionService, IMapper mapper, IWebHostEnvironment webHostingEnvironment)
         {
             _mapper = mapper;
             _transactionService = transactionService;
+            _webHostingEnvironment = webHostingEnvironment;
         }
 
         [HttpGet]
@@ -56,10 +58,11 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] TransactionRequestModel transactionRequest)        
+        public async Task<IActionResult> PostAsync([FromForm] TransactionRequestModel transactionRequest)         
         {
             var transactionBo = _mapper.Map<TransactionBo>(transactionRequest);
-            var transactionId = await _transactionService.AddTransaction(transactionBo, UserId);
+            var rootPath = _webHostingEnvironment.ContentRootPath;
+            var transactionId = await _transactionService.AddTransaction(transactionBo, UserId, transactionRequest.File, rootPath);
             GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
             {
                 StatusCode = 200,

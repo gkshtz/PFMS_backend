@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.DAL.DTOs;
@@ -26,7 +27,7 @@ namespace PFMS.BLL.Services
             List<TransactionDto> transactionsDto = await _unitOfWork.TransactionsRepository.GetAllTransactionsAsync(userId, filter, sort, pagination);
             return _mapper.Map<List<TransactionBo>>(transactionsDto);
         }
-        public async Task<Guid> AddTransaction(TransactionBo transactionBo, Guid userId)
+        public async Task<Guid> AddTransaction(TransactionBo transactionBo, Guid userId, IFormFile? file, string rootPath)
         {
             var totalTransactionAmountDto = await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId);
 
@@ -79,6 +80,11 @@ namespace PFMS.BLL.Services
 
             var transactionDto = _mapper.Map<TransactionDto>(transactionBo);
             await _unitOfWork.TransactionsRepository.AddTransaction(transactionDto);
+
+            // Add Screenshot if available
+            if (file != null)
+            {
+            }
 
             await _unitOfWork.SaveDatabaseChangesAsync();
 

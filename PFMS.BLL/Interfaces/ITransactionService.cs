@@ -1,4 +1,5 @@
-﻿using PFMS.BLL.BOs;
+﻿using Microsoft.AspNetCore.Http;
+using PFMS.BLL.BOs;
 using PFMS.Utils.RequestData;
 
 namespace PFMS.BLL.Interfaces
@@ -7,7 +8,7 @@ namespace PFMS.BLL.Interfaces
     {
         public Task<List<TransactionBo>> GetAllTransactionsAsync(Guid userId, Filter? filter, Sort? sort, Pagination pagination);
 
-        public Task<Guid> AddTransaction(TransactionBo transactionBo, Guid userId);
+        public Task<Guid> AddTransaction(TransactionBo transactionBo, Guid userId, IFormFile? file, string rootPath);
 
         public Task<TransactionBo> GetByTransactionId(Guid transactionId, Guid userId);
 
