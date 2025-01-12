@@ -90,6 +90,9 @@ builder.Services.AddAutoMapper(typeof(BudgetMapper));
 builder.Services.AddAutoMapper(typeof(BudgetBLLMapper));
 builder.Services.AddAutoMapper(typeof(BudgetDALMapper));
 
+builder.Services.AddAutoMapper(typeof(TransactionScreenshotBLLMapper));
+builder.Services.AddAutoMapper(typeof(TransactionScreenshotDALMapper));
+
 
 builder.Services.AddScoped<IPasswordHasher<UserBo>, PasswordHasher<UserBo>>();
 

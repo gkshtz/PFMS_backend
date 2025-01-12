@@ -82,11 +82,32 @@ namespace PFMS.BLL.Services
             await _unitOfWork.TransactionsRepository.AddTransaction(transactionDto);
 
             // Add Screenshot if available
-            if (file != null)
+            string filePath="";
+            if(file != null)
             {
+                filePath = Path.Combine(rootPath, "Screenshots", file.FileName);
+
+                var transactionScreenshotBo = new TransactionScreenshotBo()
+                {
+                    ScreenshotId = Guid.NewGuid(),
+                    FileName = Path.GetFileNameWithoutExtension(file.FileName),
+                    FileSizeInBytes = file.Length,
+                    FileExtension = Path.GetExtension(file.FileName),
+                    FilePath = filePath,
+                    TransactionId = transactionBo.TransactionId
+                };
+
+                var transactionScreenshotDto = _mapper.Map<TransactionScreenshotDto>(transactionScreenshotBo);
+                await _unitOfWork.ScreenshotsRepository.AddScreenshot(transactionScreenshotDto);
             }
 
             await _unitOfWork.SaveDatabaseChangesAsync();
+
+            if(file!=null)
+            {
+                using var fileStream = new FileStream(filePath, FileMode.Create);
+                await file.CopyToAsync(fileStream);
+            }
 
             var budgetDto = await _unitOfWork.BudgetsRepository.GetBudgetByUserId(userId, transactionBo.TransactionDate.Month, transactionBo.TransactionDate.Year);
             if(budgetDto != null)
