@@ -6,6 +6,6 @@
 **/obj/
 **/PfmsLog*.txt
 
-Screenshots/*
-!.gitkeep
+**/Screenshots/*
+!**/.gitkeep
 
