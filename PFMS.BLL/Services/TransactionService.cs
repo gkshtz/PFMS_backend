@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.DAL.DTOs;
@@ -26,7 +27,7 @@ namespace PFMS.BLL.Services
             List<TransactionDto> transactionsDto = await _unitOfWork.TransactionsRepository.GetAllTransactionsAsync(userId, filter, sort, pagination);
             return _mapper.Map<List<TransactionBo>>(transactionsDto);
         }
-        public async Task<Guid> AddTransaction(TransactionBo transactionBo, Guid userId)
+        public async Task<Guid> AddTransaction(TransactionBo transactionBo, Guid userId, IFormFile? file, string rootPath)
         {
             var totalTransactionAmountDto = await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId);
 
@@ -80,7 +81,33 @@ namespace PFMS.BLL.Services
             var transactionDto = _mapper.Map<TransactionDto>(transactionBo);
             await _unitOfWork.TransactionsRepository.AddTransaction(transactionDto);
 
+            // Add Screenshot if available
+            string filePath="";
+            if(file != null)
+            {
+                filePath = Path.Combine(rootPath, "Screenshots", file.FileName);
+
+                var transactionScreenshotBo = new TransactionScreenshotBo()
+                {
+                    ScreenshotId = Guid.NewGuid(),
+                    FileName = Path.GetFileNameWithoutExtension(file.FileName),
+                    FileSizeInBytes = file.Length,
+                    FileExtension = Path.GetExtension(file.FileName),
+                    FilePath = filePath,
+                    TransactionId = transactionBo.TransactionId
+                };
+
+                var transactionScreenshotDto = _mapper.Map<TransactionScreenshotDto>(transactionScreenshotBo);
+                await _unitOfWork.ScreenshotsRepository.AddScreenshot(transactionScreenshotDto);
+            }
+
             await _unitOfWork.SaveDatabaseChangesAsync();
+
+            if(file!=null)
+            {
+                using var fileStream = new FileStream(filePath, FileMode.Create);
+                await file.CopyToAsync(fileStream);
+            }
 
             var budgetDto = await _unitOfWork.BudgetsRepository.GetBudgetByUserId(userId, transactionBo.TransactionDate.Month, transactionBo.TransactionDate.Year);
             if(budgetDto != null)

@@ -25,6 +25,8 @@ namespace PFMS.API.Models
         [Required]
         public Guid TransactionCategoryId { get; set; }
 
+        public IFormFile? File { get; set; }
+
         [Required]
         [EnumDataType(typeof(TransactionType), ErrorMessage = ErrorMessages.InvalidTransactionType)]
         public TransactionType TransactionType { get; set; }

@@ -5,3 +5,7 @@
 **/bin/
 **/obj/
 **/PfmsLog*.txt
+
+**/Screenshots/*
+!**/.gitkeep
+

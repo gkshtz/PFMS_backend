@@ -15,6 +15,7 @@ namespace PFMS.DAL.Interfaces
         public ITotalTransactionAmountRespository TotalTransactionAmountsRespository { get; }
         public ITransactionRepository TransactionsRepository { get; }
         public IUserRepository UsersRepository { get; }
+        public IScreenshotsRepository ScreenshotsRepository { get; }
         public Task SaveDatabaseChangesAsync();
     }
 }

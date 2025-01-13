@@ -14,6 +14,7 @@ namespace PFMS.DAL.UnitOfWork
         private ITotalTransactionAmountRespository? _totalTransactionAmountsRepository;
         private ITransactionRepository? _transactionsRepository;
         private IUserRepository? _usersRepository;
+        private IScreenshotsRepository? _screenshotsRepository;
 
         private readonly AppDbContext _appDbContext;
         private readonly IMapper _mapper;
@@ -30,6 +31,7 @@ namespace PFMS.DAL.UnitOfWork
         public ITotalTransactionAmountRespository TotalTransactionAmountsRespository => _totalTransactionAmountsRepository ??= new TotalTransactionAmountRepository(_appDbContext, _mapper);
         public ITransactionRepository TransactionsRepository => _transactionsRepository ??= new TransactionRepository(_appDbContext, _mapper);
         public IUserRepository UsersRepository => _usersRepository ??= new UserRepository(_appDbContext, _mapper);
+        public IScreenshotsRepository ScreenshotsRepository => _screenshotsRepository ??= new ScreenshotsRepository(_appDbContext, _mapper);
 
         public async Task SaveDatabaseChangesAsync()
         {
