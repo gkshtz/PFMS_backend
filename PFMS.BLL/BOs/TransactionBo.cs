@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PFMS.DAL.Entities;
 using PFMS.Utils.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace PFMS.BLL.BOs
 {
@@ -19,6 +20,7 @@ namespace PFMS.BLL.BOs
         public DateTime TransactionDate { get; set; }
         public Guid TransactionCategoryId { get; set; }
         public TransactionType TransactionType { get; set; }
+        public IFormFile? File { get; set; }
         public Guid TotalTransactionAmountId { get; set; }
 
         #region Navigation Properties
