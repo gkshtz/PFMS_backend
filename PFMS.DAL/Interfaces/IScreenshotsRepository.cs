@@ -12,5 +12,6 @@ namespace PFMS.DAL.Interfaces
         public Task AddScreenshot(TransactionScreenshotDto sreenshotDto);
         public Task<TransactionScreenshotDto> GetScreenshotByTransactionId(Guid transactionId);
         public Task DeleteScreenshot(Guid screenshotId);
+        public Task<bool> UpdateScreenshot(TransactionScreenshotDto screenshotDto);
     }
 }

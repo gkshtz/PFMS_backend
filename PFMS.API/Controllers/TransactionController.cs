@@ -79,7 +79,8 @@ namespace PFMS.API.Controllers
         public async Task<IActionResult> PatchAsync([FromBody] TransactionRequestModel transactionRequest, [FromRoute] Guid id)
         {
             var transactionBo = _mapper.Map<TransactionBo>(transactionRequest);
-            await _transactionService.UpdateTransaction(transactionBo, UserId, id);
+            var rootPath = _webHostingEnvironment.ContentRootPath;
+            await _transactionService.UpdateTransaction(transactionBo, UserId, id, rootPath);
             GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
             {
                 StatusCode = 200,

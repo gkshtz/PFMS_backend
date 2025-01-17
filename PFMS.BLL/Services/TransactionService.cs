@@ -141,7 +141,7 @@ namespace PFMS.BLL.Services
             return _mapper.Map<TransactionBo>(transactionDto);
         }
 
-        public async Task UpdateTransaction(TransactionBo transactionBoNew, Guid userId, Guid transactionId)
+        public async Task UpdateTransaction(TransactionBo transactionBoNew, Guid userId, Guid transactionId, string rootPath)
         {
             var totalTransactionAmountDto = await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId);
             var transactionDto = await _unitOfWork.TransactionsRepository.GetByTransactionId(transactionId, userId);
@@ -192,7 +192,43 @@ namespace PFMS.BLL.Services
 
             await _unitOfWork.TransactionsRepository.UpdateTransaction(transactionDto, transactionId, totalTransactionAmountBo.TotalTransactionAmountId);
 
-            //write screenshot update code here
+            if(transactionBoNew.File!=null)
+            {
+                var newFilePath = Path.Combine(rootPath, "Screenshots", transactionBoNew.File.FileName);
+                FileStream fileStream = new FileStream(newFilePath, FileMode.Create);
+                await transactionBoNew.File.CopyToAsync(fileStream);
+
+                var screenshotDto = await _unitOfWork.ScreenshotsRepository.GetScreenshotByTransactionId(transactionId);
+                if(screenshotDto!=null)
+                {
+                    var screenshotBo = _mapper.Map<TransactionScreenshotBo>(screenshotDto);
+
+                    File.Delete(screenshotBo.FilePath);
+
+                    screenshotBo.FileName = Path.GetFileNameWithoutExtension(transactionBoNew.File.FileName);
+                    screenshotBo.FileSizeInBytes = transactionBoNew.File.Length;
+                    screenshotBo.FileExtension = Path.GetExtension(transactionBoNew.File.FileName);
+                    screenshotBo.FilePath = newFilePath;
+
+                    screenshotDto = _mapper.Map<TransactionScreenshotDto>(screenshotBo);
+                    await _unitOfWork.ScreenshotsRepository.UpdateScreenshot(screenshotDto);
+                }
+                else
+                {
+                    var screenshotBo = new TransactionScreenshotBo()
+                    {
+                        ScreenshotId = Guid.NewGuid(),
+                        FileName = Path.GetFileNameWithoutExtension(transactionBoNew.File.FileName),
+                        FileExtension = Path.GetExtension(transactionBoNew.File.FileName),
+                        FileSizeInBytes = transactionBoNew.File.Length,
+                        FilePath = newFilePath,
+                        TransactionId = transactionId
+                    };
+
+                    screenshotDto = _mapper.Map<TransactionScreenshotDto>(screenshotBo);
+                    await _unitOfWork.ScreenshotsRepository.AddScreenshot(screenshotDto);
+                }
+            }
 
             await _unitOfWork.SaveDatabaseChangesAsync();
         }

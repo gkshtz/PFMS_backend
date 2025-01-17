@@ -12,7 +12,7 @@ namespace PFMS.BLL.Interfaces
 
         public Task<TransactionBo> GetByTransactionId(Guid transactionId, Guid userId);
 
-        public Task UpdateTransaction(TransactionBo transactionBo, Guid userId, Guid transactionId);
+        public Task UpdateTransaction(TransactionBo transactionBo, Guid userId, Guid transactionId, string rootPath);
 
         public Task DeleteTransaction(Guid transactionId, Guid userId);
 

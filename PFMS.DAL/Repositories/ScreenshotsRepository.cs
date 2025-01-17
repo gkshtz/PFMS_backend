@@ -42,5 +42,17 @@ namespace PFMS.DAL.Repositories
                 _appDbContext.TransactionScreenshots.Remove(screenshot);
             }
         }
+
+        public async Task<bool> UpdateScreenshot(TransactionScreenshotDto screenshotDto)
+        {
+            var screenshot = await _appDbContext.TransactionScreenshots.AsNoTracking().FirstOrDefaultAsync(x => x.ScreenshotId == screenshotDto.ScreenshotId);
+            if (screenshot == null)
+            {
+                return false;
+            }
+            screenshot = _mapper.Map<TransactionScreenshot>(screenshotDto);
+            _appDbContext.TransactionScreenshots.Update(screenshot);
+            return true;
+        }
     }   
 }
