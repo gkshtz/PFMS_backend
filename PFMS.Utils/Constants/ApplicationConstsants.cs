@@ -16,7 +16,14 @@ namespace PFMS.Utils.Constants
             "/api/users/otp/verify",
             "/api/users/otp/reset-password"
         };
-    
+
+        public static readonly List<string> AllowedExtensions = new List<string>()
+        {
+            ".jpg",
+            ".png",
+            ".jpeg"
+        };
+
         public const string RefreshToken = "refresh-token";
 
         public const string UniqueDeviceId = "unique-device-id";
@@ -29,6 +36,7 @@ namespace PFMS.Utils.Constants
 
         public const string BudgetUpdateMailSubject = "Budget Updated!";
 
+        public const long MaximumScreenshotSize = 5242880; // Bytes in 5MB
         public static string GenerateBudgetUpdateEmailSubject(string username, Months month, int year)
         {
             string body;

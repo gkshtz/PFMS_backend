@@ -3,6 +3,7 @@ using PFMS.Utils.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using PFMS.Utils.Constants;
+using PFMS.API.CustomValidators;
 
 namespace PFMS.API.Models
 {
@@ -25,6 +26,7 @@ namespace PFMS.API.Models
         [Required]
         public Guid TransactionCategoryId { get; set; }
 
+        [ValidateScreenshot]
         public IFormFile? File { get; set; }
 
         [Required]
