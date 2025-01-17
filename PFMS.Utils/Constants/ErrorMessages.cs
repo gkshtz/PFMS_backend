@@ -44,5 +44,7 @@ namespace PFMS.Utils.Constants
         public const string OtpAlreadyVerified = "OTP was already verified, but now becomes expired.";
         public const string BudgetDoesNotBelongToThisUser = "This budget does not belong to this user.";
         public const string BudgetCannotBeSetForPast = "Budget cannot be set for a past month.";
+        public const string FileExtensionNotAllowed = "This file extension not allowed.";
+        public const string ScreenshotSizeTooLarge = "File size much be equal to or less than 5MB.";
     }
 }
