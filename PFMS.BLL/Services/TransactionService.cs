@@ -195,8 +195,6 @@ namespace PFMS.BLL.Services
             if(transactionBoNew.File!=null)
             {
                 var newFilePath = Path.Combine(rootPath, "Screenshots", transactionBoNew.File.FileName);
-                FileStream fileStream = new FileStream(newFilePath, FileMode.Create);
-                await transactionBoNew.File.CopyToAsync(fileStream);
 
                 var screenshotDto = await _unitOfWork.ScreenshotsRepository.GetScreenshotByTransactionId(transactionId);
                 if(screenshotDto!=null)
@@ -228,6 +226,9 @@ namespace PFMS.BLL.Services
                     screenshotDto = _mapper.Map<TransactionScreenshotDto>(screenshotBo);
                     await _unitOfWork.ScreenshotsRepository.AddScreenshot(screenshotDto);
                 }
+
+                FileStream fileStream = new FileStream(newFilePath, FileMode.Create);
+                await transactionBoNew.File.CopyToAsync(fileStream);
             }
 
             await _unitOfWork.SaveDatabaseChangesAsync();

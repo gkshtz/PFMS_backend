@@ -76,7 +76,7 @@ namespace PFMS.API.Controllers
 
         [HttpPatch]
         [Route("{id:Guid}")]
-        public async Task<IActionResult> PatchAsync([FromBody] TransactionRequestModel transactionRequest, [FromRoute] Guid id)
+        public async Task<IActionResult> PatchAsync([FromForm] TransactionRequestModel transactionRequest, [FromRoute] Guid id)
         {
             var transactionBo = _mapper.Map<TransactionBo>(transactionRequest);
             var rootPath = _webHostingEnvironment.ContentRootPath;
