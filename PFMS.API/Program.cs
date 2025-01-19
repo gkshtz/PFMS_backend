@@ -7,6 +7,8 @@ using PFMS.BLL.Interfaces;
 using PFMS.BLL.Mappers;
 using PFMS.BLL.Services;
 using PFMS.DAL.Data;
+using PFMS.DAL.DTOs;
+using PFMS.DAL.Entities;
 using PFMS.DAL.Interfaces;
 using PFMS.DAL.Mapper;
 using PFMS.DAL.Repositories;
@@ -58,7 +60,7 @@ builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 builder.Services.AddScoped<IOneTimePasswordsRespository, OneTimePasswordsRepository>();
-builder.Services.AddScoped<IBudgetsRepository, BudgetsRepository>();
+builder.Services.AddScoped<IBudgetsRepository<BudgetDto>, BudgetsRepository<BudgetDto, Budget>>();
 builder.Services.AddScoped<ITotalTransactionAmountRespository, TotalTransactionAmountRepository>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

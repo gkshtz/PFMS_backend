@@ -40,13 +40,13 @@ namespace PFMS.DAL.Repositories
 
         public async Task<UserDto> GetUserById(Guid userId)
         {
-            var user = await _appDbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId);
+            var user = await _appDbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId);
             return _mapper.Map<UserDto>(user);
         }
 
         public async Task<bool> UpdateUser(UserDto userDto)
         {
-            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userDto.UserId);
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == userDto.Id);
             if(user == null)
             {
                 return false;
@@ -80,7 +80,7 @@ namespace PFMS.DAL.Repositories
 
         public async Task<UserDto> GetUserProfile(Guid userId)
         {
-            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
             return _mapper.Map<UserDto>(user);
         }
     }

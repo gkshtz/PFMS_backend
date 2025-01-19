@@ -45,7 +45,7 @@ namespace PFMS.DAL.Repositories
 
         public async Task<bool> UpdateScreenshot(TransactionScreenshotDto screenshotDto)
         {
-            var screenshot = await _appDbContext.TransactionScreenshots.AsNoTracking().FirstOrDefaultAsync(x => x.ScreenshotId == screenshotDto.ScreenshotId);
+            var screenshot = await _appDbContext.TransactionScreenshots.AsNoTracking().FirstOrDefaultAsync(x => x.Id == screenshotDto.Id);
             if (screenshot == null)
             {
                 return false;

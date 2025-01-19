@@ -24,7 +24,7 @@ namespace PFMS.DAL.Repositories
              because user is already authenticated and a registered user will always have totalTransactionAmount
             Record. So the check is unnecessary */
 
-            var totalTransactionAmountId = totalTransactionAmountDto!.TotalTransactionAmountId;
+            var totalTransactionAmountId = totalTransactionAmountDto!.Id;
 
             IQueryable<Transaction> transactions = _appDbContext.Transactions.Where(x => x.TotalTransactionAmountId == totalTransactionAmountId).AsQueryable();
 
@@ -108,13 +108,13 @@ namespace PFMS.DAL.Repositories
         public async Task<TransactionDto?> GetByTransactionId(Guid transactionId, Guid userId)
         {
             var totalTransactionAmountDto = await GetTotalTransactionAmountByUserId(userId);
-            var transaction = await _appDbContext.Transactions.Include(x=>x.TransactionCategory).Include(x=>x.TotalTransactionAmount).AsNoTracking().FirstOrDefaultAsync(x => x.TotalTransactionAmountId == totalTransactionAmountDto.TotalTransactionAmountId && x.TransactionId == transactionId);
+            var transaction = await _appDbContext.Transactions.Include(x=>x.TransactionCategory).Include(x=>x.TotalTransactionAmount).AsNoTracking().FirstOrDefaultAsync(x => x.TotalTransactionAmountId == totalTransactionAmountDto.Id && x.Id == transactionId);
             return _mapper.Map<TransactionDto>(transaction);
         }
 
         public async Task<bool> UpdateTransaction(TransactionDto transactionDto, Guid transactionId, Guid totalTransactionAmountId)
         {
-            var transaction = await _appDbContext.Transactions.AsNoTracking().FirstOrDefaultAsync(x => x.TransactionId == transactionId && x.TotalTransactionAmountId == totalTransactionAmountId);
+            var transaction = await _appDbContext.Transactions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == transactionId && x.TotalTransactionAmountId == totalTransactionAmountId);
             if(transaction == null)
             {
                 return false;
@@ -128,7 +128,7 @@ namespace PFMS.DAL.Repositories
 
         public async Task<bool> DeleteTransaction(Guid transactionId, Guid totalTransactionAmountId)
         {
-            var transaction = await _appDbContext.Transactions.FirstOrDefaultAsync(x => x.TransactionId == transactionId && x.TotalTransactionAmountId == totalTransactionAmountId);
+            var transaction = await _appDbContext.Transactions.FirstOrDefaultAsync(x => x.Id == transactionId && x.TotalTransactionAmountId == totalTransactionAmountId);
             if(transaction == null)
             {
                 return false;

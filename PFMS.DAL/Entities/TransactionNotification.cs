@@ -1,14 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Entities
 {
-    public class TransactionNotification
+    public class TransactionNotification: IIdentifiable
     {
         [Key]
         [Column("notificationId")]
-        public Guid NotificationId { get; set; }
+        public Guid Id { get; set; }
 
         [Column("transactionAmount")]
         public decimal TransactionAmount { get; set; }

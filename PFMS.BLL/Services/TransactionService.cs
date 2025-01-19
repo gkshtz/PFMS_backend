@@ -292,7 +292,7 @@ namespace PFMS.BLL.Services
             }
 
             //fetch totalTransactionAmountId for fetching totalMonthlyAmountDto
-            var totalTransactionAmountId = (await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId))?.TotalTransactionAmountId;
+            var totalTransactionAmountId = (await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId))?.Id;
             if(totalTransactionAmountId == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);

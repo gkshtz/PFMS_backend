@@ -18,7 +18,7 @@ namespace PFMS.DAL.Repositories
         }
         public async Task<bool> UpdateTotalTransactionAmount(TotalTransactionAmountDto totalTransactionAmountDto)
         {
-            var totalTransactionAmount = await _appDbContext.TotalTransactionAmounts.AsNoTracking().FirstOrDefaultAsync(x => x.TotalTransactionAmountId == totalTransactionAmountDto.TotalTransactionAmountId);
+            var totalTransactionAmount = await _appDbContext.TotalTransactionAmounts.AsNoTracking().FirstOrDefaultAsync(x => x.Id == totalTransactionAmountDto.Id);
             if(totalTransactionAmount == null)
             {
                 return false;

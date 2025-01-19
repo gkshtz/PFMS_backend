@@ -12,14 +12,17 @@ using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Entities;
 using PFMS.DAL.Interfaces;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Repositories
 {
-    public class BudgetsRepository: IBudgetsRepository
+    public class BudgetsRepository<Dto, Entity>: GenericRepository<Dto, Entity>, IBudgetsRepository<Dto>
+        where Dto: class, IIdentifiable
+        where Entity: class, IIdentifiable
     {
         private readonly IMapper _mapper;
         private readonly AppDbContext _appDbcontext;
-        public BudgetsRepository(AppDbContext appDbContext, IMapper mapper)
+        public BudgetsRepository(AppDbContext appDbContext, IMapper mapper): base(appDbContext, mapper)
         {
             _appDbcontext = appDbContext;
             _mapper = mapper;
@@ -44,7 +47,7 @@ namespace PFMS.DAL.Repositories
 
         public async Task<BudgetDto> GetBudgetById(Guid budgetId)
         {
-            var budget = await _appDbcontext.Budgets.AsNoTracking().FirstOrDefaultAsync(x => x.BudgetId == budgetId);
+            var budget = await _appDbcontext.Budgets.AsNoTracking().FirstOrDefaultAsync(x => x.Id == budgetId);
             var budgetDto = _mapper.Map<BudgetDto>(budget);
             return budgetDto;
         }

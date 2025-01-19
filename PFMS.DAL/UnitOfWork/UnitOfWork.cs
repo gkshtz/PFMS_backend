@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using PFMS.DAL.Data;
+using PFMS.DAL.DTOs;
+using PFMS.DAL.Entities;
 using PFMS.DAL.Interfaces;
 using PFMS.DAL.Repositories;
 
@@ -7,7 +9,7 @@ namespace PFMS.DAL.UnitOfWork
 {
     public class UnitOfWork: IUnitOfWork
     {
-        private IBudgetsRepository? _budgetsRespository;
+        private IBudgetsRepository<BudgetDto>? _budgetsRespository;
         private ICategoryRepository? _categoriesRepository;
         private IRolesRepository? _rolesRepository;
         private IOneTimePasswordsRespository? _otpRespository;
@@ -24,7 +26,7 @@ namespace PFMS.DAL.UnitOfWork
             _mapper = mapper;
         }
 
-        public IBudgetsRepository BudgetsRepository => _budgetsRespository ??= new BudgetsRepository(_appDbContext, _mapper);
+        public IBudgetsRepository<BudgetDto> BudgetsRepository => _budgetsRespository ??= new BudgetsRepository<BudgetDto, Budget>(_appDbContext, _mapper);
         public ICategoryRepository CategoriesRepository => _categoriesRepository ??= new CategoryRepository(_appDbContext, _mapper);
         public IOneTimePasswordsRespository OneTimePasswordsRepository => _otpRespository ??= new OneTimePasswordsRepository(_appDbContext, _mapper);
         public IRolesRepository RolesRepository => _rolesRepository ??= new RolesRepository(_appDbContext, _mapper);

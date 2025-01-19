@@ -6,12 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PFMS.Utils.Enums;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.DTOs
 {
-    public class TransactionCategoryDto
+    public class TransactionCategoryDto: IIdentifiable
     {
-        public Guid CategoryId { get; set; }
+        public Guid Id { get; set; }
         public string CategoryName { get; set; }
         public TransactionType TransactionType { get; set; }
     }

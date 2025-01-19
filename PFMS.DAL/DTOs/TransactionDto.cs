@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PFMS.Utils.Enums;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.DTOs
 {
-    public class TransactionDto
+    public class TransactionDto: IIdentifiable
     {
-        public Guid TransactionId { get; set; }
+        public Guid Id { get; set; }
         public string TransactionName { get; set; }
         public string? TransactionDescription { get; set; }
         public decimal TransactionAmount { get; set; }

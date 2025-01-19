@@ -4,12 +4,13 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.DTOs
 {
-    public class UserDto
+    public class UserDto: IIdentifiable
     {
-        public Guid UserId { get; set; }
+        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Age { get; set; }

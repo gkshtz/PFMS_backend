@@ -5,14 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Entities
 { 
-    public class User
+    public class User: IIdentifiable
     {
         [Key]
         [Column("userId")]
-        public Guid UserId { get; set; }
+        public Guid Id { get; set; }
 
         [Column("firstName")]
         public string FirstName { get; set; }
