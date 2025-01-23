@@ -7,7 +7,8 @@ using PFMS.DAL.DTOs;
 
 namespace PFMS.DAL.Interfaces
 {
-    public interface IRolesRepository
+    public interface IRolesRepository<Dto>: IGenericRepository<Dto>
+        where Dto: RoleDto
     {
         public Task<List<RoleDto>> GetAllRoles();
 

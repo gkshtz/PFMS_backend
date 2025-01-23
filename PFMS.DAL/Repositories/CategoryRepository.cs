@@ -5,14 +5,17 @@ using PFMS.DAL.DTOs;
 using PFMS.DAL.Entities;
 using PFMS.DAL.Interfaces;
 using PFMS.Utils.Enums;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Repositories
 {
-    public class CategoryRepository: ICategoryRepository
+    public class CategoryRepository<Dto, Entity>: GenericRepository<Dto, Entity>, ICategoryRepository<Dto>
+        where Dto: TransactionCategoryDto
+        where Entity: TransactionCategory
     {
         private readonly IMapper _mapper;
         private readonly AppDbContext _appDbContext;
-        public CategoryRepository(AppDbContext appDbContext, IMapper mapper)
+        public CategoryRepository(AppDbContext appDbContext, IMapper mapper): base(appDbContext, mapper)
         {
             _mapper = mapper;
             _appDbContext = appDbContext;            

@@ -6,7 +6,7 @@ using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Repositories
 {
-    public class GenericRepository<Dto, Entity>
+    public class GenericRepository<Dto, Entity>: IGenericRepository<Dto>
         where Dto: class, IIdentifiable
         where Entity: class, IIdentifiable
     {

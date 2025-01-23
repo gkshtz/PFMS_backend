@@ -8,7 +8,8 @@ using PFMS.DAL.Entities;
 
 namespace PFMS.DAL.Interfaces
 {
-    public interface ITotalTransactionAmountRespository
+    public interface ITotalTransactionAmountRespository<Dto>: IGenericRepository<Dto>
+        where Dto: TotalTransactionAmountDto
     {
         public Task<bool> UpdateTotalTransactionAmount(TotalTransactionAmountDto totalTransactionAmountDto);
 

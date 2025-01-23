@@ -10,13 +10,13 @@ namespace PFMS.DAL.UnitOfWork
     public class UnitOfWork: IUnitOfWork
     {
         private IBudgetsRepository<BudgetDto>? _budgetsRespository;
-        private ICategoryRepository? _categoriesRepository;
-        private IRolesRepository? _rolesRepository;
-        private IOneTimePasswordsRespository? _otpRespository;
-        private ITotalTransactionAmountRespository? _totalTransactionAmountsRepository;
-        private ITransactionRepository? _transactionsRepository;
-        private IUserRepository? _usersRepository;
-        private IScreenshotsRepository? _screenshotsRepository;
+        private ICategoryRepository<TransactionCategoryDto>? _categoriesRepository;
+        private IRolesRepository<RoleDto>? _rolesRepository;
+        private IOneTimePasswordsRespository<OneTimePasswordDto>? _otpRespository;
+        private ITotalTransactionAmountRespository<TotalTransactionAmountDto>? _totalTransactionAmountsRepository;
+        private ITransactionRepository<TransactionDto>? _transactionsRepository;
+        private IUserRepository<UserDto>? _usersRepository;
+        private IScreenshotsRepository<TransactionScreenshotDto>? _screenshotsRepository;
 
         private readonly AppDbContext _appDbContext;
         private readonly IMapper _mapper;
@@ -27,13 +27,13 @@ namespace PFMS.DAL.UnitOfWork
         }
 
         public IBudgetsRepository<BudgetDto> BudgetsRepository => _budgetsRespository ??= new BudgetsRepository<BudgetDto, Budget>(_appDbContext, _mapper);
-        public ICategoryRepository CategoriesRepository => _categoriesRepository ??= new CategoryRepository(_appDbContext, _mapper);
-        public IOneTimePasswordsRespository OneTimePasswordsRepository => _otpRespository ??= new OneTimePasswordsRepository(_appDbContext, _mapper);
-        public IRolesRepository RolesRepository => _rolesRepository ??= new RolesRepository(_appDbContext, _mapper);
-        public ITotalTransactionAmountRespository TotalTransactionAmountsRespository => _totalTransactionAmountsRepository ??= new TotalTransactionAmountRepository(_appDbContext, _mapper);
-        public ITransactionRepository TransactionsRepository => _transactionsRepository ??= new TransactionRepository(_appDbContext, _mapper);
-        public IUserRepository UsersRepository => _usersRepository ??= new UserRepository(_appDbContext, _mapper);
-        public IScreenshotsRepository ScreenshotsRepository => _screenshotsRepository ??= new ScreenshotsRepository(_appDbContext, _mapper);
+        public ICategoryRepository<TransactionCategoryDto> CategoriesRepository => _categoriesRepository ??= new CategoryRepository<TransactionCategoryDto, TransactionCategory>(_appDbContext, _mapper);
+        public IOneTimePasswordsRespository<OneTimePasswordDto> OneTimePasswordsRepository => _otpRespository ??= new OneTimePasswordsRepository<OneTimePasswordDto, OneTimePassword>(_appDbContext, _mapper);
+        public IRolesRepository<RoleDto> RolesRepository => _rolesRepository ??= new RolesRepository<RoleDto, Role>(_appDbContext, _mapper);
+        public ITotalTransactionAmountRespository<TotalTransactionAmountDto> TotalTransactionAmountsRespository => _totalTransactionAmountsRepository ??= new TotalTransactionAmountRepository<TotalTransactionAmountDto, TotalTransactionAmount>(_appDbContext, _mapper);
+        public ITransactionRepository<TransactionDto> TransactionsRepository => _transactionsRepository ??= new TransactionRepository<TransactionDto, Transaction>(_appDbContext, _mapper);
+        public IUserRepository<UserDto> UsersRepository => _usersRepository ??= new UserRepository<UserDto, User>(_appDbContext, _mapper);
+        public IScreenshotsRepository<TransactionScreenshotDto> ScreenshotsRepository => _screenshotsRepository ??= new ScreenshotsRepository<TransactionScreenshotDto, TransactionScreenshot>(_appDbContext, _mapper);
 
         public async Task SaveDatabaseChangesAsync()
         {

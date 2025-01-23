@@ -17,8 +17,8 @@ using PFMS.Utils.Interfaces;
 namespace PFMS.DAL.Repositories
 {
     public class BudgetsRepository<Dto, Entity>: GenericRepository<Dto, Entity>, IBudgetsRepository<Dto>
-        where Dto: class, IIdentifiable
-        where Entity: class, IIdentifiable
+        where Dto: BudgetDto
+        where Entity: Budget
     {
         private readonly IMapper _mapper;
         private readonly AppDbContext _appDbcontext;

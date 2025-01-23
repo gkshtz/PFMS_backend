@@ -7,7 +7,8 @@ using PFMS.DAL.DTOs;
 
 namespace PFMS.DAL.Interfaces
 {
-    public interface IOneTimePasswordsRespository
+    public interface IOneTimePasswordsRespository<Dto>: IGenericRepository<Dto>
+        where Dto: OneTimePasswordDto
     {
         public Task AddOtp(OneTimePasswordDto otpDto);
 

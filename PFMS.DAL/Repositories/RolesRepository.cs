@@ -7,11 +7,13 @@ using PFMS.DAL.Interfaces;
 
 namespace PFMS.DAL.Repositories
 {
-    public class RolesRepository: IRolesRepository
+    public class RolesRepository<Dto, Entity>: GenericRepository<Dto, Entity>, IRolesRepository<Dto>
+        where Entity: Role
+        where Dto: RoleDto
     {
         private readonly AppDbContext _appDbContext;
         private readonly IMapper _mapper;
-        public RolesRepository(AppDbContext appDbContext, IMapper mapper)
+        public RolesRepository(AppDbContext appDbContext, IMapper mapper): base(appDbContext, mapper)
         {
             _appDbContext = appDbContext;
             _mapper = mapper;

@@ -12,11 +12,13 @@ using PFMS.DAL.Interfaces;
 
 namespace PFMS.DAL.Repositories
 {
-    class ScreenshotsRepository: IScreenshotsRepository
+    class ScreenshotsRepository<Dto, Entity>: GenericRepository<Dto, Entity> ,IScreenshotsRepository<Dto>
+        where Dto: TransactionScreenshotDto
+        where Entity: TransactionScreenshot
     {
         private readonly IMapper _mapper;
         private readonly AppDbContext _appDbContext;
-        public ScreenshotsRepository(AppDbContext appDbContext, IMapper mapper)
+        public ScreenshotsRepository(AppDbContext appDbContext, IMapper mapper): base(appDbContext, mapper)
         {
             _appDbContext = appDbContext;
             _mapper = mapper;

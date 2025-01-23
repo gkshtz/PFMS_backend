@@ -9,7 +9,7 @@ using PFMS.Utils.Interfaces;
 namespace PFMS.DAL.Interfaces
 {
     public interface IBudgetsRepository<Dto>: IGenericRepository<Dto>
-        where Dto: class, IIdentifiable
+        where Dto: BudgetDto
     {
         public Task AddBudget(BudgetDto budgetDto);
         public Task<BudgetDto?> GetBudgetByUserId(Guid userId, int month, int year);

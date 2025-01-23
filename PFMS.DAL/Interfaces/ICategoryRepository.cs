@@ -1,9 +1,11 @@
 ﻿using PFMS.DAL.DTOs;
 using PFMS.Utils.Enums;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Interfaces
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository<Dto>: IGenericRepository<Dto>
+        where Dto: TransactionCategoryDto
     {
         public Task<List<TransactionCategoryDto>> GetAllCategories(Guid userId, TransactionType transactionType);
 

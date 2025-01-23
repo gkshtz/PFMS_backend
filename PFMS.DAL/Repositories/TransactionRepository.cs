@@ -8,11 +8,13 @@ using PFMS.DAL.Interfaces;
 
 namespace PFMS.DAL.Repositories
 {
-    public class TransactionRepository: ITransactionRepository
+    public class TransactionRepository<Dto, Entity>: GenericRepository<Dto, Entity>, ITransactionRepository<Dto>
+        where Dto: TransactionDto
+        where Entity: Transaction
     {
         private readonly AppDbContext _appDbContext;
         private readonly IMapper _mapper;
-        public TransactionRepository(AppDbContext appDbContext, IMapper mapper)
+        public TransactionRepository(AppDbContext appDbContext, IMapper mapper): base(appDbContext, mapper)
         {
             _appDbContext = appDbContext;
             _mapper = mapper;

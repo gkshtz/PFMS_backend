@@ -115,7 +115,7 @@ namespace PFMS.BLL.Services
                 var budgetBo = _mapper.Map<BudgetBo>(budgetDto);
                 if(totalTransactionAmountBo.TotalExpence > budgetBo.BudgetAmount)
                 {
-                    var userDto = await _unitOfWork.UsersRepository.GetUserById(userId);
+                    var userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
                     var userBo = _mapper.Map<UserBo>(userDto);
 
                     var subject = ApplicationConstsants.BudgetExceededMailSubject;
