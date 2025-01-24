@@ -26,13 +26,13 @@ namespace PFMS.BLL.Services
 
         public async Task AddCategory(TransactionCategoryBo categoryBo, Guid userId)
         {
-            categoryBo.CategoryId = Guid.NewGuid();
+            categoryBo.Id = Guid.NewGuid();
             var categoryDto = _mapper.Map<TransactionCategoryDto>(categoryBo);
             await _unitOfWork.CategoriesRepository.AddAsync(categoryDto);
 
             var categoryToUserBo = new CategoryToUserBo()
             {
-                CategoryId = categoryBo.CategoryId,
+                CategoryId = categoryBo.Id,
                 UserId = userId
             };
             var categoryToUerDto = _mapper.Map<CategoryToUserDto>(categoryToUserBo);

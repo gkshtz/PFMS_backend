@@ -71,13 +71,13 @@ namespace PFMS.API.Tests.Controllers
 
             var budgetResponseModel = new BudgetResponseModel()
             {
-                BudgetId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 BudgetAmount = 1000,
                 SpentPercentage = 30
             };
             var budgetBo = new BudgetBo()
             {
-                BudgetId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 BudgetAmount = 1000,
                 SpentPercentage = 30
             };

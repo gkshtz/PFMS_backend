@@ -45,9 +45,9 @@ namespace PFMS.BLL.Services
         public async Task<UserBo> AddUserAsync(UserBo userBo)
         {
             TotalTransactionAmountBo totalTransactionAmountBo = new TotalTransactionAmountBo();
-            userBo.UserId = Guid.NewGuid();
-            totalTransactionAmountBo.TotalTransactionAmountId = Guid.NewGuid();
-            totalTransactionAmountBo.UserId = userBo.UserId;
+            userBo.Id = Guid.NewGuid();
+            totalTransactionAmountBo.Id = Guid.NewGuid();
+            totalTransactionAmountBo.UserId = userBo.Id;
 
             // we dont want to store the password in plain text
             userBo.Password = _passwordHasher.HashPassword(null, userBo.Password);
@@ -103,7 +103,7 @@ namespace PFMS.BLL.Services
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
             }
 
-            userBo.UserId = userId;
+            userBo.Id = userId;
             userDto = _mapper.Map<UserDto>(userBo);
 
             await _unitOfWork.UsersRepository.UpdateUser(userDto);
@@ -233,7 +233,7 @@ namespace PFMS.BLL.Services
             //Generate Access Token
             var claims = new List<Claim> {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]!),
-                        new Claim("UserId", userBo.UserId.ToString()),
+                        new Claim("UserId", userBo.Id.ToString()),
                         new Claim("Email",userBo.Email),
                         new Claim("FirstName", userBo.FirstName),
                         new Claim("LastName", userBo.LastName)
@@ -257,7 +257,7 @@ namespace PFMS.BLL.Services
         {
             var claims = new List<Claim>()
             {
-                new Claim("UserId", userBo.UserId.ToString()),
+                new Claim("UserId", userBo.Id.ToString()),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["RefreshToken:Key"]!));

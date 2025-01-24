@@ -111,7 +111,7 @@ namespace PFMS.API.Tests.Controllers
 
             var userBo = new UserBo()
             {
-                UserId = Guid.Parse("8871e8f9-ddb1-4061-89b6-b81846dd7b6b"),
+                Id = Guid.Parse("8871e8f9-ddb1-4061-89b6-b81846dd7b6b"),
                 FirstName = "Test",
                 LastName = "Test",
                 Email = "Test",
@@ -122,7 +122,7 @@ namespace PFMS.API.Tests.Controllers
 
             var userResponseModel = new UserResponseModel()
             {
-                UserId = Guid.Parse("8871e8f9-ddb1-4061-89b6-b81846dd7b6b"),
+                Id = Guid.Parse("8871e8f9-ddb1-4061-89b6-b81846dd7b6b"),
                 FirstName = "Test",
                 LastName = "Test",
                 Email = "Test",
@@ -154,7 +154,7 @@ namespace PFMS.API.Tests.Controllers
 
             Assert.Equal(201, successResponse.StatusCode);
             Assert.NotNull(successResponse.ResponseData);
-            Assert.Equal(Guid.Parse("8871e8f9-ddb1-4061-89b6-b81846dd7b6b"), successResponse.ResponseData.UserId);
+            Assert.Equal(Guid.Parse("8871e8f9-ddb1-4061-89b6-b81846dd7b6b"), successResponse.ResponseData.Id);
             Assert.Equal("Test", successResponse.ResponseData.FirstName);
         }
 

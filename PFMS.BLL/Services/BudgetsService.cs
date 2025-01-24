@@ -36,7 +36,7 @@ namespace PFMS.BLL.Services
                 throw new BadRequestException(ErrorMessages.BudgetCannotBeSetForPast);
             }
 
-            budgetBo.BudgetId = Guid.NewGuid();
+            budgetBo.Id = Guid.NewGuid();
             budgetBo.UserId = userId;
 
             var budgetDto = _mapper.Map<BudgetDto>(budgetBo);
@@ -75,7 +75,7 @@ namespace PFMS.BLL.Services
             }
             else
             {
-                var totalMonthlyAmountDto = await _unitOfWork.TotalTransactionAmountsRespository.GetTotalMonthlyAmountOfParticularMonthAndYear(totalTransactionAmountBo.TotalTransactionAmountId, month, year);
+                var totalMonthlyAmountDto = await _unitOfWork.TotalTransactionAmountsRespository.GetTotalMonthlyAmountOfParticularMonthAndYear(totalTransactionAmountBo.Id, month, year);
                 var totalMonthlyAmountBo = _mapper.Map<TotalMonthlyAmountBo>(totalMonthlyAmountDto);
                 totalExpence = totalMonthlyAmountBo?.TotalExpenceOfMonth ?? 0;
             }
@@ -102,7 +102,7 @@ namespace PFMS.BLL.Services
             }
 
             //update the budget
-            budgetBo.BudgetId = budgetId;
+            budgetBo.Id = budgetId;
             budgetBo.UserId = userId;
             budgetDto = _mapper.Map<BudgetDto>(budgetBo);
 
@@ -157,7 +157,7 @@ namespace PFMS.BLL.Services
             }
             else
             {
-                var totalTransactionAmountDto = await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userBo.UserId);
+                var totalTransactionAmountDto = await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userBo.Id);
                 var totalTransactionAmountBo = _mapper.Map<TotalTransactionAmountBo>(totalTransactionAmountDto);
 
                 var totalExpence = totalTransactionAmountBo.TotalExpence;

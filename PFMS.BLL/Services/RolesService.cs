@@ -23,7 +23,7 @@ namespace PFMS.BLL.Services
 
         public async Task AddRole(RoleBo roleBo)
         {
-            roleBo.RoleId = Guid.NewGuid();
+            roleBo.Id = Guid.NewGuid();
             var roleDto = _mapper.Map<RoleDto>(roleBo);
             await _unitOfWork.RolesRepository.AddRole(roleDto);
 

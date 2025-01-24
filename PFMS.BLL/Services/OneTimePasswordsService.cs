@@ -50,9 +50,9 @@ namespace PFMS.BLL.Services
 
             var otpBo = new OneTimePasswordBo()
             {
-                OtpId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 Otp = otp,
-                UserId = userBo.UserId,
+                UserId = userBo.Id,
                 IsVerified = false,
                 Expires = DateTime.UtcNow.AddMinutes(7),
                 UniqueDeviceId = deviceId
@@ -103,7 +103,7 @@ namespace PFMS.BLL.Services
                 throw new ForbiddenException(ErrorMessages.UniqueDeviceIdNotMatch);
             }
 
-            if(otpBo.UserId != userBo.UserId)
+            if(otpBo.UserId != userBo.Id)
             {
                 throw new ForbiddenException(ErrorMessages.UserNotAllowedToResetPassword);
             }
