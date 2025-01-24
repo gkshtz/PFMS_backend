@@ -1,8 +1,10 @@
-﻿namespace PFMS.API.Models
+﻿using PFMS.Utils.Interfaces;
+
+namespace PFMS.API.Models
 {
-    public class RoleResponseModel
+    public class RoleResponseModel: IIdentifiable
     {
-        public Guid RoleId { get; set; }
+        public Guid Id { get; set; }
         public string RoleName { get; set; }
     }
 }

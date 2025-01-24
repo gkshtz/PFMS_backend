@@ -5,14 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Entities
 {
-    public class Role
+    public class Role: IIdentifiable
     {
         [Key]
         [Column("roleId")]
-        public Guid RoleId { get; set; }
+        public Guid Id { get; set; }
 
         [Column("roleName")]
         public string RoleName { get; set; }

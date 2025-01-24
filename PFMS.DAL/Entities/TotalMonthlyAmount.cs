@@ -5,14 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Entities
 {
-    public class TotalMonthlyAmount
+    public class TotalMonthlyAmount: IIdentifiable
     {
         [Column("totalMonthlyAmountId")]
         [Key]
-        public Guid TotalMonthlyAmountId { get; set; }
+        public Guid Id { get; set; }
 
         [Column("totalExpenceOfMonth")]
         public decimal TotalExpenceOfMonth { get; set; }

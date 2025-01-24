@@ -11,6 +11,7 @@ using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Interfaces;
+using PFMS.DAL.UnitOfWork;
 using PFMS.Utils.Constants;
 using PFMS.Utils.CustomExceptions;
 
@@ -37,7 +38,7 @@ namespace PFMS.BLL.Services
 
         public async Task<List<UserBo>> GetAllUsers()
         {
-            var userDtos = await _unitOfWork.UsersRepository.GetAllUsers();
+            var userDtos = await _unitOfWork.UsersRepository.GetAllAsync();
             return _mapper.Map<List<UserBo>>(userDtos);
         }
 
@@ -53,8 +54,10 @@ namespace PFMS.BLL.Services
 
             var userDto = _mapper.Map<UserDto>(userBo);
             var totalTransactionAmountDto = _mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo);
-               
-            userDto = await _unitOfWork.UsersRepository.AddUser(userDto, totalTransactionAmountDto);
+
+            await _unitOfWork.UsersRepository.AddAsync(userDto);
+
+            await _unitOfWork.TotalTransactionAmountsRespository.AddAsync(totalTransactionAmountDto);
 
             await _unitOfWork.SaveDatabaseChangesAsync();
 
@@ -94,7 +97,7 @@ namespace PFMS.BLL.Services
 
         public async Task UpdateUserProfile(UserBo userBo, Guid userId)
         {
-            var userDto = await _unitOfWork.UsersRepository.GetUserById(userId);
+            var userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
@@ -110,7 +113,7 @@ namespace PFMS.BLL.Services
 
         public async Task UpdatePassword(string oldPassword, string newPassword, Guid userId)
         {
-            var userDto = await _unitOfWork.UsersRepository.GetUserById(userId);
+            var userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
@@ -133,7 +136,7 @@ namespace PFMS.BLL.Services
 
         public async Task<UserBo> GetUserProfile(Guid userId)
         {
-            var userDto = await _unitOfWork.UsersRepository.GetUserProfile(userId);
+            var userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
@@ -172,7 +175,7 @@ namespace PFMS.BLL.Services
                 throw new BadRequestException(ErrorMessages.UserIdNotPresentInRefreshToken);
             }
 
-            var userDto = await _unitOfWork.UsersRepository.GetUserById(Guid.Parse(userId));
+            var userDto = await _unitOfWork.UsersRepository.GetByIdAsync(Guid.Parse(userId));
             var userBo = _mapper.Map<UserBo>(userDto);
 
             string accessToken = GenerateAccessToken(userBo);

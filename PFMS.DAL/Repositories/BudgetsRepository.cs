@@ -12,56 +12,26 @@ using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Entities;
 using PFMS.DAL.Interfaces;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Repositories
 {
-    public class BudgetsRepository: IBudgetsRepository
+    public class BudgetsRepository<Dto, Entity>: GenericRepository<Dto, Entity>, IBudgetsRepository<Dto>
+        where Dto: BudgetDto
+        where Entity: Budget
     {
         private readonly IMapper _mapper;
         private readonly AppDbContext _appDbcontext;
-        public BudgetsRepository(AppDbContext appDbContext, IMapper mapper)
+        public BudgetsRepository(AppDbContext appDbContext, IMapper mapper): base(appDbContext, mapper)
         {
             _appDbcontext = appDbContext;
             _mapper = mapper;
-        }
-        public async Task AddBudget(BudgetDto budgetDto)
-        {
-            var budget = _mapper.Map<Budget>(budgetDto);
-            await _appDbcontext.Budgets.AddAsync(budget);
         }
 
         public async Task<BudgetDto?> GetBudgetByUserId(Guid userId, int month, int year)
         {
             var budget = await _appDbcontext.Budgets.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId && x.Month == month && x.Year == year);
             return _mapper.Map<BudgetDto?>(budget);
-        }
-
-        public async Task UpdateBudget(BudgetDto budgetDto)
-        {
-            var budget = _mapper.Map<Budget>(budgetDto);
-            _appDbcontext.Budgets.Update(budget);
-        }
-
-        public async Task<BudgetDto> GetBudgetById(Guid budgetId)
-        {
-            var budget = await _appDbcontext.Budgets.AsNoTracking().FirstOrDefaultAsync(x => x.BudgetId == budgetId);
-            var budgetDto = _mapper.Map<BudgetDto>(budget);
-            return budgetDto;
-        }
-
-        public async Task<bool> DeleteBudget(Guid budgetId)
-        {
-            var budgetDto = await GetBudgetById(budgetId);
-            if(budgetDto == null)
-            {
-                return false;
-            }
-
-            var budget = _mapper.Map<Budget>(budgetDto);
-
-            _appDbcontext.Budgets.Remove(budget);
-
-            return true;
         }
     }
 }

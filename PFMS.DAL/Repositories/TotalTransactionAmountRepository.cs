@@ -7,18 +7,20 @@ using PFMS.DAL.Interfaces;
 
 namespace PFMS.DAL.Repositories
 {
-    public class TotalTransactionAmountRepository: ITotalTransactionAmountRespository
+    public class TotalTransactionAmountRepository<Dto, Entity>: GenericRepository<Dto, Entity> , ITotalTransactionAmountRespository<Dto>
+        where Dto: TotalTransactionAmountDto
+        where Entity: TotalTransactionAmount
     {
         private readonly IMapper _mapper;
         private readonly AppDbContext _appDbContext;
-        public TotalTransactionAmountRepository(AppDbContext appDbContext, IMapper mapper)
+        public TotalTransactionAmountRepository(AppDbContext appDbContext, IMapper mapper): base(appDbContext, mapper)
         {
             _appDbContext = appDbContext;
             _mapper = mapper;
         }
         public async Task<bool> UpdateTotalTransactionAmount(TotalTransactionAmountDto totalTransactionAmountDto)
         {
-            var totalTransactionAmount = await _appDbContext.TotalTransactionAmounts.AsNoTracking().FirstOrDefaultAsync(x => x.TotalTransactionAmountId == totalTransactionAmountDto.TotalTransactionAmountId);
+            var totalTransactionAmount = await _appDbContext.TotalTransactionAmounts.AsNoTracking().FirstOrDefaultAsync(x => x.Id == totalTransactionAmountDto.Id);
             if(totalTransactionAmount == null)
             {
                 return false;

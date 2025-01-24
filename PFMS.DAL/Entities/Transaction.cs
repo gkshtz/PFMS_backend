@@ -6,14 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PFMS.Utils.Enums;
- 
+using PFMS.Utils.Interfaces;
+
 namespace PFMS.DAL.Entities
 {
-    public class Transaction
+    public class Transaction: IIdentifiable
     {
         [Column("transactionId")]
         [Key]
-        public Guid TransactionId { get; set; }
+        public Guid Id { get; set; }
         [Column("transactionName")]
         public string TransactionName { get; set; }
         [Column("transactionDescription")]

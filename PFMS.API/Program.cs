@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PFMS.API.Mappers;
@@ -7,6 +8,8 @@ using PFMS.BLL.Interfaces;
 using PFMS.BLL.Mappers;
 using PFMS.BLL.Services;
 using PFMS.DAL.Data;
+using PFMS.DAL.DTOs;
+using PFMS.DAL.Entities;
 using PFMS.DAL.Interfaces;
 using PFMS.DAL.Mapper;
 using PFMS.DAL.Repositories;
@@ -53,13 +56,13 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IOneTimePasswordsService, OneTimePasswordsService>();
 builder.Services.AddScoped<IBudgetsService, BudgetsService>();
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IRolesRepository, RolesRepository>();
-builder.Services.AddScoped<IOneTimePasswordsRespository, OneTimePasswordsRepository>();
-builder.Services.AddScoped<IBudgetsRepository, BudgetsRepository>();
-builder.Services.AddScoped<ITotalTransactionAmountRespository, TotalTransactionAmountRepository>();
+builder.Services.AddScoped<IUserRepository<UserDto>, UserRepository<UserDto, User>>();
+builder.Services.AddScoped<ITransactionRepository<TransactionDto>, TransactionRepository<TransactionDto, Transaction>>();
+builder.Services.AddScoped<ICategoryRepository<TransactionCategoryDto>, CategoryRepository<TransactionCategoryDto , TransactionCategory>>();
+builder.Services.AddScoped<IRolesRepository<RoleDto>, RolesRepository<RoleDto, Role>>();
+builder.Services.AddScoped<IOneTimePasswordsRespository<OneTimePasswordDto>, OneTimePasswordsRepository<OneTimePasswordDto, OneTimePassword>>();
+builder.Services.AddScoped<IBudgetsRepository<BudgetDto>, BudgetsRepository<BudgetDto, Budget>>();
+builder.Services.AddScoped<ITotalTransactionAmountRespository<TotalTransactionAmountDto>, TotalTransactionAmountRepository<TotalTransactionAmountDto, TotalTransactionAmount>>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

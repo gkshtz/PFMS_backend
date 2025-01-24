@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.DTOs
 {
-    public class RoleDto
+    public class RoleDto: IIdentifiable
     {
-        public Guid RoleId { get; set; }
+        public Guid Id { get; set; }
         public string RoleName { get; set; }
     }
 }

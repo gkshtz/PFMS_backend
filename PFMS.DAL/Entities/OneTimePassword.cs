@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Entities
 {
-    public class OneTimePassword
+    public class OneTimePassword: IIdentifiable
     {
         [Key]
         [Column("otpId")]
-        public Guid OtpId { get; set; }
+        public Guid Id { get; set; }
 
         [Column("otp")]
         public string Otp { get; set; }

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.DTOs
 {
-    public class TransactionScreenshotDto
+    public class TransactionScreenshotDto: IIdentifiable
     {
-        public Guid ScreenshotId { get; set; }
+        public Guid Id { get; set; }
         public string FileName { get; set; }
         public string FileExtension { get; set; }
         public long FileSizeInBtes { get; set; }

@@ -1,10 +1,11 @@
 ﻿using PFMS.Utils.Enums;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.API.Models
 {
-    public class TransactionResponseModel
+    public class TransactionResponseModel: IIdentifiable
     {
-        public Guid TransactionId { get; set; }
+        public Guid Id { get; set; }
         public string TransactionName { get; set; }
         public string? TransactionDescription { get; set; }
         public decimal TransactionAmount { get; set; }

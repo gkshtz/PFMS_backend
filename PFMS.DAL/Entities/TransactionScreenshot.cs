@@ -5,14 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Entities
 {
-    public class TransactionScreenshot
+    public class TransactionScreenshot: IIdentifiable
     {
         [Key]
         [Column("screenshotId")]
-        public Guid ScreenshotId { get; set; }
+        public Guid Id { get; set; }
 
         [Column("fileName")]
         public string FileName { get; set; }

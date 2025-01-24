@@ -6,15 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Entities
 {
     [Index(nameof(Month), nameof(Year), IsUnique = true)]
-    public class Budget
+    public class Budget: IIdentifiable
     {
         [Key]
         [Column("budgetId")]
-        public Guid BudgetId { get; set; }
+        public Guid Id { get; set; }
 
         [Column("budgetAmount")]
         public decimal BudgetAmount { get; set; }

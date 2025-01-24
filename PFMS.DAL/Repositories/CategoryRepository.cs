@@ -5,14 +5,17 @@ using PFMS.DAL.DTOs;
 using PFMS.DAL.Entities;
 using PFMS.DAL.Interfaces;
 using PFMS.Utils.Enums;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Repositories
 {
-    public class CategoryRepository: ICategoryRepository
+    public class CategoryRepository<Dto, Entity>: GenericRepository<Dto, Entity>, ICategoryRepository<Dto>
+        where Dto: TransactionCategoryDto
+        where Entity: TransactionCategory
     {
         private readonly IMapper _mapper;
         private readonly AppDbContext _appDbContext;
-        public CategoryRepository(AppDbContext appDbContext, IMapper mapper)
+        public CategoryRepository(AppDbContext appDbContext, IMapper mapper): base(appDbContext, mapper)
         {
             _mapper = mapper;
             _appDbContext = appDbContext;            
@@ -23,27 +26,10 @@ namespace PFMS.DAL.Repositories
             return _mapper.Map<List<TransactionCategoryDto>>(categories);
         }
 
-        public async Task AddCategory(TransactionCategoryDto categoryDto)
-        {
-            var category = _mapper.Map<TransactionCategory>(categoryDto);
-            await _appDbContext.TransactionCategories.AddAsync(category);
-        }
-
         public async Task AddCategoryToUser(CategoryToUserDto categoryToUserDto)
         {
             var categoryToUser = _mapper.Map<CategoryToUser>(categoryToUserDto);
             await _appDbContext.CategoryToUser.AddAsync(categoryToUser);
-        }
-
-        public async Task<bool> DeleteCategory(Guid categoryId)
-        {
-            var category = await _appDbContext.TransactionCategories.FindAsync(categoryId);
-            if(category == null)
-            {
-                return false;
-            }
-            _appDbContext.TransactionCategories.Remove(category);
-            return true;
         }
 
         public async Task<bool> DeleteCategoryToUser(Guid categoryId)

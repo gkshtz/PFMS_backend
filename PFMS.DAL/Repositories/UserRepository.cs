@@ -7,30 +7,18 @@ using PFMS.DAL.Interfaces;
 
 namespace PFMS.DAL.Repositories
 {
-    public class UserRepository: IUserRepository
+    public class UserRepository<Dto, Entity>: GenericRepository<Dto, Entity>, IUserRepository<Dto>
+        where Dto: UserDto
+        where Entity: User
     {
         private readonly AppDbContext _appDbContext;
         private readonly IMapper _mapper;
-        public UserRepository(AppDbContext appDbContext, IMapper mapper)
+        public UserRepository(AppDbContext appDbContext, IMapper mapper): base(appDbContext, mapper)
         {
             _mapper = mapper;
             _appDbContext = appDbContext;
         }
 
-        public async Task<List<UserDto>> GetAllUsers()
-        {
-            var users = await _appDbContext.Users.ToListAsync();
-            return _mapper.Map<List<UserDto>>(users);
-        }
-
-        public async Task<UserDto> AddUser(UserDto userDto, TotalTransactionAmountDto totalTransactionAmountDto)
-        {
-            var user = _mapper.Map<User>(userDto);
-            var totalTransactionAmounts = _mapper.Map<TotalTransactionAmount>(totalTransactionAmountDto);
-            await _appDbContext.Users.AddAsync(user);
-            await _appDbContext.TotalTransactionAmounts.AddAsync(totalTransactionAmounts);
-            return _mapper.Map<UserDto>(user);
-        }
 
         public async Task<UserDto> FindUserByEmail(string email)
         {
@@ -38,15 +26,9 @@ namespace PFMS.DAL.Repositories
             return _mapper.Map<UserDto>(user);
         }
 
-        public async Task<UserDto> GetUserById(Guid userId)
-        {
-            var user = await _appDbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId);
-            return _mapper.Map<UserDto>(user);
-        }
-
         public async Task<bool> UpdateUser(UserDto userDto)
         {
-            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userDto.UserId);
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == userDto.Id);
             if(user == null)
             {
                 return false;
@@ -63,25 +45,15 @@ namespace PFMS.DAL.Repositories
 
         public async Task<bool> UpdatePassword(string newPassword, Guid userId)
         {
-            var userDto = await GetUserById(userId);
-            if(userDto == null)
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
             {
                 return false;
             }
 
-            userDto.Password = newPassword;
-
-            var user = _mapper.Map<User>(userDto);
-
-            _appDbContext.Users.Update(user);
+            user.Password = newPassword;// We just update the entity and EF CORE will track the changes, we will save the changes later
 
             return true;
-        }
-
-        public async Task<UserDto> GetUserProfile(Guid userId)
-        {
-            var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-            return _mapper.Map<UserDto>(user);
         }
     }
 }

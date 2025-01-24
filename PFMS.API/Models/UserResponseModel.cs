@@ -1,8 +1,10 @@
-﻿namespace PFMS.API.Models
+﻿using PFMS.Utils.Interfaces;
+
+namespace PFMS.API.Models
 {
-    public class UserResponseModel
+    public class UserResponseModel: IIdentifiable
     {
-        public Guid UserId { get; set; }
+        public Guid Id { get; set; }
 
         public string FirstName { get; set; }
 

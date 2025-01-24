@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Entities
 {
-    public class TotalTransactionAmount
+    public class TotalTransactionAmount: IIdentifiable
     {
         [Key]
         [Column("totalTransactionAmountId")]
-        public Guid TotalTransactionAmountId { get; set; }
+        public Guid Id { get; set; }
 
         [Column("totalExpence")]
         public decimal TotalExpence { get; set; }

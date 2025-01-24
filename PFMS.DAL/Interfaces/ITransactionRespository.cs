@@ -3,7 +3,8 @@ using PFMS.Utils.RequestData;
 
 namespace PFMS.DAL.Interfaces
 {
-    public interface ITransactionRepository
+    public interface ITransactionRepository<Dto>: IGenericRepository<Dto>
+        where Dto: TransactionDto
     {
         public Task<List<TransactionDto>> GetAllTransactionsAsync(Guid userId, Filter? filter, Sort? sort, Pagination pagination);
 

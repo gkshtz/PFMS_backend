@@ -115,7 +115,7 @@ namespace PFMS.BLL.Services
                 var budgetBo = _mapper.Map<BudgetBo>(budgetDto);
                 if(totalTransactionAmountBo.TotalExpence > budgetBo.BudgetAmount)
                 {
-                    var userDto = await _unitOfWork.UsersRepository.GetUserById(userId);
+                    var userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
                     var userBo = _mapper.Map<UserBo>(userDto);
 
                     var subject = ApplicationConstsants.BudgetExceededMailSubject;
@@ -292,7 +292,7 @@ namespace PFMS.BLL.Services
             }
 
             //fetch totalTransactionAmountId for fetching totalMonthlyAmountDto
-            var totalTransactionAmountId = (await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId))?.TotalTransactionAmountId;
+            var totalTransactionAmountId = (await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId))?.Id;
             if(totalTransactionAmountId == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);

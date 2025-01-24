@@ -1,8 +1,10 @@
-﻿namespace PFMS.API.Models
+﻿using PFMS.Utils.Interfaces;
+
+namespace PFMS.API.Models
 {
-    public class BudgetResponseModel
+    public class BudgetResponseModel: IIdentifiable
     {
-        public Guid  BudgetId { get; set; }
+        public Guid Id { get; set; }
         public decimal BudgetAmount { get; set; }
         public decimal SpentPercentage { get; set; }
     }

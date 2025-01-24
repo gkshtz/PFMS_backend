@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PFMS.DAL.DTOs;
 
 namespace PFMS.DAL.Interfaces
 {
     public interface IUnitOfWork: IDisposable
     {
-        public IBudgetsRepository BudgetsRepository { get; }
-        public ICategoryRepository CategoriesRepository { get; }
-        public IOneTimePasswordsRespository OneTimePasswordsRepository { get; }
-        public IRolesRepository RolesRepository { get; }
-        public ITotalTransactionAmountRespository TotalTransactionAmountsRespository { get; }
-        public ITransactionRepository TransactionsRepository { get; }
-        public IUserRepository UsersRepository { get; }
-        public IScreenshotsRepository ScreenshotsRepository { get; }
+        public IBudgetsRepository<BudgetDto> BudgetsRepository { get; }
+        public ICategoryRepository<TransactionCategoryDto> CategoriesRepository { get; }
+        public IOneTimePasswordsRespository<OneTimePasswordDto> OneTimePasswordsRepository { get; }
+        public IRolesRepository<RoleDto> RolesRepository { get; }
+        public ITotalTransactionAmountRespository<TotalTransactionAmountDto> TotalTransactionAmountsRespository { get; }
+        public ITransactionRepository<TransactionDto> TransactionsRepository { get; }
+        public IUserRepository<UserDto> UsersRepository { get; }
+        public IScreenshotsRepository<TransactionScreenshotDto> ScreenshotsRepository { get; }
         public Task SaveDatabaseChangesAsync();
     }
 }

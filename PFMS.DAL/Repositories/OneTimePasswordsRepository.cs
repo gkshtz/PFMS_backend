@@ -12,11 +12,13 @@ using PFMS.DAL.Interfaces;
 
 namespace PFMS.DAL.Repositories
 {
-    public class OneTimePasswordsRepository: IOneTimePasswordsRespository
+    public class OneTimePasswordsRepository<Dto, Entity>: GenericRepository<Dto, Entity>, IOneTimePasswordsRespository<Dto>
+        where Dto: OneTimePasswordDto
+        where Entity: OneTimePassword
     {
         private readonly AppDbContext _appDbContext;
         private readonly IMapper _mapper;
-        public OneTimePasswordsRepository(AppDbContext appDbContext, IMapper mapper)
+        public OneTimePasswordsRepository(AppDbContext appDbContext, IMapper mapper): base(appDbContext, mapper)
         {
             _appDbContext = appDbContext;
             _mapper = mapper;

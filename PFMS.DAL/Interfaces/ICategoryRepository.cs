@@ -1,17 +1,15 @@
 ﻿using PFMS.DAL.DTOs;
 using PFMS.Utils.Enums;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.DAL.Interfaces
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository<Dto>: IGenericRepository<Dto>
+        where Dto: TransactionCategoryDto
     {
         public Task<List<TransactionCategoryDto>> GetAllCategories(Guid userId, TransactionType transactionType);
 
-        public Task AddCategory(TransactionCategoryDto categoryDto);
-
         public Task AddCategoryToUser(CategoryToUserDto categoryToUserDto);
-
-        public Task<bool> DeleteCategory(Guid categoryId);
 
         public Task<bool> DeleteCategoryToUser(Guid categoryId);
 

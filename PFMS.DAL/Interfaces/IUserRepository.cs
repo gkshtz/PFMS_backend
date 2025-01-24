@@ -9,19 +9,13 @@ using PFMS.DAL.DTOs;
 
 namespace PFMS.DAL.Interfaces
 {
-    public interface IUserRepository
+    public interface IUserRepository<Dto>: IGenericRepository<Dto>
+        where Dto: UserDto
     {
-        public Task<List<UserDto>> GetAllUsers();
-        public Task<UserDto> AddUser(UserDto userDto, TotalTransactionAmountDto totalTransactionAmountDto);
-
         public Task<UserDto> FindUserByEmail(string email);
-
-        public Task<UserDto> GetUserById(Guid userId);
 
         public Task<bool> UpdateUser(UserDto userDto);
 
         public Task<bool> UpdatePassword(string password, Guid userId);
-
-        public Task<UserDto> GetUserProfile(Guid userId);
     }
 }

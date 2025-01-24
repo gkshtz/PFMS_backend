@@ -22,7 +22,7 @@ namespace PFMS.BLL.Services
         }
         public async Task AddNewBudget(BudgetBo budgetBo, Guid userId)
         {
-            var userDto = await _unitOfWork.UsersRepository.GetUserById(userId);
+            UserDto userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
@@ -41,7 +41,7 @@ namespace PFMS.BLL.Services
 
             var budgetDto = _mapper.Map<BudgetDto>(budgetBo);
 
-            await _unitOfWork.BudgetsRepository.AddBudget(budgetDto);
+            await _unitOfWork.BudgetsRepository.AddAsync(budgetDto);
 
             await _unitOfWork.SaveDatabaseChangesAsync();
 
@@ -88,7 +88,7 @@ namespace PFMS.BLL.Services
         public async Task UpdateBudget(BudgetBo budgetBo, Guid userId, Guid budgetId)
         {
             // check to ensure that budget with this budgetId exists.
-            var budgetDto = await _unitOfWork.BudgetsRepository.GetBudgetById(budgetId);
+            BudgetDto budgetDto = await _unitOfWork.BudgetsRepository.GetByIdAsync(budgetId);
             if(budgetDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.BudgetNotFound);
@@ -106,11 +106,11 @@ namespace PFMS.BLL.Services
             budgetBo.UserId = userId;
             budgetDto = _mapper.Map<BudgetDto>(budgetBo);
 
-            await _unitOfWork.BudgetsRepository.UpdateBudget(budgetDto);
+            await _unitOfWork.BudgetsRepository.UpdateAsync(budgetDto);
 
             //send the email that budget is updated
-            var userDto = await _unitOfWork.UsersRepository.GetUserById(userId);
-            var userBo = _mapper.Map<UserBo>(userDto);
+            UserDto userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
+            UserBo userBo = _mapper.Map<UserBo>(userDto);
 
             await _unitOfWork.SaveDatabaseChangesAsync();
 
@@ -122,13 +122,13 @@ namespace PFMS.BLL.Services
 
         public async Task DeleteBudget(Guid budgetId, Guid userId)
         {
-            var userDto = await _unitOfWork.UsersRepository.GetUserById(userId);
+            UserDto userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
             }
 
-            var budgetDto = await _unitOfWork.BudgetsRepository.GetBudgetById(budgetId);
+            var budgetDto = await _unitOfWork.BudgetsRepository.GetByIdAsync(budgetId);
             if(budgetDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.BudgetNotFound);
@@ -142,7 +142,7 @@ namespace PFMS.BLL.Services
                 throw new BadRequestException(ErrorMessages.BudgetDoesNotBelongToThisUser);
             }
 
-            await _unitOfWork.BudgetsRepository.DeleteBudget(budgetId);
+            await _unitOfWork.BudgetsRepository.DeleteAsync(budgetId);
 
             await _unitOfWork.SaveDatabaseChangesAsync();
         }

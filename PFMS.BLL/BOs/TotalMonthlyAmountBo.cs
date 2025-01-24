@@ -6,12 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PFMS.DAL.Entities;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.BLL.BOs
 {
-    public class TotalMonthlyAmountBo
+    public class TotalMonthlyAmountBo: IIdentifiable
     {
-        public Guid TotalMonthlyAmountId { get; set; }
+        public Guid Id { get; set; }
 
         public decimal TotalExpenceOfMonth { get; set; }
 
