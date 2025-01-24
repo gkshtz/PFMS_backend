@@ -46,5 +46,7 @@ namespace PFMS.Utils.Constants
         public const string BudgetCannotBeSetForPast = "Budget cannot be set for a past month.";
         public const string FileExtensionNotAllowed = "This file extension not allowed.";
         public const string ScreenshotSizeTooLarge = "File size much be equal to or less than 5MB.";
+        public const string ScreenshotDoesNotExist = "Screenshot does not exist.";
+        public const string ScreenshotDoesNotBelongToUser = "This screenshot does not belong to this user.";
     }
 }

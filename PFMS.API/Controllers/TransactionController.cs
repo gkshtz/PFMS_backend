@@ -138,5 +138,20 @@ namespace PFMS.API.Controllers
 
             return Ok(response);
         }
+
+        [HttpDelete]
+        [Route("screenshots/{screenshotId:Guid}")]
+        public async Task<IActionResult> DeleteScreenshotAsync([FromRoute] Guid screenshotId)
+        {
+            await _transactionService.DeleteTransactionScreenshot(screenshotId, UserId);
+
+            var response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
+        }
     }
 }
