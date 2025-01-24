@@ -45,12 +45,12 @@ namespace PFMS.BLL.Services
             {
                 var totalMonthlyAmountBo = new TotalMonthlyAmountBo()
                 {
-                    TotalMonthlyAmountId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     TotalExpenceOfMonth = totalTransactionAmountBo.TotalExpence,
                     TotalIncomeOfMonth = totalTransactionAmountBo.TotalIncome,
                     Month = totalTransactionAmountBo.LastTransactionDate.Month,
                     Year = totalTransactionAmountBo.LastTransactionDate.Year,
-                    TotalTransactionAmountId = totalTransactionAmountBo.TotalTransactionAmountId
+                    TotalTransactionAmountId = totalTransactionAmountBo.Id
                 };
 
                 var totalMonthlyAmountDto = _mapper.Map<TotalMonthlyAmountDto>(totalMonthlyAmountBo);
@@ -69,14 +69,14 @@ namespace PFMS.BLL.Services
                 totalTransactionAmountBo.TotalExpence += transactionBo.TransactionAmount;
             }
 
-            var lastTransactionDate = (await _unitOfWork.TransactionsRepository.GetTransactionWithLatestDate(totalTransactionAmountBo.TotalTransactionAmountId)).TransactionDate;
+            var lastTransactionDate = (await _unitOfWork.TransactionsRepository.GetTransactionWithLatestDate(totalTransactionAmountBo.Id)).TransactionDate;
 
             totalTransactionAmountBo.LastTransactionDate = lastTransactionDate;
 
             await _unitOfWork.TotalTransactionAmountsRespository.UpdateTotalTransactionAmount(_mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo));
 
-            transactionBo.TotalTransactionAmountId = totalTransactionAmountBo.TotalTransactionAmountId;
-            transactionBo.TransactionId = Guid.NewGuid();
+            transactionBo.TotalTransactionAmountId = totalTransactionAmountBo.Id;
+            transactionBo.Id = Guid.NewGuid();
 
             var transactionDto = _mapper.Map<TransactionDto>(transactionBo);
             await _unitOfWork.TransactionsRepository.AddTransaction(transactionDto);
@@ -89,12 +89,12 @@ namespace PFMS.BLL.Services
 
                 var transactionScreenshotBo = new TransactionScreenshotBo()
                 {
-                    ScreenshotId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     FileName = Path.GetFileNameWithoutExtension(file.FileName),
                     FileSizeInBytes = file.Length,
                     FileExtension = Path.GetExtension(file.FileName),
                     FilePath = filePath,
-                    TransactionId = transactionBo.TransactionId
+                    TransactionId = transactionBo.Id
                 };
 
                 var transactionScreenshotDto = _mapper.Map<TransactionScreenshotDto>(transactionScreenshotBo);
@@ -127,7 +127,7 @@ namespace PFMS.BLL.Services
                 }
             }
             
-            return transactionBo.TransactionId;
+            return transactionBo.Id;
         }
 
         public async Task<TransactionBo> GetByTransactionId(Guid transactionId, Guid userId)
@@ -186,11 +186,11 @@ namespace PFMS.BLL.Services
             await _unitOfWork.TotalTransactionAmountsRespository.UpdateTotalTransactionAmount(_mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo));
 
             transactionBoNew.TotalTransactionAmountId = transactionBoOld.TotalTransactionAmountId;
-            transactionBoNew.TransactionId = transactionBoOld.TransactionId;
+            transactionBoNew.Id = transactionBoOld.Id;
 
             transactionDto = _mapper.Map<TransactionDto>(transactionBoNew);
 
-            await _unitOfWork.TransactionsRepository.UpdateTransaction(transactionDto, transactionId, totalTransactionAmountBo.TotalTransactionAmountId);
+            await _unitOfWork.TransactionsRepository.UpdateTransaction(transactionDto, transactionId, totalTransactionAmountBo.Id);
 
             if(transactionBoNew.File!=null)
             {
@@ -215,7 +215,7 @@ namespace PFMS.BLL.Services
                 {
                     var screenshotBo = new TransactionScreenshotBo()
                     {
-                        ScreenshotId = Guid.NewGuid(),
+                        Id = Guid.NewGuid(),
                         FileName = Path.GetFileNameWithoutExtension(transactionBoNew.File.FileName),
                         FileExtension = Path.GetExtension(transactionBoNew.File.FileName),
                         FileSizeInBytes = transactionBoNew.File.Length,
@@ -256,9 +256,9 @@ namespace PFMS.BLL.Services
                 totalTransactionAmountBo.TotalIncome -= transactionBo.TransactionAmount;
             }
 
-            await _unitOfWork.TransactionsRepository.DeleteTransaction(transactionId, totalTransactionAmountBo.TotalTransactionAmountId);
+            await _unitOfWork.TransactionsRepository.DeleteTransaction(transactionId, totalTransactionAmountBo.Id);
 
-            transactionDto = await _unitOfWork.TransactionsRepository.GetTransactionWithLatestDate(totalTransactionAmountBo.TotalTransactionAmountId);
+            transactionDto = await _unitOfWork.TransactionsRepository.GetTransactionWithLatestDate(totalTransactionAmountBo.Id);
 
             if(transactionDto == null)
             {
