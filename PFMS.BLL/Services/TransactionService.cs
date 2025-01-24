@@ -322,5 +322,28 @@ namespace PFMS.BLL.Services
 
             return totalMonthlyAmountBo;
         }
+
+        public async Task DeleteTransactionScreenshot(Guid screenshotId, Guid userId)
+        {
+            var screenshotDto = await _unitOfWork.ScreenshotsRepository.GetByIdAsync(screenshotId);
+            if(screenshotDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.ScreenshotDoesNotExist);
+            }
+
+            var userIdOfScreenshot = (await _unitOfWork.ScreenshotsRepository.GetTotalTransactionAmountByScreenshotId(screenshotId)).UserId;
+
+            if(userIdOfScreenshot != userId)
+            {
+                throw new BadRequestException(ErrorMessages.ScreenshotDoesNotBelongToUser);
+            }
+
+            TransactionScreenshotBo screenshotBo = _mapper.Map<TransactionScreenshotBo>(screenshotDto);
+
+            File.Delete(screenshotBo.FilePath);
+            await _unitOfWork.ScreenshotsRepository.DeleteAsync(screenshotId);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
+        }
     }
 }

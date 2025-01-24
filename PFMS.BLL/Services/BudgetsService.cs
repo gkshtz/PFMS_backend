@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
 using PFMS.DAL.DTOs;
@@ -22,7 +23,7 @@ namespace PFMS.BLL.Services
         }
         public async Task AddNewBudget(BudgetBo budgetBo, Guid userId)
         {
-            UserDto userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
+            UserDto? userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
@@ -88,7 +89,7 @@ namespace PFMS.BLL.Services
         public async Task UpdateBudget(BudgetBo budgetBo, Guid userId, Guid budgetId)
         {
             // check to ensure that budget with this budgetId exists.
-            BudgetDto budgetDto = await _unitOfWork.BudgetsRepository.GetByIdAsync(budgetId);
+            BudgetDto? budgetDto = await _unitOfWork.BudgetsRepository.GetByIdAsync(budgetId);
             if(budgetDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.BudgetNotFound);
@@ -109,7 +110,7 @@ namespace PFMS.BLL.Services
             await _unitOfWork.BudgetsRepository.UpdateAsync(budgetDto);
 
             //send the email that budget is updated
-            UserDto userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
+            UserDto? userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
             UserBo userBo = _mapper.Map<UserBo>(userDto);
 
             await _unitOfWork.SaveDatabaseChangesAsync();
@@ -122,7 +123,7 @@ namespace PFMS.BLL.Services
 
         public async Task DeleteBudget(Guid budgetId, Guid userId)
         {
-            UserDto userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
+            UserDto? userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);

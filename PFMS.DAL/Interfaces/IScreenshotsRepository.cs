@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Identity.Client;
 using PFMS.DAL.DTOs;
 
 namespace PFMS.DAL.Interfaces
@@ -14,5 +15,7 @@ namespace PFMS.DAL.Interfaces
         public Task<TransactionScreenshotDto> GetScreenshotByTransactionId(Guid transactionId);
         public Task DeleteScreenshot(Guid screenshotId);
         public Task<bool> UpdateScreenshot(TransactionScreenshotDto screenshotDto);
+
+        public Task<TotalTransactionAmountDto> GetTotalTransactionAmountByScreenshotId(Guid screenshotId);
     }
 }

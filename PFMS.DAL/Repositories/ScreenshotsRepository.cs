@@ -56,5 +56,13 @@ namespace PFMS.DAL.Repositories
             _appDbContext.TransactionScreenshots.Update(screenshot);
             return true;
         }
+
+        public async Task<TotalTransactionAmountDto> GetTotalTransactionAmountByScreenshotId(Guid screenshotId)
+        {
+            var totalTransactionAmount = await _appDbContext.TransactionScreenshots.Include(x => x.Transaction).Include(x => x.Transaction!.TotalTransactionAmount)
+                                                .Where(x => x.Id == screenshotId).Select(x => x.Transaction!.TotalTransactionAmount).FirstOrDefaultAsync();
+
+            return _mapper.Map<TotalTransactionAmountDto>(totalTransactionAmount);
+        }
     }   
 }
