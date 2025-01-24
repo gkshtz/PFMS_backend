@@ -28,7 +28,7 @@ namespace PFMS.DAL.Interfaces
         /// </summary>
         /// <param name="id">Unique Id of the recource</param>
         /// <returns>Dto object</returns>
-        public Task<Dto> GetByIdAsync(Guid id);
+        public Task<Dto?> GetByIdAsync(Guid id);
 
         /// <summary>
         /// Updates a resource

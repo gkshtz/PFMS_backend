@@ -26,27 +26,10 @@ namespace PFMS.DAL.Repositories
             return _mapper.Map<List<TransactionCategoryDto>>(categories);
         }
 
-        public async Task AddCategory(TransactionCategoryDto categoryDto)
-        {
-            var category = _mapper.Map<TransactionCategory>(categoryDto);
-            await _appDbContext.TransactionCategories.AddAsync(category);
-        }
-
         public async Task AddCategoryToUser(CategoryToUserDto categoryToUserDto)
         {
             var categoryToUser = _mapper.Map<CategoryToUser>(categoryToUserDto);
             await _appDbContext.CategoryToUser.AddAsync(categoryToUser);
-        }
-
-        public async Task<bool> DeleteCategory(Guid categoryId)
-        {
-            var category = await _appDbContext.TransactionCategories.FindAsync(categoryId);
-            if(category == null)
-            {
-                return false;
-            }
-            _appDbContext.TransactionCategories.Remove(category);
-            return true;
         }
 
         public async Task<bool> DeleteCategoryToUser(Guid categoryId)

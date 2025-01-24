@@ -30,10 +30,10 @@ namespace PFMS.DAL.Repositories
             return _mapper.Map<List<Dto>>(entities);
         }
 
-        public async Task<Dto> GetByIdAsync(Guid id)
+        public async Task<Dto?> GetByIdAsync(Guid id)
         {
-            var entity = await _appDbContext.Set<Entity>().FindAsync(id);
-            return _mapper.Map<Dto>(entity);
+            var entity = await _appDbContext.Set<Entity>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            return _mapper.Map<Dto?>(entity);
         }
 
         

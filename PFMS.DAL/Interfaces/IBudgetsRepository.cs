@@ -11,10 +11,6 @@ namespace PFMS.DAL.Interfaces
     public interface IBudgetsRepository<Dto>: IGenericRepository<Dto>
         where Dto: BudgetDto
     {
-        public Task AddBudget(BudgetDto budgetDto);
         public Task<BudgetDto?> GetBudgetByUserId(Guid userId, int month, int year);
-        public Task UpdateBudget(BudgetDto budgetDto);
-        public Task<BudgetDto> GetBudgetById(Guid budgetId);
-        public Task<bool> DeleteBudget(Guid budgetId);
     }
 }

@@ -9,11 +9,7 @@ namespace PFMS.DAL.Interfaces
     {
         public Task<List<TransactionCategoryDto>> GetAllCategories(Guid userId, TransactionType transactionType);
 
-        public Task AddCategory(TransactionCategoryDto categoryDto);
-
         public Task AddCategoryToUser(CategoryToUserDto categoryToUserDto);
-
-        public Task<bool> DeleteCategory(Guid categoryId);
 
         public Task<bool> DeleteCategoryToUser(Guid categoryId);
 

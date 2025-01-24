@@ -28,7 +28,7 @@ namespace PFMS.BLL.Services
         {
             categoryBo.CategoryId = Guid.NewGuid();
             var categoryDto = _mapper.Map<TransactionCategoryDto>(categoryBo);
-            await _unitOfWork.CategoriesRepository.AddCategory(categoryDto);
+            await _unitOfWork.CategoriesRepository.AddAsync(categoryDto);
 
             var categoryToUserBo = new CategoryToUserBo()
             {
@@ -54,7 +54,7 @@ namespace PFMS.BLL.Services
             }
 
             await _unitOfWork.CategoriesRepository.DeleteCategoryToUser(categoryId);
-            await _unitOfWork.CategoriesRepository.DeleteCategory(categoryId);
+            await _unitOfWork.CategoriesRepository.DeleteAsync(categoryId);
 
             await _unitOfWork.SaveDatabaseChangesAsync();
         }
