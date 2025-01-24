@@ -1,8 +1,10 @@
-﻿namespace PFMS.BLL.BOs
+﻿using PFMS.Utils.Interfaces;
+
+namespace PFMS.BLL.BOs
 {
-    public class TotalTransactionAmountBo
+    public class TotalTransactionAmountBo: IIdentifiable
     {
-        public Guid TotalTransactionAmountId { get; set; }
+        public Guid Id { get; set; }
         public decimal TotalExpence { get; set; }
         public decimal TotalIncome { get; set; }
         public DateTime LastTransactionDate { get; set; }

@@ -1,10 +1,11 @@
 ﻿using PFMS.DAL.Entities;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.API.Models
 {
-    public class TotalTransactionAmountModel
+    public class TotalTransactionAmountModel: IIdentifiable
     {
-        public Guid TotalTransactionAmountId { get; set; }
+        public Guid Id { get; set; }
 
         public decimal TotalExpence { get; set; }
 

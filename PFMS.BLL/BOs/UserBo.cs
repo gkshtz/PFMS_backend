@@ -1,8 +1,10 @@
-﻿namespace PFMS.BLL.BOs
+﻿using PFMS.Utils.Interfaces;
+
+namespace PFMS.BLL.BOs
 {
-    public class UserBo
+    public class UserBo: IIdentifiable
     {
-        public Guid UserId { get; set; }
+        public Guid Id { get; set; }
         
         public string FirstName { get; set; }
 

@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 using PFMS.DAL.Entities;
 using PFMS.Utils.Enums;
 using Microsoft.AspNetCore.Http;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.BLL.BOs
 {
-    public class TransactionBo
+    public class TransactionBo: IIdentifiable
     { 
-        public Guid TransactionId { get; set; }
+        public Guid Id { get; set; }
         public string TransactionName { get; set; }
         public string? TransactionDescription { get; set; }
         public decimal TransactionAmount { get; set; }

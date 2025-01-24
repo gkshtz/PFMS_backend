@@ -6,12 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PFMS.Utils.Enums;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.BLL.BOs
 {
-    public class TransactionCategoryBo
+    public class TransactionCategoryBo: IIdentifiable
     {
-        public Guid CategoryId { get; set; }
+        public Guid Id { get; set; }
         public string CategoryName { get; set; }
         public TransactionType TransactionType { get; set; }
     }

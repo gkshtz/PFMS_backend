@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PFMS.Utils.Interfaces;
 
 namespace PFMS.BLL.BOs
 {
-    public class BudgetBo
+    public class BudgetBo: IIdentifiable
     {
-        public Guid BudgetId { get; set; }
+        public Guid  Id { get; set; }
         public decimal BudgetAmount { get; set; }
         public int Month { get; set; }
         public int Year { get; set; }
