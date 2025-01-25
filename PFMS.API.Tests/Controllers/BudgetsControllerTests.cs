@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography.Xml;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PFMS.API.Controllers;
 using PFMS.API.Models;
 using PFMS.BLL.BOs;
 using PFMS.BLL.Interfaces;
+using PFMS.Utils.Enums;
 
 namespace PFMS.API.Tests.Controllers
 {
@@ -140,6 +132,35 @@ namespace PFMS.API.Tests.Controllers
             Assert.Equal(200, successResponse.StatusCode);
 
             budgetService.Verify(x => x.UpdateBudget(budgetBo, It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Once);
+        }
+
+        [Fact]
+        public async void Delete_Budget_Successful_Delete_Test()
+        {
+            //Arrange
+            Mock<IBudgetsService> budgetsService = new Mock<IBudgetsService>();
+            Mock<IMapper> mapper = new Mock<IMapper>();
+
+            var budgetsController = new BudgetsController(budgetsService.Object, mapper.Object);
+            
+            var budgetId = Guid.Parse("65c6f032-c1b8-4b2b-b437-6a45e63b2143");
+            var userId = Guid.Parse("f23ef035-60fb-4e17-86b0-05d5d2084bc2");
+
+            budgetsService.Setup(x => x.DeleteBudget(It.IsAny<Guid>(), It.IsAny<Guid>()));
+
+            //Act
+            var response = await budgetsController.DeleteBudgetAsync(budgetId);
+
+            //Assert
+            Assert.NotNull(response);
+            var okResult = response as OkObjectResult;
+            Assert.NotNull(okResult);
+            var successResponse = Assert.IsType<GenericSuccessResponse<bool>>(okResult.Value);
+            Assert.Equal(200, successResponse.StatusCode);
+            Assert.True(successResponse.ResponseData);
+            Assert.Equal(ResponseMessage.Success.ToString(), successResponse.ResponseMessage);
+
+            budgetsService.Verify(x=>x.DeleteBudget(budgetId, It.IsAny<Guid>()), Times.Once);
         }
     }
 }
