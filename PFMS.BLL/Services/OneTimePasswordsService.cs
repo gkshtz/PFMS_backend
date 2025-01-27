@@ -60,7 +60,7 @@ namespace PFMS.BLL.Services
 
             var otpDto = _mapper.Map<OneTimePasswordDto>(otpBo);
 
-            await _unitOfWork.OneTimePasswordsRepository.AddOtp(otpDto);
+            await _unitOfWork.OneTimePasswordsRepository.AddAsync(otpDto);
 
             await _unitOfWork.SaveDatabaseChangesAsync();
 
@@ -119,7 +119,7 @@ namespace PFMS.BLL.Services
                 otpBo.Expires = DateTime.UtcNow;
                 otpDto = _mapper.Map<OneTimePasswordDto>(otpBo);
 
-                await _unitOfWork.OneTimePasswordsRepository.UpdateOtp(otpDto);
+                await _unitOfWork.OneTimePasswordsRepository.UpdateAsync(otpDto);
 
                 throw new BadRequestException(ErrorMessages.OtpAlreadyVerified);
             }
@@ -129,7 +129,7 @@ namespace PFMS.BLL.Services
 
             otpDto = _mapper.Map<OneTimePasswordDto>(otpBo);
 
-            await _unitOfWork.OneTimePasswordsRepository.UpdateOtp(otpDto);
+            await _unitOfWork.OneTimePasswordsRepository.UpdateAsync(otpDto);
 
             await _unitOfWork.SaveDatabaseChangesAsync();
         }
@@ -165,7 +165,7 @@ namespace PFMS.BLL.Services
 
             otpBo.Expires = DateTime.UtcNow.AddHours(-1);
             otpDto = _mapper.Map<OneTimePasswordDto>(otpBo);
-            await _unitOfWork.OneTimePasswordsRepository.UpdateOtp(otpDto);
+            await _unitOfWork.OneTimePasswordsRepository.UpdateAsync(otpDto);
 
             await _unitOfWork.SaveDatabaseChangesAsync();
 
