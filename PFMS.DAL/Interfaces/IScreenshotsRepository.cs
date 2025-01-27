@@ -11,10 +11,7 @@ namespace PFMS.DAL.Interfaces
     public interface IScreenshotsRepository<Dto>: IGenericRepository<Dto>
         where Dto: TransactionScreenshotDto
     {
-        public Task AddScreenshot(TransactionScreenshotDto sreenshotDto);
         public Task<TransactionScreenshotDto> GetScreenshotByTransactionId(Guid transactionId);
-        public Task DeleteScreenshot(Guid screenshotId);
-        public Task<bool> UpdateScreenshot(TransactionScreenshotDto screenshotDto);
 
         public Task<TotalTransactionAmountDto> GetTotalTransactionAmountByScreenshotId(Guid screenshotId);
     }

@@ -17,7 +17,7 @@ namespace PFMS.BLL.Services
         }
         public async Task<List<RoleBo>> GetAllRoles()
         {
-            var roleDtos = await _unitOfWork.RolesRepository.GetAllRoles();
+            var roleDtos = await _unitOfWork.RolesRepository.GetAllAsync();            
             return _mapper.Map<List<RoleBo>>(roleDtos);
         }
 
@@ -25,7 +25,7 @@ namespace PFMS.BLL.Services
         {
             roleBo.Id = Guid.NewGuid();
             var roleDto = _mapper.Map<RoleDto>(roleBo);
-            await _unitOfWork.RolesRepository.AddRole(roleDto);
+            await _unitOfWork.RolesRepository.AddAsync(roleDto);
 
             await _unitOfWork.SaveDatabaseChangesAsync();
         }

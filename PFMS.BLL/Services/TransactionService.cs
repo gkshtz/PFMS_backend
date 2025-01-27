@@ -98,7 +98,7 @@ namespace PFMS.BLL.Services
                 };
 
                 var transactionScreenshotDto = _mapper.Map<TransactionScreenshotDto>(transactionScreenshotBo);
-                await _unitOfWork.ScreenshotsRepository.AddScreenshot(transactionScreenshotDto);
+                await _unitOfWork.ScreenshotsRepository.AddAsync(transactionScreenshotDto);
             }
 
             await _unitOfWork.SaveDatabaseChangesAsync();
@@ -209,7 +209,7 @@ namespace PFMS.BLL.Services
                     screenshotBo.FilePath = newFilePath;
 
                     screenshotDto = _mapper.Map<TransactionScreenshotDto>(screenshotBo);
-                    await _unitOfWork.ScreenshotsRepository.UpdateScreenshot(screenshotDto);
+                    await _unitOfWork.ScreenshotsRepository.UpdateAsync(screenshotDto);
                 }
                 else
                 {
@@ -224,7 +224,7 @@ namespace PFMS.BLL.Services
                     };
 
                     screenshotDto = _mapper.Map<TransactionScreenshotDto>(screenshotBo);
-                    await _unitOfWork.ScreenshotsRepository.AddScreenshot(screenshotDto);
+                    await _unitOfWork.ScreenshotsRepository.AddAsync(screenshotDto);
                 }
 
                 FileStream fileStream = new FileStream(newFilePath, FileMode.Create);
