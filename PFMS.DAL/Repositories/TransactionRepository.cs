@@ -94,49 +94,10 @@ namespace PFMS.DAL.Repositories
             return _mapper.Map<List<TransactionDto>>(transactionsList);
         }
 
-        public async Task<TransactionDto> AddTransaction(TransactionDto transactionDto)
-        {
-            var transaction = _mapper.Map<Transaction>(transactionDto);
-            await _appDbContext.Transactions.AddAsync(transaction);
-            return transactionDto;
-        }
-
         public async Task<TotalTransactionAmountDto> GetTotalTransactionAmountByUserId(Guid userId)
         {
             var totalTransactionAmount = await _appDbContext.TotalTransactionAmounts.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId);
             return _mapper.Map<TotalTransactionAmountDto>(totalTransactionAmount);
-        }
-
-        public async Task<TransactionDto?> GetByTransactionId(Guid transactionId, Guid userId)
-        {
-            var totalTransactionAmountDto = await GetTotalTransactionAmountByUserId(userId);
-            var transaction = await _appDbContext.Transactions.Include(x=>x.TransactionCategory).Include(x=>x.TotalTransactionAmount).AsNoTracking().FirstOrDefaultAsync(x => x.TotalTransactionAmountId == totalTransactionAmountDto.Id && x.Id == transactionId);
-            return _mapper.Map<TransactionDto>(transaction);
-        }
-
-        public async Task<bool> UpdateTransaction(TransactionDto transactionDto, Guid transactionId, Guid totalTransactionAmountId)
-        {
-            var transaction = await _appDbContext.Transactions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == transactionId && x.TotalTransactionAmountId == totalTransactionAmountId);
-            if(transaction == null)
-            {
-                return false;
-            }
-
-            transaction = _mapper.Map<Transaction>(transactionDto);
-
-            _appDbContext.Transactions.Update(transaction);
-            return true;
-        }
-
-        public async Task<bool> DeleteTransaction(Guid transactionId, Guid totalTransactionAmountId)
-        {
-            var transaction = await _appDbContext.Transactions.FirstOrDefaultAsync(x => x.Id == transactionId && x.TotalTransactionAmountId == totalTransactionAmountId);
-            if(transaction == null)
-            {
-                return false;
-            }
-            _appDbContext.Transactions.Remove(transaction);
-            return true;
         }
 
         public async Task<TransactionDto> GetTransactionWithLatestDate(Guid totalTransactionAmounId)

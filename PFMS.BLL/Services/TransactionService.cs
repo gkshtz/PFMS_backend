@@ -73,13 +73,13 @@ namespace PFMS.BLL.Services
 
             totalTransactionAmountBo.LastTransactionDate = lastTransactionDate;
 
-            await _unitOfWork.TotalTransactionAmountsRespository.UpdateTotalTransactionAmount(_mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo));
+            await _unitOfWork.TotalTransactionAmountsRespository.UpdateAsync(_mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo));
 
             transactionBo.TotalTransactionAmountId = totalTransactionAmountBo.Id;
             transactionBo.Id = Guid.NewGuid();
 
             var transactionDto = _mapper.Map<TransactionDto>(transactionBo);
-            await _unitOfWork.TransactionsRepository.AddTransaction(transactionDto);
+            await _unitOfWork.TransactionsRepository.AddAsync(transactionDto);
 
             // Add Screenshot if available
             string filePath="";
@@ -132,7 +132,7 @@ namespace PFMS.BLL.Services
 
         public async Task<TransactionBo> GetByTransactionId(Guid transactionId, Guid userId)
         {
-            var transactionDto = await _unitOfWork.TransactionsRepository.GetByTransactionId(transactionId, userId);
+            var transactionDto = await _unitOfWork.TransactionsRepository.GetByIdAsync(transactionId);
             if (transactionDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.TransactionNotFound);
@@ -144,7 +144,7 @@ namespace PFMS.BLL.Services
         public async Task UpdateTransaction(TransactionBo transactionBoNew, Guid userId, Guid transactionId, string rootPath)
         {
             var totalTransactionAmountDto = await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId);
-            var transactionDto = await _unitOfWork.TransactionsRepository.GetByTransactionId(transactionId, userId);
+            var transactionDto = await _unitOfWork.TransactionsRepository.GetByIdAsync(transactionId);
 
             if(transactionDto == null)
             {
@@ -183,20 +183,20 @@ namespace PFMS.BLL.Services
             }
             totalTransactionAmountBo.LastTransactionDate = transactionBoNew.TransactionDate;
 
-            await _unitOfWork.TotalTransactionAmountsRespository.UpdateTotalTransactionAmount(_mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo));
+            await _unitOfWork.TotalTransactionAmountsRespository.UpdateAsync(_mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo));
 
             transactionBoNew.TotalTransactionAmountId = transactionBoOld.TotalTransactionAmountId;
             transactionBoNew.Id = transactionBoOld.Id;
 
             transactionDto = _mapper.Map<TransactionDto>(transactionBoNew);
 
-            await _unitOfWork.TransactionsRepository.UpdateTransaction(transactionDto, transactionId, totalTransactionAmountBo.Id);
+            await _unitOfWork.TransactionsRepository.UpdateAsync(transactionDto);
 
             if(transactionBoNew.File!=null)
             {
                 var newFilePath = Path.Combine(rootPath, "Screenshots", transactionBoNew.File.FileName);
 
-                var screenshotDto = await _unitOfWork.ScreenshotsRepository.GetScreenshotByTransactionId(transactionId);
+                TransactionScreenshotDto screenshotDto = await _unitOfWork.ScreenshotsRepository.GetScreenshotByTransactionId(transactionId);
                 if(screenshotDto!=null)
                 {
                     var screenshotBo = _mapper.Map<TransactionScreenshotBo>(screenshotDto);
@@ -239,7 +239,7 @@ namespace PFMS.BLL.Services
             var totalTransactionAmountDto = await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId);
             var totalTransactionAmountBo = _mapper.Map<TotalTransactionAmountBo>(totalTransactionAmountDto);
 
-            var transactionDto = await _unitOfWork.TransactionsRepository.GetByTransactionId(transactionId, userId);
+            TransactionDto? transactionDto = await _unitOfWork.TransactionsRepository.GetByIdAsync(transactionId);
             if(transactionDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.TransactionNotFound);
@@ -256,7 +256,7 @@ namespace PFMS.BLL.Services
                 totalTransactionAmountBo.TotalIncome -= transactionBo.TransactionAmount;
             }
 
-            await _unitOfWork.TransactionsRepository.DeleteTransaction(transactionId, totalTransactionAmountBo.Id);
+            await _unitOfWork.TransactionsRepository.DeleteAsync(transactionId);
 
             transactionDto = await _unitOfWork.TransactionsRepository.GetTransactionWithLatestDate(totalTransactionAmountBo.Id);
 
@@ -272,7 +272,7 @@ namespace PFMS.BLL.Services
 
             totalTransactionAmountDto = _mapper.Map<TotalTransactionAmountDto>(totalTransactionAmountBo);
 
-            await _unitOfWork.TotalTransactionAmountsRespository.UpdateTotalTransactionAmount(totalTransactionAmountDto);
+            await _unitOfWork.TotalTransactionAmountsRespository.UpdateAsync(totalTransactionAmountDto);
 
             await _unitOfWork.SaveDatabaseChangesAsync();
         }
