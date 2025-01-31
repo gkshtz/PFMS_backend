@@ -24,37 +24,10 @@ namespace PFMS.DAL.Repositories
             _mapper = mapper;
         }
 
-        public async Task AddScreenshot(TransactionScreenshotDto screenshotDto)
-        {
-            var transactionScreenshot = _mapper.Map<TransactionScreenshot>(screenshotDto);
-            await _appDbContext.TransactionScreenshots.AddAsync(transactionScreenshot);
-        }
-
         public async Task<TransactionScreenshotDto> GetScreenshotByTransactionId(Guid transactionId)
         {
             var screenshot = await _appDbContext.TransactionScreenshots.FirstOrDefaultAsync(x => x.TransactionId == transactionId);
             return _mapper.Map<TransactionScreenshotDto>(screenshot);
-        }
-
-        public async Task DeleteScreenshot(Guid screenshotId)
-        {
-            var screenshot = await _appDbContext.TransactionScreenshots.FindAsync(screenshotId);
-            if(screenshot!=null)
-            {
-                _appDbContext.TransactionScreenshots.Remove(screenshot);
-            }
-        }
-
-        public async Task<bool> UpdateScreenshot(TransactionScreenshotDto screenshotDto)
-        {
-            var screenshot = await _appDbContext.TransactionScreenshots.AsNoTracking().FirstOrDefaultAsync(x => x.Id == screenshotDto.Id);
-            if (screenshot == null)
-            {
-                return false;
-            }
-            screenshot = _mapper.Map<TransactionScreenshot>(screenshotDto);
-            _appDbContext.TransactionScreenshots.Update(screenshot);
-            return true;
         }
 
         public async Task<TotalTransactionAmountDto> GetTotalTransactionAmountByScreenshotId(Guid screenshotId)

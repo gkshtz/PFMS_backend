@@ -10,10 +10,6 @@ namespace PFMS.DAL.Interfaces
     public interface IRolesRepository<Dto>: IGenericRepository<Dto>
         where Dto: RoleDto
     {
-        public Task<List<RoleDto>> GetAllRoles();
-
-        public Task AddRole(RoleDto roleDto);
-
         public Task AddUserRole(UserRoleDto userRoleDto);
 
         public Task<List<string>> GetRoleNamesAssignedToUser(Guid userId);

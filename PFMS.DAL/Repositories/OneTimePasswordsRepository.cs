@@ -24,23 +24,11 @@ namespace PFMS.DAL.Repositories
             _mapper = mapper;
         }
 
-        public async Task AddOtp(OneTimePasswordDto otpDto)
-        {
-            var otp = _mapper.Map<OneTimePassword>(otpDto);
-            await _appDbContext.OneTimePasswords.AddAsync(otp);
-        }
-
         public async Task<OneTimePasswordDto> FetchByOtp(string otp)
         {
             var oneTimePassword = await _appDbContext.OneTimePasswords.AsNoTracking().FirstOrDefaultAsync(x => x.Otp == otp);
             var otpDto = _mapper.Map<OneTimePasswordDto>(oneTimePassword);
             return otpDto;
-        }
-
-        public async Task UpdateOtp(OneTimePasswordDto otpDto)
-        {
-            var otp = _mapper.Map<OneTimePassword>(otpDto);
-            _appDbContext.OneTimePasswords.Update(otp);
         }
 
         public async Task<OneTimePasswordDto> FetchByUniqueDeviceId(Guid uniqueDeviceId)

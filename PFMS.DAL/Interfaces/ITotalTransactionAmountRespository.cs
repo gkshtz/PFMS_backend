@@ -11,8 +11,6 @@ namespace PFMS.DAL.Interfaces
     public interface ITotalTransactionAmountRespository<Dto>: IGenericRepository<Dto>
         where Dto: TotalTransactionAmountDto
     {
-        public Task<bool> UpdateTotalTransactionAmount(TotalTransactionAmountDto totalTransactionAmountDto);
-
         public Task<TotalMonthlyAmountDto> AddTotalMonthlyAmount(TotalMonthlyAmountDto totalMonthlyAmountDto);
 
         public Task<TotalMonthlyAmountDto?> GetTotalMonthlyAmountOfParticularMonthAndYear(Guid totalTransactionAmountId, int month, int year);

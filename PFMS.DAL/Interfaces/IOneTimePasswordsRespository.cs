@@ -10,11 +10,7 @@ namespace PFMS.DAL.Interfaces
     public interface IOneTimePasswordsRespository<Dto>: IGenericRepository<Dto>
         where Dto: OneTimePasswordDto
     {
-        public Task AddOtp(OneTimePasswordDto otpDto);
-
         public Task<OneTimePasswordDto> FetchByOtp(string otp);
-
-        public Task UpdateOtp(OneTimePasswordDto otpDto);
 
         public Task<OneTimePasswordDto> FetchByUniqueDeviceId(Guid uniqueDeviceId);
     }

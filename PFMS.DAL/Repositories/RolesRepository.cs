@@ -19,18 +19,6 @@ namespace PFMS.DAL.Repositories
             _mapper = mapper;
         }
 
-        public async Task<List<RoleDto>> GetAllRoles()
-        {
-            var roles = await _appDbContext.Roles.ToListAsync();
-            return _mapper.Map<List<RoleDto>>(roles);
-        }
-
-        public async Task AddRole(RoleDto roleDto)
-        {
-            var role = _mapper.Map<Role>(roleDto);
-            await _appDbContext.Roles.AddAsync(role);
-        }
-
         public async Task AddUserRole(UserRoleDto userRoleDto)
         {
             var userRole = _mapper.Map<UserRole>(userRoleDto);
