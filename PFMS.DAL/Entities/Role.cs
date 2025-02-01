@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PFMS.Utils.Interfaces;
+using PFMS.DAL.Entities;
 
 namespace PFMS.DAL.Entities
 {
@@ -17,5 +18,9 @@ namespace PFMS.DAL.Entities
 
         [Column("roleName")]
         public string RoleName { get; set; }
+
+        #region Navigation Properties
+        public ICollection<Permission> Permissions { get; set; }
+        #endregion
     }
 }

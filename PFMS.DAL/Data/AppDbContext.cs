@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PFMS.DAL.Entities;
+using PFMS.Utils.Enums;
 
 namespace PFMS.DAL.Data
 {
@@ -21,6 +22,7 @@ namespace PFMS.DAL.Data
         public DbSet<Budget> Budgets { get; set; }
         public DbSet<TransactionNotification> TransactionNotifications { get; set; }
         public DbSet<TransactionScreenshot> TransactionScreenshots { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -137,7 +139,7 @@ namespace PFMS.DAL.Data
                 new Role()
                 {
                     Id = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf"),
-                    RoleName = "Admin"
+                    RoleName = "Admin",
                 },
                 new Role()
                 {
@@ -145,8 +147,157 @@ namespace PFMS.DAL.Data
                     RoleName = "User"
                 }
             };
+            
 
+            List<Permission> permissions = new List<Permission>()
+            {
+                new Permission()
+                {
+                    Id = Guid.Parse("513eb750-5631-4d99-a440-a97e639c23ff"),
+                    PermissionName = PermissionNames.ADD_USER.ToString()
+                },
+                new Permission()
+                {
+                    Id = Guid.Parse("0f14fb1b-8f5d-4225-87cf-cb20dc138bb4"),
+                    PermissionName = PermissionNames.UPDATE_PROFILE.ToString()
+                },
+                new Permission()
+                {
+                    Id = Guid.Parse("d1db8d6f-b73a-46cd-8249-60ec84af8fa2"),
+                    PermissionName = PermissionNames.GET_USER_PROFILE.ToString()
+                },
+                new Permission()
+                {
+                    Id = Guid.Parse("fc6fec6c-447f-48e9-9d84-bd9a4733c955"),
+                    PermissionName = PermissionNames.SEND_OTP.ToString()
+                },
+                new Permission()
+                {
+                    Id = Guid.Parse("b3091aa7-a3c0-497e-8c95-8e12f3271563"),
+                    PermissionName = PermissionNames.VERIFY_OTP.ToString()
+                },
+                new Permission()
+                {
+                    Id = Guid.Parse("dafc519b-bda2-45aa-9a3d-9feae7d7f6be"),
+                    PermissionName = PermissionNames.RESET_FORGOTTEN_PASSWORD.ToString()
+                },
+                new Permission()
+                {
+                    Id = Guid.Parse("7e7ee692-eed0-45d5-8a78-4dae6cef4161"),
+                    PermissionName = PermissionNames.UPDATE_PASSWORD.ToString()
+                },
+                new Permission()
+                {
+                    Id = Guid.Parse("ae54d566-0d6b-4e8e-99cc-5669fb3b5fef"),
+                    PermissionName = PermissionNames.GET_ALL_USERS.ToString()
+                },
+                new Permission()
+                {
+                    Id = Guid.Parse("3393955c-25f4-4649-99c5-e4a660eca6ad"),
+                    PermissionName = PermissionNames.GET_USER_BY_ID.ToString()
+                },
+                new Permission()
+                {
+                    Id = Guid.Parse("8a94c147-2ebb-477c-8166-d1646fd3037b"),
+                    PermissionName = PermissionNames.DELETE_USER.ToString()
+                }
+            };
+
+            var rolesPermissions = new List<Object>()
+            {
+                new
+                {
+                    PermissionsId = Guid.Parse("513eb750-5631-4d99-a440-a97e639c23ff"),
+                    RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
+                },
+                new
+                {
+                    PermissionsId = Guid.Parse("0f14fb1b-8f5d-4225-87cf-cb20dc138bb4"),
+                    RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
+                },
+                new
+                {
+                    PermissionsId = Guid.Parse("d1db8d6f-b73a-46cd-8249-60ec84af8fa2"),
+                    RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
+                },
+                new                
+                {
+                    PermissionsId = Guid.Parse("fc6fec6c-447f-48e9-9d84-bd9a4733c955"),
+                    RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
+                },
+                new
+                {
+                    PermissionsId = Guid.Parse("b3091aa7-a3c0-497e-8c95-8e12f3271563"),
+                    RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
+                },
+                new
+                {
+                    PermissionsId = Guid.Parse("dafc519b-bda2-45aa-9a3d-9feae7d7f6be"),
+                    RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
+                },
+                new
+                {
+                    PermissionsId = Guid.Parse("7e7ee692-eed0-45d5-8a78-4dae6cef4161"),
+                    RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
+                },
+                new
+                {
+                    PermissionsId = Guid.Parse("ae54d566-0d6b-4e8e-99cc-5669fb3b5fef"),
+                    RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
+                },
+                new
+                {
+                    PermissionsId = Guid.Parse("3393955c-25f4-4649-99c5-e4a660eca6ad"),
+                    RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
+                },
+                new
+                {
+                    PermissionsId = Guid.Parse("8a94c147-2ebb-477c-8166-d1646fd3037b"),
+                    RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
+                },
+
+                
+                new 
+                {
+                    PermissionsId = Guid.Parse("0f14fb1b-8f5d-4225-87cf-cb20dc138bb4"),
+                    RolesId = Guid.Parse("0d8766d8-09df-4aa6-9838-8da59552a736"),
+                },
+                new 
+                {
+                    PermissionsId = Guid.Parse("d1db8d6f-b73a-46cd-8249-60ec84af8fa2"),
+                    RolesId = Guid.Parse("0d8766d8-09df-4aa6-9838-8da59552a736"),
+                },
+                new 
+                {
+                    PermissionsId = Guid.Parse("fc6fec6c-447f-48e9-9d84-bd9a4733c955"),
+                    RolesId = Guid.Parse("0d8766d8-09df-4aa6-9838-8da59552a736"),
+                },
+                new 
+                {
+                    PermissionsId = Guid.Parse("b3091aa7-a3c0-497e-8c95-8e12f3271563"),
+                    RolesId = Guid.Parse("0d8766d8-09df-4aa6-9838-8da59552a736"),
+                },
+                new 
+                {
+                    PermissionsId = Guid.Parse("dafc519b-bda2-45aa-9a3d-9feae7d7f6be"),
+                    RolesId = Guid.Parse("0d8766d8-09df-4aa6-9838-8da59552a736"),
+                },
+                new 
+                {
+                    PermissionsId = Guid.Parse("7e7ee692-eed0-45d5-8a78-4dae6cef4161"),
+                    RolesId = Guid.Parse("0d8766d8-09df-4aa6-9838-8da59552a736"),
+                }
+            };
+
+            modelBuilder.Entity<Permission>().HasIndex(x => new { x.PermissionName }).IsUnique();
+            modelBuilder.Entity<Permission>().HasData(permissions);
             modelBuilder.Entity<Role>().HasData(roles);
+
+            modelBuilder.Entity<Role>()
+                .HasMany(x => x.Permissions)
+                .WithMany(x => x.Roles)
+                .UsingEntity(x=>x.HasData(rolesPermissions));
+
             modelBuilder.Entity<TransactionCategory>().HasData(transactionCategories);
             modelBuilder.Entity<CategoryToUser>().HasData(categoryUsers);
 
