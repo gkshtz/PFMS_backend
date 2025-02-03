@@ -11,5 +11,7 @@ namespace PFMS.BLL.Interfaces
         public Task AddUserRole(UserRoleBo userRoleBo);
 
         public Task<List<string>> GetRoleNamesAssignedToUser(Guid userId);
+
+        public Task<List<RoleBo>> GetRolesAssignedToUser(Guid userId);
     }
 }

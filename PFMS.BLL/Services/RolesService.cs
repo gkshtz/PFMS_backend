@@ -43,5 +43,11 @@ namespace PFMS.BLL.Services
             List<string> roleNames = await _unitOfWork.RolesRepository.GetRoleNamesAssignedToUser(userId);
             return roleNames;
         }
+
+        public async Task<List<RoleBo>> GetRolesAssignedToUser(Guid userId)
+        {
+            var roleDtos = await _unitOfWork.RolesRepository.GetRolesAssignedToUser(userId);
+            return _mapper.Map<List<RoleBo>>(roleDtos);
+        }
     }
 }
