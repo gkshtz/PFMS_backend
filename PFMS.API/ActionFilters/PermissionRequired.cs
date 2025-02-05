@@ -1,21 +1,43 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using PFMS.BLL.Interfaces;
-
+using PFMS.Utils.CustomExceptions;
+using PFMS.Utils.Constants;
+using Microsoft.Identity.Client;
 namespace PFMS.API.ActionFilters
 {
-    public class PermissionRequired: ActionFilterAttribute
+    public class PermissionRequired : ActionFilterAttribute
     {
+        private readonly string _requiredPermission;
+        public PermissionRequired(string requiredPermission)
+        {
+            _requiredPermission = requiredPermission;
+        }
+
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            //fetch the userId from the claims
-            var httpContext = context.HttpContext;
-            var userId = httpContext.User.FindFirst("UserId")!.Value;
+            HttpContext httpContext = context.HttpContext;
 
-            //inject the IRolesService object
+            if (!Guid.TryParse(httpContext.User.FindFirst("UserId")?.Value, out Guid userId))
+            {
+                throw new BadRequestException(ErrorMessages.UserIdClaimsNotPresent);
+            }
+
             IRolesService rolesService = httpContext.RequestServices.GetService<IRolesService>()!;
+            IPermissionsService permissionsService = httpContext.RequestServices.GetService<IPermissionsService>()!;
 
-            // get the roleIds assigned to the user
-            IEnumerable<Guid> roleIds = (await rolesService.GetRolesAssignedToUser(Guid.Parse(userId))).Select(x => x.Id);
+            IEnumerable<Guid> roleIds = (await rolesService.GetRolesAssignedToUser(userId)).Select(x => x.Id);
+
+            IEnumerable<string> permissionNames = (await permissionsService.GetPermissionsAssignedToRoleIds(roleIds)).Select(x => x.PermissionName);
+            
+
+            if(!permissionNames.Contains(_requiredPermission))
+            {
+                throw new ForbiddenException(ErrorMessages.ActionNotAllowed);
+            }
+
+            await base.OnActionExecutionAsync(context, next);
         }
+        
     }
 }
