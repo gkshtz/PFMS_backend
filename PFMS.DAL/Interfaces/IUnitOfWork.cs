@@ -17,6 +17,7 @@ namespace PFMS.DAL.Interfaces
         public ITransactionRepository<TransactionDto> TransactionsRepository { get; }
         public IUserRepository<UserDto> UsersRepository { get; }
         public IScreenshotsRepository<TransactionScreenshotDto> ScreenshotsRepository { get; }
+        public IPermissionsRepository<PermissionDto> PermissionsRepository { get; }
         public Task SaveDatabaseChangesAsync();
     }
 }

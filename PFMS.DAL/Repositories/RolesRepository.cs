@@ -30,5 +30,11 @@ namespace PFMS.DAL.Repositories
             var roleNames = await _appDbContext.UserRoles.Include(x => x.Role).Where(x => x.UserId == userId).Select(x => x.Role!.RoleName).ToListAsync();
             return roleNames;
         }
+
+        public async Task<List<RoleDto>> GetRolesAssignedToUser(Guid userId)
+        {
+            List<Role> roles = await _appDbContext.UserRoles.Include(x => x.Role).Where(x => x.UserId == userId).Select(x => x.Role!).ToListAsync();
+            return _mapper.Map<List<RoleDto>>(roles);
+        }
     }
 }

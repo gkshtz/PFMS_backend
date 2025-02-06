@@ -29,7 +29,7 @@ namespace PFMS.API.Controllers
 
         [HttpGet]
         [Route("list")]
-        [AllowedRole(RoleNames.ADMIN)]
+        [PermissionRequired(PermissionNames.GET_ALL_USERS)]
         public async Task<IActionResult> GetAllAsync()
         {
             var userBos = await _userService.GetAllUsers();
@@ -45,7 +45,7 @@ namespace PFMS.API.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
-        [AllowedRole(RoleNames.ADMIN)]
+        [PermissionRequired(PermissionNames.GET_USER_BY_ID)]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var userBo = await _userService.GetUserProfile(id);
@@ -61,6 +61,7 @@ namespace PFMS.API.Controllers
 
         [HttpGet]
         [Route("profile")]
+        [PermissionRequired(PermissionNames.GET_USER_PROFILE)]
         public async Task<IActionResult> GetProfileAsync()
         {
             var userBo = await _userService.GetUserProfile(UserId);
@@ -76,7 +77,7 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPost]
-        [AllowedRole(RoleNames.ADMIN)]
+        [PermissionRequired(PermissionNames.ADD_USER)]
         public async Task<IActionResult> AddAsync([FromBody] UserRequestModel userRequestModel)
         {
             var userBo = _mapper.Map<UserBo>(userRequestModel);
@@ -119,6 +120,7 @@ namespace PFMS.API.Controllers
 
         [HttpPatch]
         [Route("profile")]
+        [PermissionRequired(PermissionNames.UPDATE_PROFILE)]
         public async Task<IActionResult> PatchAsync([FromBody] UserUpdateRequestModel userModel)
         {
             var userBo = _mapper.Map<UserBo>(userModel);
@@ -134,7 +136,7 @@ namespace PFMS.API.Controllers
         }
 
         [HttpPatch]
-        [Route("password")]
+        [PermissionRequired(PermissionNames.UPDATE_PASSWORD)]
         public async Task<IActionResult> UpdatePassword([FromBody] PasswordUpdateRequestModel passwordUpdateModel)
         {
             await _userService.UpdatePassword(passwordUpdateModel.OldPassword, passwordUpdateModel.NewPassword, UserId);
@@ -180,6 +182,7 @@ namespace PFMS.API.Controllers
 
         [HttpPost]
         [Route("otp/send")]
+        [PermissionRequired(PermissionNames.SEND_OTP)]
         public async Task<IActionResult> SendOtpAsync([FromBody] SendOtpRequestModel otpRequest)
         {
             var uniqueDeviceId = await _otpService.GenerateAndSendOtp(otpRequest.EmailAddress);
@@ -203,6 +206,7 @@ namespace PFMS.API.Controllers
 
         [HttpPatch]
         [Route("otp/verify")]
+        [PermissionRequired(PermissionNames.VERIFY_OTP)]
         public async Task<IActionResult> VerifyOtpAsync([FromBody] VerifyOtpRequestModel verifyOtpModel)
         {
             await _otpService.VerifyOtp(verifyOtpModel.Otp, verifyOtpModel.EmailAddress);
@@ -218,6 +222,7 @@ namespace PFMS.API.Controllers
 
         [HttpPatch]
         [Route("otp/reset-password")]
+        [PermissionRequired(PermissionNames.RESET_FORGOTTEN_PASSWORD)]
         public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordRequestModel resetPasswordModel)
         {
             await _otpService.ResetPassword(resetPasswordModel.NewPassword);

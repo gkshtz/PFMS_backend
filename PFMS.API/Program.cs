@@ -55,6 +55,7 @@ builder.Services.AddScoped<IRolesService, RolesService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IOneTimePasswordsService, OneTimePasswordsService>();
 builder.Services.AddScoped<IBudgetsService, BudgetsService>();
+builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 
 builder.Services.AddScoped<IUserRepository<UserDto>, UserRepository<UserDto, User>>();
 builder.Services.AddScoped<ITransactionRepository<TransactionDto>, TransactionRepository<TransactionDto, Transaction>>();
@@ -95,6 +96,9 @@ builder.Services.AddAutoMapper(typeof(BudgetDALMapper));
 
 builder.Services.AddAutoMapper(typeof(TransactionScreenshotBLLMapper));
 builder.Services.AddAutoMapper(typeof(TransactionScreenshotDALMapper));
+
+builder.Services.AddAutoMapper(typeof(PermissionBLLMapper));
+builder.Services.AddAutoMapper(typeof(PermissionDALMapper));
 
 
 builder.Services.AddScoped<IPasswordHasher<UserBo>, PasswordHasher<UserBo>>();

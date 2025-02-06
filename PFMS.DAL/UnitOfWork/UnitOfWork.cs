@@ -17,6 +17,7 @@ namespace PFMS.DAL.UnitOfWork
         private ITransactionRepository<TransactionDto>? _transactionsRepository;
         private IUserRepository<UserDto>? _usersRepository;
         private IScreenshotsRepository<TransactionScreenshotDto>? _screenshotsRepository;
+        private IPermissionsRepository<PermissionDto>? _permissionsRepository;
 
         private readonly AppDbContext _appDbContext;
         private readonly IMapper _mapper;
@@ -34,6 +35,7 @@ namespace PFMS.DAL.UnitOfWork
         public ITransactionRepository<TransactionDto> TransactionsRepository => _transactionsRepository ??= new TransactionRepository<TransactionDto, Transaction>(_appDbContext, _mapper);
         public IUserRepository<UserDto> UsersRepository => _usersRepository ??= new UserRepository<UserDto, User>(_appDbContext, _mapper);
         public IScreenshotsRepository<TransactionScreenshotDto> ScreenshotsRepository => _screenshotsRepository ??= new ScreenshotsRepository<TransactionScreenshotDto, TransactionScreenshot>(_appDbContext, _mapper);
+        public IPermissionsRepository<PermissionDto> PermissionsRepository => _permissionsRepository ??= new PermissionsRepository<PermissionDto, Permission>(_appDbContext, _mapper);
 
         public async Task SaveDatabaseChangesAsync()
         {
