@@ -5,6 +5,7 @@ using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PFMS.BLL.BOs;
@@ -23,16 +24,14 @@ namespace PFMS.BLL.Services
         private readonly IPasswordHasher<UserBo> _passwordHasher;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IEmailService _emailService;
         private readonly IUnitOfWork _unitOfWork;
-        public UserService(IMapper mapper, IPasswordHasher<UserBo> passwordHasher, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IEmailService emailService,
-            IUnitOfWork unitOfWork)
+        public UserService(IMapper mapper, IPasswordHasher<UserBo> passwordHasher, IConfiguration configuration, IHttpContextAccessor httpContextAccessor
+            ,IUnitOfWork unitOfWork)
         {
             _passwordHasher = passwordHasher;
             _mapper = mapper;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
-            _emailService = emailService;
             _unitOfWork = unitOfWork;
         }
 
@@ -202,6 +201,20 @@ namespace PFMS.BLL.Services
             });
         }
 
+        public async Task DeleteUserAsync(Guid userId)
+        {
+            // remove all the budgets of the user
+            // remove all the screenshots of the user
+            // remove all the transactions of the user
+            // remove all the transaction categories of the user
+            // remove all the total monthly amounts of the user
+            // remove total transaction amount of the user
+            // remove all the user roles
+            // remove all the OTPs of the user
+            // remove all the transaction notifications of the user
+            // remove the user
+        }
+
         #region Helper Functions
         private ClaimsPrincipal? ValidateRefreshToken(string token)
         {
@@ -227,7 +240,6 @@ namespace PFMS.BLL.Services
                 return null;
             }
         }
-
         private string GenerateAccessToken(UserBo userBo)
         {
             //Generate Access Token
