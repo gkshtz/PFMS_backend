@@ -37,5 +37,11 @@ namespace PFMS.DAL.Repositories
             var otpDto = _mapper.Map<OneTimePasswordDto>(oneTimePassword);
             return otpDto;
         }
+
+        public async Task DeleteAllOtpsOfUser(Guid userId)
+        {
+            List<OneTimePassword> otps = await _appDbContext.OneTimePasswords.Where(x => x.UserId == userId).ToListAsync();
+            _appDbContext.OneTimePasswords.RemoveRange(otps);
+        }
     }
 }

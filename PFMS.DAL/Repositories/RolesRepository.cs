@@ -36,5 +36,11 @@ namespace PFMS.DAL.Repositories
             List<Role> roles = await _appDbContext.UserRoles.Include(x => x.Role).Where(x => x.UserId == userId).Select(x => x.Role!).ToListAsync();
             return _mapper.Map<List<RoleDto>>(roles);
         }
+
+        public async Task DeleteAllRolesAssignedToUser(Guid userId)
+        {
+            List<UserRole> userRoles = await _appDbContext.UserRoles.Where(x => x.UserId == userId).ToListAsync();
+            _appDbContext.UserRoles.RemoveRange(userRoles);
+        }
     }
 }

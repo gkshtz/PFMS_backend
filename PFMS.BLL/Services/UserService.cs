@@ -204,12 +204,6 @@ namespace PFMS.BLL.Services
 
         public async Task DeleteUserAsync(Guid userId)
         { 
-            // remove total transaction amount of the user
-            // remove all the user roles
-            // remove all the OTPs of the user
-            // remove all the transaction notifications of the user
-            // remove the user
-
             // remove all the budgets of the user
             await _unitOfWork.BudgetsRepository.DeleteBudgetsOfParticularUser(userId);
 
@@ -225,6 +219,27 @@ namespace PFMS.BLL.Services
             await _unitOfWork.TransactionsRepository.DeleteTransactionsByTotalTransactionAmountId(totalTransactionAmountId);
 
             // remove all the total monthly amounts of the user
+            await _unitOfWork.TotalTransactionAmountsRespository.DeleteTotalMonthlyAmountsByTotalTransactionAmountId(totalTransactionAmountId);
+
+            // remove total transaction amount of the user
+            await _unitOfWork.TotalTransactionAmountsRespository.DeleteAsync(totalTransactionAmountId);
+
+            // remove all the user roles
+            await _unitOfWork.RolesRepository.DeleteAllRolesAssignedToUser(userId);
+
+            // remove all the OTPs of the user
+            await _unitOfWork.OneTimePasswordsRepository.DeleteAllOtpsOfUser(userId);
+
+            // remove all the transaction notifications of the user
+
+            // remove the transaction categories which were added by the user
+            IEnumerable<Guid> categoryIds = await _unitOfWork.CategoriesRepository.DeleteAllCategoryToUserByUserId(userId);
+            await _unitOfWork.CategoriesRepository.DeleteAllCategoriesByCategoryIds(categoryIds);
+
+            // remove the user
+            await _unitOfWork.UsersRepository.DeleteAsync(userId);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
         }
 
         #region Helper Functions
