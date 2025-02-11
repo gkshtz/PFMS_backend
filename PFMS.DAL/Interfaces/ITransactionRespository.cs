@@ -1,4 +1,5 @@
-﻿using PFMS.DAL.DTOs;
+﻿using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using PFMS.DAL.DTOs;
 using PFMS.Utils.RequestData;
 
 namespace PFMS.DAL.Interfaces
@@ -11,6 +12,8 @@ namespace PFMS.DAL.Interfaces
         public Task<TotalTransactionAmountDto> GetTotalTransactionAmountByUserId(Guid userId);
 
         public Task<TransactionDto> GetTransactionWithLatestDate(Guid totalTransactionAmountd);
+
+        public Task DeleteTransactionsByTotalTransactionAmountId(Guid totalTransactionAmountId);
     }
 
 }

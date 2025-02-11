@@ -21,7 +21,7 @@ namespace PFMS.DAL.Entities
         [Column("year")]
         public int Year { get; set; }
 
-        [ForeignKey("User")]
+        [ForeignKey("UserId")]
         [Column("userId")]
         public Guid UserId { get; set; }
         

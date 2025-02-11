@@ -14,5 +14,7 @@ namespace PFMS.DAL.Interfaces
         public Task<TransactionScreenshotDto> GetScreenshotByTransactionId(Guid transactionId);
 
         public Task<TotalTransactionAmountDto> GetTotalTransactionAmountByScreenshotId(Guid screenshotId);
+
+        public Task<List<TransactionScreenshotDto>> DeleteAndGetScreenshotsByUserId(Guid userId);
     }
 }

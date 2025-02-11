@@ -5,6 +5,7 @@ using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -202,17 +203,28 @@ namespace PFMS.BLL.Services
         }
 
         public async Task DeleteUserAsync(Guid userId)
-        {
-            // remove all the budgets of the user
-            // remove all the screenshots of the user
-            // remove all the transactions of the user
-            // remove all the transaction categories of the user
-            // remove all the total monthly amounts of the user
+        { 
             // remove total transaction amount of the user
             // remove all the user roles
             // remove all the OTPs of the user
             // remove all the transaction notifications of the user
             // remove the user
+
+            // remove all the budgets of the user
+            await _unitOfWork.BudgetsRepository.DeleteBudgetsOfParticularUser(userId);
+
+            // remove all the screenshots of the user
+            List<TransactionScreenshotDto> screenshotDtos = await _unitOfWork.ScreenshotsRepository.DeleteAndGetScreenshotsByUserId(userId);
+            var screenshotBos = _mapper.Map<List<TransactionScreenshotBo>>(screenshotDtos);
+
+            screenshotBos.ForEach(screenshotBo => File.Delete(screenshotBo.FilePath));
+
+            Guid totalTransactionAmountId = (await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId)).Id;
+
+            // remove all the transactions of the user
+            await _unitOfWork.TransactionsRepository.DeleteTransactionsByTotalTransactionAmountId(totalTransactionAmountId);
+
+            // remove all the total monthly amounts of the user
         }
 
         #region Helper Functions
