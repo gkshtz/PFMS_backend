@@ -23,5 +23,7 @@ namespace PFMS.BLL.Interfaces
         public Task<string> RefreshAccessToken();
 
         public void Logout();
+
+        public Task DeleteUserAsync(Guid userId);
     }
 }

@@ -5,6 +5,7 @@ using PFMS.DAL.DTOs;
 using PFMS.DAL.Entities;
 using PFMS.Utils.RequestData;
 using PFMS.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace PFMS.DAL.Repositories
 {
@@ -104,6 +105,12 @@ namespace PFMS.DAL.Repositories
         {
             var transaction = await _appDbContext.Transactions.Where(x => x.TotalTransactionAmountId == totalTransactionAmounId).OrderByDescending(x => x.TransactionDate).FirstOrDefaultAsync();
             return _mapper.Map<TransactionDto>(transaction);
+        }
+
+        public async Task DeleteTransactionsByTotalTransactionAmountId(Guid totalTransactionAmountId)
+        {
+            List<Transaction> transactions = await _appDbContext.Transactions.Where(x => x.TotalTransactionAmountId == totalTransactionAmountId).ToListAsync();
+            _appDbContext.Transactions.RemoveRange(transactions);
         }
     }
 }

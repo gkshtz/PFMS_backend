@@ -13,5 +13,7 @@ namespace PFMS.DAL.Interfaces
         public Task<OneTimePasswordDto> FetchByOtp(string otp);
 
         public Task<OneTimePasswordDto> FetchByUniqueDeviceId(Guid uniqueDeviceId);
+
+        public Task DeleteAllOtpsOfUser(Guid userId);
     }
 }

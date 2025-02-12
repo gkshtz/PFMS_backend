@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net.Http.Headers;
+using AutoMapper;
 using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Entities;
@@ -18,6 +19,7 @@ namespace PFMS.DAL.UnitOfWork
         private IUserRepository<UserDto>? _usersRepository;
         private IScreenshotsRepository<TransactionScreenshotDto>? _screenshotsRepository;
         private IPermissionsRepository<PermissionDto>? _permissionsRepository;
+        private ITransactionNotificationsRepository<TransactionNotificationDto>? _transactionNotificationsRepository;
 
         private readonly AppDbContext _appDbContext;
         private readonly IMapper _mapper;
@@ -36,7 +38,8 @@ namespace PFMS.DAL.UnitOfWork
         public IUserRepository<UserDto> UsersRepository => _usersRepository ??= new UserRepository<UserDto, User>(_appDbContext, _mapper);
         public IScreenshotsRepository<TransactionScreenshotDto> ScreenshotsRepository => _screenshotsRepository ??= new ScreenshotsRepository<TransactionScreenshotDto, TransactionScreenshot>(_appDbContext, _mapper);
         public IPermissionsRepository<PermissionDto> PermissionsRepository => _permissionsRepository ??= new PermissionsRepository<PermissionDto, Permission>(_appDbContext, _mapper);
-
+        public ITransactionNotificationsRepository<TransactionNotificationDto> TransactionNotificationsRepository => _transactionNotificationsRepository ??=
+            new TransactionNotificationsRepository<TransactionNotificationDto, TransactionNotification>(_appDbContext, _mapper);
         public async Task SaveDatabaseChangesAsync()
         {
             await _appDbContext.SaveChangesAsync();

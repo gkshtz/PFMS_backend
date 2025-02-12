@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PFMS.Utils.Interfaces;
 
@@ -26,7 +21,7 @@ namespace PFMS.DAL.Entities
         [Column("year")]
         public int Year { get; set; }
 
-        [ForeignKey("User")]
+        [ForeignKey("UserId")]
         [Column("userId")]
         public Guid UserId { get; set; }
         

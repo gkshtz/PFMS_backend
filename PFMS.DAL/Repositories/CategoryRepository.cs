@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Entities;
@@ -51,6 +52,19 @@ namespace PFMS.DAL.Repositories
                 return null;
             }
             return categoryToUser.UserId == null ? Guid.Empty : categoryToUser.UserId;
+        }
+
+        public async Task<IEnumerable<Guid>> DeleteAllCategoryToUserByUserId(Guid userId)
+        {
+            List<CategoryToUser> categoryToUsers = await _appDbContext.CategoryToUser.Where(x => x.UserId == userId).ToListAsync();
+            _appDbContext.CategoryToUser.RemoveRange(categoryToUsers);
+            return categoryToUsers.Select(x => x.CategoryId);
+        }
+
+        public async Task DeleteAllCategoriesByCategoryIds(IEnumerable<Guid> categoryIds)
+        {
+            List<TransactionCategory> categories = await _appDbContext.TransactionCategories.Where(x => categoryIds.Contains(x.Id)).ToListAsync();
+            _appDbContext.TransactionCategories.RemoveRange(categories);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Net.Http.Headers;
+using Microsoft.EntityFrameworkCore;
 using PFMS.DAL.Entities;
 using PFMS.Utils.Enums;
 
@@ -168,21 +169,6 @@ namespace PFMS.DAL.Data
                 },
                 new Permission()
                 {
-                    Id = Guid.Parse("fc6fec6c-447f-48e9-9d84-bd9a4733c955"),
-                    PermissionName = PermissionNames.SEND_OTP.ToString()
-                },
-                new Permission()
-                {
-                    Id = Guid.Parse("b3091aa7-a3c0-497e-8c95-8e12f3271563"),
-                    PermissionName = PermissionNames.VERIFY_OTP.ToString()
-                },
-                new Permission()
-                {
-                    Id = Guid.Parse("dafc519b-bda2-45aa-9a3d-9feae7d7f6be"),
-                    PermissionName = PermissionNames.RESET_FORGOTTEN_PASSWORD.ToString()
-                },
-                new Permission()
-                {
                     Id = Guid.Parse("7e7ee692-eed0-45d5-8a78-4dae6cef4161"),
                     PermissionName = PermissionNames.UPDATE_PASSWORD.ToString()
                 },
@@ -220,21 +206,6 @@ namespace PFMS.DAL.Data
                     PermissionsId = Guid.Parse("d1db8d6f-b73a-46cd-8249-60ec84af8fa2"),
                     RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
                 },
-                new                
-                {
-                    PermissionsId = Guid.Parse("fc6fec6c-447f-48e9-9d84-bd9a4733c955"),
-                    RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
-                },
-                new
-                {
-                    PermissionsId = Guid.Parse("b3091aa7-a3c0-497e-8c95-8e12f3271563"),
-                    RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
-                },
-                new
-                {
-                    PermissionsId = Guid.Parse("dafc519b-bda2-45aa-9a3d-9feae7d7f6be"),
-                    RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
-                },
                 new
                 {
                     PermissionsId = Guid.Parse("7e7ee692-eed0-45d5-8a78-4dae6cef4161"),
@@ -254,9 +225,7 @@ namespace PFMS.DAL.Data
                 {
                     PermissionsId = Guid.Parse("8a94c147-2ebb-477c-8166-d1646fd3037b"),
                     RolesId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
-                },
-
-                
+                },                
                 new 
                 {
                     PermissionsId = Guid.Parse("0f14fb1b-8f5d-4225-87cf-cb20dc138bb4"),
@@ -269,26 +238,36 @@ namespace PFMS.DAL.Data
                 },
                 new 
                 {
-                    PermissionsId = Guid.Parse("fc6fec6c-447f-48e9-9d84-bd9a4733c955"),
-                    RolesId = Guid.Parse("0d8766d8-09df-4aa6-9838-8da59552a736"),
-                },
-                new 
-                {
-                    PermissionsId = Guid.Parse("b3091aa7-a3c0-497e-8c95-8e12f3271563"),
-                    RolesId = Guid.Parse("0d8766d8-09df-4aa6-9838-8da59552a736"),
-                },
-                new 
-                {
-                    PermissionsId = Guid.Parse("dafc519b-bda2-45aa-9a3d-9feae7d7f6be"),
-                    RolesId = Guid.Parse("0d8766d8-09df-4aa6-9838-8da59552a736"),
-                },
-                new 
-                {
                     PermissionsId = Guid.Parse("7e7ee692-eed0-45d5-8a78-4dae6cef4161"),
                     RolesId = Guid.Parse("0d8766d8-09df-4aa6-9838-8da59552a736"),
                 }
             };
 
+            List<User> users = new List<User>()
+            {
+                new User()
+                {
+                    Id = Guid.Parse("24c79b24-990e-41ed-8cb5-fbe5312b237e"),
+                    FirstName = "Kshitiz",
+                    LastName = "Gupta",
+                    Age = 23,
+                    Email = "GKSHITIZ21@GMAIL.COM",
+                    City = "New Delhi",
+                    Password = "" // admin has to change the password first 
+                }
+            };
+
+            List<UserRole> userRoles = new List<UserRole>()
+            {
+                new UserRole()
+                {
+                    UserId = Guid.Parse("24c79b24-990e-41ed-8cb5-fbe5312b237e"),
+                    RoleId = Guid.Parse("fb618e31-5e4d-4dea-a1c3-dbd12b86d5cf")
+                }
+            };
+
+            modelBuilder.Entity<User>().HasData(users);
+            modelBuilder.Entity<UserRole>().HasData(userRoles);
             modelBuilder.Entity<Permission>().HasIndex(x => new { x.PermissionName }).IsUnique();
             modelBuilder.Entity<Permission>().HasData(permissions);
             modelBuilder.Entity<Role>().HasData(roles);

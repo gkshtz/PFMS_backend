@@ -37,5 +37,14 @@ namespace PFMS.DAL.Repositories
 
             return _mapper.Map<TotalTransactionAmountDto>(totalTransactionAmount);
         }
+
+        public async Task<List<TransactionScreenshotDto>> DeleteAndGetScreenshotsByUserId(Guid userId)
+        {
+            List<TransactionScreenshot> screenshots = await _appDbContext.TransactionScreenshots.Include(x => x.Transaction).Include(x => x.Transaction!.TotalTransactionAmount)
+                .Where(x => x.Transaction!.TotalTransactionAmount!.UserId == userId).ToListAsync();
+
+            _appDbContext.TransactionScreenshots.RemoveRange(screenshots);
+            return _mapper.Map<List<TransactionScreenshotDto>>(screenshots);
+        }
     }   
 }

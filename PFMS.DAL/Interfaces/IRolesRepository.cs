@@ -15,5 +15,7 @@ namespace PFMS.DAL.Interfaces
         public Task<List<string>> GetRoleNamesAssignedToUser(Guid userId);
 
         public Task<List<RoleDto>> GetRolesAssignedToUser(Guid userId);
+
+        public Task DeleteAllRolesAssignedToUser(Guid userId);
     }
 }

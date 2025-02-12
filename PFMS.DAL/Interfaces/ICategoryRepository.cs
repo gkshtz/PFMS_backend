@@ -14,5 +14,9 @@ namespace PFMS.DAL.Interfaces
         public Task<bool> DeleteCategoryToUser(Guid categoryId);
 
         public Task<Guid?> GetUserIdByCategoryId(Guid categoryId);
+
+        public Task<IEnumerable<Guid>> DeleteAllCategoryToUserByUserId(Guid userId);
+
+        public Task DeleteAllCategoriesByCategoryIds(IEnumerable<Guid> categoryIds);
     }
 }

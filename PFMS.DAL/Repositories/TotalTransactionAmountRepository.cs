@@ -43,5 +43,12 @@ namespace PFMS.DAL.Repositories
             var totalMonthlyAmount = await _appDbContext.TotalMonthlyAmounts.FirstOrDefaultAsync(x => x.TotalTransactionAmountId == totalTransactionAmountId && x.Month == month && x.Year == year);
             return _mapper.Map<TotalMonthlyAmountDto?>(totalMonthlyAmount);
         }
+
+        public async Task DeleteTotalMonthlyAmountsByTotalTransactionAmountId(Guid totalTransactionAmountId)
+        {
+            List<TotalMonthlyAmount> totalMonthlyAmounts = await _appDbContext.TotalMonthlyAmounts.Where(x => x.TotalTransactionAmountId == totalTransactionAmountId)
+                .ToListAsync();
+            _appDbContext.TotalMonthlyAmounts.RemoveRange(totalMonthlyAmounts);
+        }
     }
 }

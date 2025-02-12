@@ -182,7 +182,6 @@ namespace PFMS.API.Controllers
 
         [HttpPost]
         [Route("otp/send")]
-        [PermissionRequired(PermissionNames.SEND_OTP)]
         public async Task<IActionResult> SendOtpAsync([FromBody] SendOtpRequestModel otpRequest)
         {
             var uniqueDeviceId = await _otpService.GenerateAndSendOtp(otpRequest.EmailAddress);
@@ -206,7 +205,6 @@ namespace PFMS.API.Controllers
 
         [HttpPatch]
         [Route("otp/verify")]
-        [PermissionRequired(PermissionNames.VERIFY_OTP)]
         public async Task<IActionResult> VerifyOtpAsync([FromBody] VerifyOtpRequestModel verifyOtpModel)
         {
             await _otpService.VerifyOtp(verifyOtpModel.Otp, verifyOtpModel.EmailAddress);
@@ -222,10 +220,25 @@ namespace PFMS.API.Controllers
 
         [HttpPatch]
         [Route("otp/reset-password")]
-        [PermissionRequired(PermissionNames.RESET_FORGOTTEN_PASSWORD)]
         public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordRequestModel resetPasswordModel)
         {
             await _otpService.ResetPassword(resetPasswordModel.NewPassword);
+            var response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        [PermissionRequired(PermissionNames.DELETE_USER)]
+        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+        {
+            await _userService.DeleteUserAsync(id);
+
             var response = new GenericSuccessResponse<bool>()
             {
                 StatusCode = (int)HttpStatusCode.OK,

@@ -12,5 +12,6 @@ namespace PFMS.DAL.Interfaces
         where Dto: BudgetDto
     {
         public Task<BudgetDto?> GetBudgetByUserId(Guid userId, int month, int year);
+        public Task DeleteBudgetsOfParticularUser(Guid userId);
     }
 }

@@ -5,6 +5,8 @@ using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PFMS.BLL.BOs;
@@ -23,16 +25,14 @@ namespace PFMS.BLL.Services
         private readonly IPasswordHasher<UserBo> _passwordHasher;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IEmailService _emailService;
         private readonly IUnitOfWork _unitOfWork;
-        public UserService(IMapper mapper, IPasswordHasher<UserBo> passwordHasher, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IEmailService emailService,
-            IUnitOfWork unitOfWork)
+        public UserService(IMapper mapper, IPasswordHasher<UserBo> passwordHasher, IConfiguration configuration, IHttpContextAccessor httpContextAccessor
+            ,IUnitOfWork unitOfWork)
         {
             _passwordHasher = passwordHasher;
             _mapper = mapper;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
-            _emailService = emailService;
             _unitOfWork = unitOfWork;
         }
 
@@ -202,6 +202,54 @@ namespace PFMS.BLL.Services
             });
         }
 
+        public async Task DeleteUserAsync(Guid userId)
+        {
+            //check if the user exists with this userId
+            UserDto? userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
+            if(userDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
+            // remove all the budgets of the user
+            await _unitOfWork.BudgetsRepository.DeleteBudgetsOfParticularUser(userId);
+
+            // remove all the screenshots of the user
+            List<TransactionScreenshotDto> screenshotDtos = await _unitOfWork.ScreenshotsRepository.DeleteAndGetScreenshotsByUserId(userId);
+            var screenshotBos = _mapper.Map<List<TransactionScreenshotBo>>(screenshotDtos);
+
+            screenshotBos.ForEach(screenshotBo => File.Delete(screenshotBo.FilePath));
+
+            Guid totalTransactionAmountId = (await _unitOfWork.TransactionsRepository.GetTotalTransactionAmountByUserId(userId)).Id;
+
+            // remove all the transactions of the user
+            await _unitOfWork.TransactionsRepository.DeleteTransactionsByTotalTransactionAmountId(totalTransactionAmountId);
+
+            // remove all the total monthly amounts of the user
+            await _unitOfWork.TotalTransactionAmountsRespository.DeleteTotalMonthlyAmountsByTotalTransactionAmountId(totalTransactionAmountId);
+
+            // remove total transaction amount of the user
+            await _unitOfWork.TotalTransactionAmountsRespository.DeleteAsync(totalTransactionAmountId);
+
+            // remove all the user roles
+            await _unitOfWork.RolesRepository.DeleteAllRolesAssignedToUser(userId);
+
+            // remove all the OTPs of the user
+            await _unitOfWork.OneTimePasswordsRepository.DeleteAllOtpsOfUser(userId);
+
+            // remove all the transaction notifications of the user
+            await _unitOfWork.TransactionNotificationsRepository.DeleteAllNotificationsOfUser(userId);
+
+            // remove the transaction categories which were added by the user
+            IEnumerable<Guid> categoryIds = await _unitOfWork.CategoriesRepository.DeleteAllCategoryToUserByUserId(userId);
+            await _unitOfWork.CategoriesRepository.DeleteAllCategoriesByCategoryIds(categoryIds);
+
+            // remove the user
+            await _unitOfWork.UsersRepository.DeleteAsync(userId);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
+        }
+
         #region Helper Functions
         private ClaimsPrincipal? ValidateRefreshToken(string token)
         {
@@ -227,7 +275,6 @@ namespace PFMS.BLL.Services
                 return null;
             }
         }
-
         private string GenerateAccessToken(UserBo userBo)
         {
             //Generate Access Token
