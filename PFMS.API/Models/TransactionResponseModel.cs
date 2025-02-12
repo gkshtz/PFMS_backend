@@ -11,6 +11,7 @@ namespace PFMS.API.Models
         public decimal TransactionAmount { get; set; }
         public DateTime TransactionDate { get; set; }
         public TransactionType TransactionType { get; set; }
+        public Guid TransactionCategoryId { get; set; }
 
         #region Navigation Properties
         public TransactionCategoryResponseModel? TransactionCategory { get; set; }

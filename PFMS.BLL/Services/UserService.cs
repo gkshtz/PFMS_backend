@@ -203,7 +203,14 @@ namespace PFMS.BLL.Services
         }
 
         public async Task DeleteUserAsync(Guid userId)
-        { 
+        {
+            //check if the user exists with this userId
+            UserDto? userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
+            if(userDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
             // remove all the budgets of the user
             await _unitOfWork.BudgetsRepository.DeleteBudgetsOfParticularUser(userId);
 
@@ -231,6 +238,7 @@ namespace PFMS.BLL.Services
             await _unitOfWork.OneTimePasswordsRepository.DeleteAllOtpsOfUser(userId);
 
             // remove all the transaction notifications of the user
+            await _unitOfWork.TransactionNotificationsRepository.DeleteAllNotificationsOfUser(userId);
 
             // remove the transaction categories which were added by the user
             IEnumerable<Guid> categoryIds = await _unitOfWork.CategoriesRepository.DeleteAllCategoryToUserByUserId(userId);

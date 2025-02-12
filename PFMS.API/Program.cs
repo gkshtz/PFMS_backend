@@ -64,6 +64,7 @@ builder.Services.AddScoped<IRolesRepository<RoleDto>, RolesRepository<RoleDto, R
 builder.Services.AddScoped<IOneTimePasswordsRespository<OneTimePasswordDto>, OneTimePasswordsRepository<OneTimePasswordDto, OneTimePassword>>();
 builder.Services.AddScoped<IBudgetsRepository<BudgetDto>, BudgetsRepository<BudgetDto, Budget>>();
 builder.Services.AddScoped<ITotalTransactionAmountRespository<TotalTransactionAmountDto>, TotalTransactionAmountRepository<TotalTransactionAmountDto, TotalTransactionAmount>>();
+builder.Services.AddScoped<ITransactionNotificationsRepository<TransactionNotificationDto>, TransactionNotificationsRepository<TransactionNotificationDto, TransactionNotification>>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

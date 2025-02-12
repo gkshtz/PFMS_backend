@@ -234,6 +234,7 @@ namespace PFMS.API.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        [PermissionRequired(PermissionNames.DELETE_USER)]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
             await _userService.DeleteUserAsync(id);
