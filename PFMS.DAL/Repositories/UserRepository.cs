@@ -22,7 +22,7 @@ namespace PFMS.DAL.Repositories
 
         public async Task<UserDto> FindUserByEmail(string email)
         {
-            var user = await _appDbContext.Users.FirstOrDefaultAsync(x=>x.Email == email);
+            User? user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
             return _mapper.Map<UserDto>(user);
         }
 
