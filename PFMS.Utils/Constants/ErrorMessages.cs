@@ -49,5 +49,7 @@ namespace PFMS.Utils.Constants
         public const string ScreenshotDoesNotExist = "Screenshot does not exist.";
         public const string ScreenshotDoesNotBelongToUser = "This screenshot does not belong to this user.";
         public const string UserIdClaimsNotPresent = "User Id Claim not present in the token.";
+        public const string TransactionAmountMustBeGreaterThan1 = "Transaction Amount must be greater than 1";
+        public const string DateMustBeGreaterThanToday = "Transaction date must be greater than today";
     }
 }
