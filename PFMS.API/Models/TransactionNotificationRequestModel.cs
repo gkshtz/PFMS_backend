@@ -15,8 +15,9 @@ namespace PFMS.API.Models
         public DateOnly TransactionDate { get; set; }
 
         [StringLength(100)]
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
+        [Required]
         [EnumDataType(typeof(TransactionType), ErrorMessage = ErrorMessages.InvalidTransactionType)]
         public TransactionType TransactionType { get; set; }
     }
