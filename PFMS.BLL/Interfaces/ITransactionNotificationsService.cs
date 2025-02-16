@@ -11,5 +11,6 @@ namespace PFMS.BLL.Interfaces
     public interface ITransactionNotificationsService
     {
         public Task AddTransactionNotification(TransactionNotificationBo notificationBo, Guid userId);
+        public Task<List<TransactionNotificationBo>> GetAllNotificationsOfUser(Guid userId);
     }
 }

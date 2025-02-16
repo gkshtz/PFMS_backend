@@ -14,16 +14,16 @@ namespace PFMS.BLL.Services
 {
     public class TransactionNotificationsService: ITransactionNotificationsService
     {
-        private readonly IUnitOfWork _unitofWork;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         public TransactionNotificationsService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _unitofWork = unitOfWork;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
         public async Task AddTransactionNotification(TransactionNotificationBo notificationBo, Guid userId)
         {
-            UserDto? userDto = await _unitofWork.UsersRepository.GetByIdAsync(userId);
+            UserDto? userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
@@ -35,9 +35,21 @@ namespace PFMS.BLL.Services
 
             var notificationDto = _mapper.Map<TransactionNotificationDto>(notificationBo);
 
-            await _unitofWork.TransactionNotificationsRepository.AddAsync(notificationDto);
+            await _unitOfWork.TransactionNotificationsRepository.AddAsync(notificationDto);
 
-            await _unitofWork.SaveDatabaseChangesAsync();
+            await _unitOfWork.SaveDatabaseChangesAsync();
+        }
+
+        public async Task<List<TransactionNotificationBo>> GetAllNotificationsOfUser(Guid userId)
+        {
+            UserDto? userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
+            if(userDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
+            List<TransactionNotificationDto> notificationDtos = await _unitOfWork.TransactionNotificationsRepository.GetAllNotificationsByUserId(userId);
+            return _mapper.Map<List<TransactionNotificationBo>>(notificationDtos);
         }
     }
 }
