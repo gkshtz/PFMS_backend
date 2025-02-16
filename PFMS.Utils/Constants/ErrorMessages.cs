@@ -51,5 +51,7 @@ namespace PFMS.Utils.Constants
         public const string UserIdClaimsNotPresent = "User Id Claim not present in the token.";
         public const string TransactionAmountMustBeGreaterThan1 = "Transaction Amount must be greater than 1";
         public const string DateMustBeGreaterThanToday = "Transaction date must be greater than today";
+        public const string TransactionNotificationNotFound = "Transaction notification not found";
+        public const string TransactionNotificationDoesNotBelongToUser = "This notification does not belong to this user";
     }
 }

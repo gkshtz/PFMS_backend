@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Cryptography.Xml;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PFMS.API.Models;
@@ -45,6 +46,22 @@ namespace PFMS.API.Controllers
             {
                 StatusCode = 200,
                 ResponseData = notificationModels,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
+        {
+            TransactionNotificationBo notificationBo = await _notificationsService.GetNotificationById(id, UserId);
+            var notificationModel = _mapper.Map<TransactionNotificationResponseModel>(notificationBo);
+
+            var response = new GenericSuccessResponse<TransactionNotificationResponseModel>()
+            {
+                StatusCode = 200,
+                ResponseData = notificationModel,
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
             return Ok(response);
