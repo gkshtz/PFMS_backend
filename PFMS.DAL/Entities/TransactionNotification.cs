@@ -22,7 +22,7 @@ namespace PFMS.DAL.Entities
         public Guid UserId { get; set; }
 
         [Column("message")]
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
         [Column("transactionType")]
         public string TransactionType { get; set; }
