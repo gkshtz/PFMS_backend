@@ -12,5 +12,6 @@ namespace PFMS.DAL.Interfaces
         where Dto: TransactionNotificationDto
     {
         public Task DeleteAllNotificationsOfUser(Guid userId);
+        public Task<List<TransactionNotificationDto>> GetAllNotificationsByUserId(Guid userId);
     }
 }

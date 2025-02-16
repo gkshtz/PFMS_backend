@@ -32,6 +32,21 @@ namespace PFMS.API.Controllers
                 ResponseData = true,
                 ResponseMessage = ResponseMessage.Success.ToString()
             };
+            return Created("", response);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            List<TransactionNotificationBo> notificationBos = await _notificationsService.GetAllNotificationsOfUser(UserId);
+            var notificationModels = _mapper.Map<List<TransactionNotificationResponseModel>>(notificationBos);
+
+            var response = new GenericSuccessResponse<List<TransactionNotificationResponseModel>>()
+            {
+                StatusCode = 200,
+                ResponseData = notificationModels,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
             return Ok(response);
         }
     }

@@ -29,5 +29,11 @@ namespace PFMS.DAL.Repositories
             List<TransactionNotification> notifications = await _appDbContext.TransactionNotifications.Where(x => x.UserId == userId).ToListAsync();
             _appDbContext.TransactionNotifications.RemoveRange(notifications);
         }
+
+        public async Task<List<TransactionNotificationDto>> GetAllNotificationsByUserId(Guid userId)
+        {
+            List<TransactionNotification> notifications = await _appDbContext.TransactionNotifications.Where(x => x.UserId == userId).ToListAsync();
+            return _mapper.Map<List<TransactionNotificationDto>>(notifications);
+        }
     }
 }

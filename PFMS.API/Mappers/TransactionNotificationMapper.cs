@@ -9,6 +9,7 @@ namespace PFMS.API.Mappers
         public TransactionNotificationMapper()
         {
             CreateMap<TransactionNotificationRequestModel, TransactionNotificationBo>();
+            CreateMap<TransactionNotificationBo, TransactionNotificationResponseModel>();
         }
     }
 }
