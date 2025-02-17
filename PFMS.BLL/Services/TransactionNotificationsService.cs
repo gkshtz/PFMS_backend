@@ -76,5 +76,36 @@ namespace PFMS.BLL.Services
             List<TransactionNotificationDto> notificationDtos = await _unitOfWork.TransactionNotificationsRepository.GetAllNotificationsByUserId(userId);
             return _mapper.Map<List<TransactionNotificationBo>>(notificationDtos);
         }
+
+        public async Task UpdateTransactionNotificationAsync(TransactionNotificationBo notificationBo, Guid notificationId, Guid userId)
+        {
+            // fetch the user to check if the user exists or not
+            UserDto? userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
+            if(userDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
+            // check if the notification exists or not and if exists, then belong to this user or not
+            Guid? userIdOfNotification = (await _unitOfWork.TransactionNotificationsRepository.GetByIdAsync(notificationId))?.UserId;
+            if(userIdOfNotification == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.TransactionNotificationNotFound);
+            }
+            
+            if(userIdOfNotification != userId)
+            {
+                throw new BadRequestException(ErrorMessages.TransactionNotificationDoesNotBelongToUser);
+            }
+
+            notificationBo.Id = notificationId;
+            notificationBo.UserId = userId;
+
+            var notificationDto = _mapper.Map<TransactionNotificationDto>(notificationBo);
+
+            //udate the notification
+            await _unitOfWork.TransactionNotificationsRepository.UpdateAsync(notificationDto);
+            await _unitOfWork.SaveDatabaseChangesAsync();
+        }
     }
 }
