@@ -84,5 +84,20 @@ namespace PFMS.API.Controllers
             };
             return Ok(response);
         }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+        {
+            await _notificationsService.DeleteTransactionNotificationAsync(id, UserId);
+
+            var response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = 200,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
+        }
     }
 }
