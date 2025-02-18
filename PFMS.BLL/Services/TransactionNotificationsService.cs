@@ -79,33 +79,43 @@ namespace PFMS.BLL.Services
 
         public async Task UpdateTransactionNotificationAsync(TransactionNotificationBo notificationBo, Guid notificationId, Guid userId)
         {
-            // fetch the user to check if the user exists or not
+            await CheckUserAndNotification(notificationId, userId);
+
+            notificationBo.Id = notificationId;
+            notificationBo.UserId = userId;
+
+            var notificationDto = _mapper.Map<TransactionNotificationDto>(notificationBo);
+            
+            await _unitOfWork.TransactionNotificationsRepository.UpdateAsync(notificationDto);
+            await _unitOfWork.SaveDatabaseChangesAsync();
+        }
+
+        public async Task DeleteTransactionNotificationAsync(Guid notificationId, Guid userId)
+        {
+            await CheckUserAndNotification(notificationId, userId);
+            await _unitOfWork.TransactionNotificationsRepository.DeleteAsync(notificationId);
+            await _unitOfWork.SaveDatabaseChangesAsync();
+        }
+
+        private async Task CheckUserAndNotification(Guid notificationId, Guid userId)
+        {
+            // check if the user exists
             UserDto? userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
             if(userDto == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
             }
 
-            // check if the notification exists or not and if exists, then belong to this user or not
             Guid? userIdOfNotification = (await _unitOfWork.TransactionNotificationsRepository.GetByIdAsync(notificationId))?.UserId;
-            if(userIdOfNotification == null)
+            if(userIdOfNotification  == null)
             {
                 throw new ResourceNotFoundExecption(ErrorMessages.TransactionNotificationNotFound);
             }
-            
+
             if(userIdOfNotification != userId)
             {
                 throw new BadRequestException(ErrorMessages.TransactionNotificationDoesNotBelongToUser);
             }
-
-            notificationBo.Id = notificationId;
-            notificationBo.UserId = userId;
-
-            var notificationDto = _mapper.Map<TransactionNotificationDto>(notificationBo);
-
-            //udate the notification
-            await _unitOfWork.TransactionNotificationsRepository.UpdateAsync(notificationDto);
-            await _unitOfWork.SaveDatabaseChangesAsync();
         }
     }
 }
