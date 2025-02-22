@@ -10,16 +10,22 @@ using PFMS.DAL.DTOs;
 using PFMS.DAL.Interfaces;
 using PFMS.Utils.CustomExceptions;
 using PFMS.Utils.Constants;
+using Microsoft.EntityFrameworkCore.Storage.Json;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using System.Security.Cryptography.X509Certificates;
+using System.Runtime.InteropServices;
 namespace PFMS.BLL.Services
 {
     public class TransactionNotificationsService: ITransactionNotificationsService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public TransactionNotificationsService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IEmailService _emailService;
+        public TransactionNotificationsService(IUnitOfWork unitOfWork, IMapper mapper, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _emailService = emailService;
         }
         public async Task AddTransactionNotification(TransactionNotificationBo notificationBo, Guid userId)
         {
@@ -94,6 +100,32 @@ namespace PFMS.BLL.Services
         {
             await CheckUserAndNotification(notificationId, userId);
             await _unitOfWork.TransactionNotificationsRepository.DeleteAsync(notificationId);
+            await _unitOfWork.SaveDatabaseChangesAsync();
+        }
+
+        public async Task SendScheduledNotifications()
+        {
+            List<TransactionNotificationDto> notificationDtos = await _unitOfWork.TransactionNotificationsRepository.GetAllNotificationsOfToday();
+
+            var notificationBos = _mapper.Map<List<TransactionNotificationBo>>(notificationDtos);
+            IEnumerable<Guid> userIds = notificationBos.Select(x => x.UserId);
+
+            var users = (await _unitOfWork.UsersRepository.GetUsersFromUserIds(userIds)).ToDictionary(x => x.Id, x => new { x.Email, x.FirstName });
+
+            foreach(var notificationBo in notificationBos)
+            {
+                var email = users[notificationBo.UserId].Email;
+                var username = users[notificationBo.UserId].FirstName;
+
+                var emailSubject = ApplicationConstsants.SubjectForTransactionNotification;
+                string emailBody = ApplicationConstsants.GetEmailBodyForSendingTransactionNotification(username, notificationBo.TransactionAmount
+                    , notificationBo.TransactionType, notificationBo.Message);
+
+                await _emailService.SendEmail(email, emailSubject, emailBody);
+
+                await _unitOfWork.TransactionNotificationsRepository.DeleteAsync(notificationBo.Id);
+            }
+
             await _unitOfWork.SaveDatabaseChangesAsync();
         }
 

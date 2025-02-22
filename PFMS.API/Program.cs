@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PFMS.API.CronJobs;
 using PFMS.API.Mappers;
 using PFMS.API.Middlewares;
 using PFMS.BLL.BOs;
@@ -45,6 +46,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("pfmsDb"))
 );
+
+builder.Services.AddHostedService<SendTransactionNotificationJob>();
 
 builder.Services.Configure<SmtpSettingsBo>(builder.Configuration.GetSection("SmtpSettings"));
 

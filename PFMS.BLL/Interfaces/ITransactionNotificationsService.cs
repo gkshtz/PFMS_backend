@@ -15,5 +15,7 @@ namespace PFMS.BLL.Interfaces
         public Task<TransactionNotificationBo> GetNotificationById(Guid notificationId, Guid userId);
         public Task UpdateTransactionNotificationAsync(TransactionNotificationBo notificationBo, Guid notificationId, Guid userId);
         public Task DeleteTransactionNotificationAsync(Guid notificationId, Guid userId);
+        public Task SendScheduledNotifications();
+
     }
 }

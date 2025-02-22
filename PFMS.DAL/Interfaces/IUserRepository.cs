@@ -17,5 +17,7 @@ namespace PFMS.DAL.Interfaces
         public Task<bool> UpdateUser(UserDto userDto);
 
         public Task<bool> UpdatePassword(string password, Guid userId);
+
+        public Task<List<UserDto>> GetUsersFromUserIds(IEnumerable<Guid> userIds);
     }
 }

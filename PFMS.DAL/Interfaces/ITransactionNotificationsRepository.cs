@@ -13,5 +13,6 @@ namespace PFMS.DAL.Interfaces
     {
         public Task DeleteAllNotificationsOfUser(Guid userId);
         public Task<List<TransactionNotificationDto>> GetAllNotificationsByUserId(Guid userId);
+        public Task<List<TransactionNotificationDto>> GetAllNotificationsOfToday();
     }
 }
