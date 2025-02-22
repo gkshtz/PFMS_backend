@@ -55,5 +55,11 @@ namespace PFMS.DAL.Repositories
 
             return true;
         }
+
+        public async Task<List<UserDto>> GetUsersFromUserIds(IEnumerable<Guid> userIds)
+        {
+            List<User> users = await _appDbContext.Users.Where(x => userIds.Contains(x.Id)).ToListAsync();
+            return _mapper.Map<List<UserDto>>(users);
+        }
     }
 }

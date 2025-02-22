@@ -37,10 +37,19 @@ namespace PFMS.Utils.Constants
         public const string BudgetUpdateMailSubject = "Budget Updated!";
 
         public const long MaximumScreenshotSize = 5242880; // Bytes in 5MB
+
+        public const string SubjectForTransactionNotification = "Scheduled Transaction For Today";
         public static string GenerateBudgetUpdateEmailSubject(string username, Months month, int year)
         {
             string body;
             body = $"<p>Hi {username},</p>\r\n<div>Your Budget for {char.ToUpper(month.ToString()[0]) + month.ToString().Substring(1).ToLower()}, {year} has been updated!</div>\r\n<div>Thanks.</div>";
+            return body;
+        }
+
+        public static string GetEmailBodyForSendingTransactionNotification(string username, decimal amount, TransactionType transactionType, string message)
+        {
+            string body;
+            body = $"<p>Hi {username},</p>\r<p>You have a scheduled&nbsp;transaction to {(transactionType == TransactionType.Income? "take":"pay")} RS {amount}&nbsp;today.</p>\r\n<p>Your Transaction Message = {message}&nbsp;<br /><br />Thanks.&nbsp;</p>";
             return body;
         }
 

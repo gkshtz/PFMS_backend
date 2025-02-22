@@ -35,5 +35,12 @@ namespace PFMS.DAL.Repositories
             List<TransactionNotification> notifications = await _appDbContext.TransactionNotifications.Where(x => x.UserId == userId).ToListAsync();
             return _mapper.Map<List<TransactionNotificationDto>>(notifications);
         }
+
+        public async Task<List<TransactionNotificationDto>> GetAllNotificationsOfToday()
+        {
+            List<TransactionNotification> notifications = await _appDbContext.TransactionNotifications
+                .Where(x => x.TransactionDate == DateOnly.FromDateTime(DateTime.Today)).ToListAsync();
+            return _mapper.Map<List<TransactionNotificationDto>>(notifications);
+        }
     }
 }
