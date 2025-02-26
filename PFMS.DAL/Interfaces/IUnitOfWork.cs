@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PFMS.DAL.DTOs;
+using PFMS.DAL.Entities;
 
 namespace PFMS.DAL.Interfaces
 {
@@ -19,6 +20,7 @@ namespace PFMS.DAL.Interfaces
         public IScreenshotsRepository<TransactionScreenshotDto> ScreenshotsRepository { get; }
         public IPermissionsRepository<PermissionDto> PermissionsRepository { get; }
         public ITransactionNotificationsRepository<TransactionNotificationDto> TransactionNotificationsRepository { get; }
+        public IRecurringTransactionsRepository<RecurringTransactionDto> RecurringTransactionsRepository { get; }  
         public Task SaveDatabaseChangesAsync();
     }
 }

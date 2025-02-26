@@ -60,6 +60,7 @@ builder.Services.AddScoped<IOneTimePasswordsService, OneTimePasswordsService>();
 builder.Services.AddScoped<IBudgetsService, BudgetsService>();
 builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 builder.Services.AddScoped<ITransactionNotificationsService, TransactionNotificationsService>();
+builder.Services.AddScoped<IRecurringTransactionsService, RecurringTransactionsService>();
 
 builder.Services.AddScoped<IUserRepository<UserDto>, UserRepository<UserDto, User>>();
 builder.Services.AddScoped<ITransactionRepository<TransactionDto>, TransactionRepository<TransactionDto, Transaction>>();
