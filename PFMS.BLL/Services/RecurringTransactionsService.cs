@@ -31,6 +31,11 @@ namespace PFMS.BLL.Services
             }
 
             recurringTransactionBo.UserId = userId;
+
+            var recurringTransactionDto = _mapper.Map<RecurringTransactionDto>(recurringTransactionBo);
+          
+            await _unitOfWork.RecurringTransactionsRepository.AddAsync(recurringTransactionDto);
+            await _unitOfWork.SaveDatabaseChangesAsync();
         }
     }
 }

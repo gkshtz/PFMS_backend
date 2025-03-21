@@ -11,7 +11,7 @@ namespace PFMS.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAsync([FromBody] RecurringTransactionRequestModel recurringTransactionModel)
         {
-
+            
         }
     }
 }
