@@ -27,7 +27,7 @@ namespace PFMS.API.Models
         public TransactionType TransactionType { get; set; }
 
         [Required]
-        [EnumDataType(typeof(TransactionType))]
+        [EnumDataType(typeof(TransactionInterval))]
         public TransactionInterval TransactionInterval { get; set; }
 
         [Required]

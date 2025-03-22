@@ -16,7 +16,7 @@ namespace PFMS.BLL.BOs
         public string? TransactionDescription { get; set; }
         public decimal TransactionAmount { get; set; }
         public DateOnly StartDate { get; set; }
-        public DateOnly LastTransactionDate { get; set; }
+        public DateOnly? LastTransactionDate { get; set; }
         public TransactionType TransactionType { get; set; }
         public TransactionInterval TransactionInterval { get; set; }
         public Guid TransactionCategoryId { get; set; }

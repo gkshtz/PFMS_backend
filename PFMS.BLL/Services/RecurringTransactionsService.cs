@@ -30,10 +30,11 @@ namespace PFMS.BLL.Services
                 throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
             }
 
+            recurringTransactionBo.Id = Guid.NewGuid();
             recurringTransactionBo.UserId = userId;
+            recurringTransactionBo.LastTransactionDate = null;
 
             var recurringTransactionDto = _mapper.Map<RecurringTransactionDto>(recurringTransactionBo);
-          
             await _unitOfWork.RecurringTransactionsRepository.AddAsync(recurringTransactionDto);
             await _unitOfWork.SaveDatabaseChangesAsync();
         }

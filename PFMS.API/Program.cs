@@ -60,6 +60,7 @@ builder.Services.AddScoped<IOneTimePasswordsService, OneTimePasswordsService>();
 builder.Services.AddScoped<IBudgetsService, BudgetsService>();
 builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 builder.Services.AddScoped<ITransactionNotificationsService, TransactionNotificationsService>();
+builder.Services.AddScoped<IRecurringTransactionsService, RecurringTransactionsService>();
 
 builder.Services.AddScoped<IUserRepository<UserDto>, UserRepository<UserDto, User>>();
 builder.Services.AddScoped<ITransactionRepository<TransactionDto>, TransactionRepository<TransactionDto, Transaction>>();
@@ -69,6 +70,7 @@ builder.Services.AddScoped<IOneTimePasswordsRespository<OneTimePasswordDto>, One
 builder.Services.AddScoped<IBudgetsRepository<BudgetDto>, BudgetsRepository<BudgetDto, Budget>>();
 builder.Services.AddScoped<ITotalTransactionAmountRespository<TotalTransactionAmountDto>, TotalTransactionAmountRepository<TotalTransactionAmountDto, TotalTransactionAmount>>();
 builder.Services.AddScoped<ITransactionNotificationsRepository<TransactionNotificationDto>, TransactionNotificationsRepository<TransactionNotificationDto, TransactionNotification>>();
+builder.Services.AddScoped<IRecurringTransactionsRepository<RecurringTransactionDto>, RecurringTransactionsRepository<RecurringTransactionDto, RecurringTransaction>>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -108,6 +110,10 @@ builder.Services.AddAutoMapper(typeof(PermissionDALMapper));
 builder.Services.AddAutoMapper(typeof(TransactionNotificationMapper));
 builder.Services.AddAutoMapper(typeof(TransactionNotificationBLLMapper));
 builder.Services.AddAutoMapper(typeof(TransactionNotificationDALMapper));
+
+builder.Services.AddAutoMapper(typeof(RecurringTransactionMapper));
+builder.Services.AddAutoMapper(typeof(RecurringTransactionBLLMapper));
+builder.Services.AddAutoMapper(typeof(RecurringTransactionDALMapper));
 
 
 builder.Services.AddScoped<IPasswordHasher<UserBo>, PasswordHasher<UserBo>>();
