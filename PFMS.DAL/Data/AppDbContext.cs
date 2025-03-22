@@ -24,6 +24,7 @@ namespace PFMS.DAL.Data
         public DbSet<TransactionNotification> TransactionNotifications { get; set; }
         public DbSet<TransactionScreenshot> TransactionScreenshots { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<RecurringTransaction> RecurringTransactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

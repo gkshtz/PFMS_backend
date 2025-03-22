@@ -20,6 +20,7 @@ namespace PFMS.DAL.UnitOfWork
         private IScreenshotsRepository<TransactionScreenshotDto>? _screenshotsRepository;
         private IPermissionsRepository<PermissionDto>? _permissionsRepository;
         private ITransactionNotificationsRepository<TransactionNotificationDto>? _transactionNotificationsRepository;
+        private IRecurringTransactionsRepository<RecurringTransactionDto> _recurringTransactionsRepository;
 
         private readonly AppDbContext _appDbContext;
         private readonly IMapper _mapper;
@@ -40,6 +41,8 @@ namespace PFMS.DAL.UnitOfWork
         public IPermissionsRepository<PermissionDto> PermissionsRepository => _permissionsRepository ??= new PermissionsRepository<PermissionDto, Permission>(_appDbContext, _mapper);
         public ITransactionNotificationsRepository<TransactionNotificationDto> TransactionNotificationsRepository => _transactionNotificationsRepository ??=
             new TransactionNotificationsRepository<TransactionNotificationDto, TransactionNotification>(_appDbContext, _mapper);
+        public IRecurringTransactionsRepository<RecurringTransactionDto> RecurringTransactionsRepository => _recurringTransactionsRepository ??=
+            new RecurringTransactionsRepository<RecurringTransactionDto, RecurringTransaction>(_appDbContext, _mapper);
         public async Task SaveDatabaseChangesAsync()
         {
             await _appDbContext.SaveChangesAsync();
