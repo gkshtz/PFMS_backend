@@ -9,6 +9,7 @@ namespace PFMS.API.Mappers
         public RecurringTransactionMapper()
         {
             CreateMap<RecurringTransactionRequestModel, RecurringTransactionBo>();
+            CreateMap<RecurringTransactionBo, RecurringTransactionResponseModel>();
         }
     }
 }

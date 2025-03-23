@@ -35,5 +35,21 @@ namespace PFMS.API.Controllers
             };
             return Created("", response);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            List<RecurringTransactionBo> recurringTransactionBos = await _recurringTransactionsService.GetAllRecurringTransactions(UserId);
+            var recurringTransactionModels = _mapper.Map<List<RecurringTransactionResponseModel>>(recurringTransactionBos);
+
+            var response = new GenericSuccessResponse<List<RecurringTransactionResponseModel>>()
+            {
+                StatusCode = 200,
+                ResponseData = recurringTransactionModels,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+
+            return Ok(response);
+        }
     }
 }
