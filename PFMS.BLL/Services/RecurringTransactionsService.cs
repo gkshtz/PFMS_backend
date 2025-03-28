@@ -38,5 +38,17 @@ namespace PFMS.BLL.Services
             await _unitOfWork.RecurringTransactionsRepository.AddAsync(recurringTransactionDto);
             await _unitOfWork.SaveDatabaseChangesAsync();
         }
+
+        public async Task<List<RecurringTransactionBo>> GetAllRecurringTransactions(Guid userId)
+        {
+            UserDto? userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
+            if(userDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
+            IEnumerable<RecurringTransactionDto> recurringTransactionDtos = await _unitOfWork.RecurringTransactionsRepository.GetAllRecurringTransactions(userId);
+            return _mapper.Map<List<RecurringTransactionBo>>(recurringTransactionDtos);
+        }
     }
 }

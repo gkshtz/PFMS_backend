@@ -10,5 +10,6 @@ namespace PFMS.DAL.Interfaces
     public interface IRecurringTransactionsRepository<Dto>: IGenericRepository<Dto>
         where Dto: RecurringTransactionDto
     {
+        public Task<IEnumerable<RecurringTransactionDto>> GetAllRecurringTransactions(Guid userId);
     }
 }
