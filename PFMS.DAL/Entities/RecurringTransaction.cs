@@ -38,6 +38,9 @@ namespace PFMS.DAL.Entities
         [Column("lastTransactionDate")]
         public DateOnly? LastTransactionDate { get; set; }
 
+        [Column("nextTransactionDate")]
+        public DateOnly? NextTransactionDate { get; set; }
+
         [ForeignKey(nameof(User))]
         [Column("userId")]
         public Guid UserId { get; set; }
