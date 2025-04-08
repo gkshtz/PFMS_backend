@@ -10,6 +10,8 @@ using PFMS.DAL.DTOs;
 using PFMS.DAL.Interfaces;
 using PFMS.Utils.CustomExceptions;
 using PFMS.Utils.Constants;
+using System.Transactions;
+using PFMS.Utils.Enums;
 
 namespace PFMS.BLL.Services
 {
@@ -33,6 +35,7 @@ namespace PFMS.BLL.Services
             recurringTransactionBo.Id = Guid.NewGuid();
             recurringTransactionBo.UserId = userId;
             recurringTransactionBo.LastTransactionDate = null;
+            recurringTransactionBo.NextTransactionDate = recurringTransactionBo.StartDate;
 
             var recurringTransactionDto = _mapper.Map<RecurringTransactionDto>(recurringTransactionBo);
             await _unitOfWork.RecurringTransactionsRepository.AddAsync(recurringTransactionDto);

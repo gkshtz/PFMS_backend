@@ -39,7 +39,7 @@ namespace PFMS.DAL.Entities
         public DateOnly? LastTransactionDate { get; set; }
 
         [Column("nextTransactionDate")]
-        public DateOnly? NextTransactionDate { get; set; }
+        public DateOnly NextTransactionDate { get; set; }
 
         [ForeignKey(nameof(User))]
         [Column("userId")]

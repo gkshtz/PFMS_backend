@@ -19,6 +19,7 @@ namespace PFMS.BLL.BOs
         public DateOnly? LastTransactionDate { get; set; }
         public TransactionType TransactionType { get; set; }
         public TransactionInterval TransactionInterval { get; set; }
+        public DateOnly NextTransactionDate { get; set; }
         public Guid TransactionCategoryId { get; set; }
         public Guid UserId { get; set; }
     }
