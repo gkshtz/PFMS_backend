@@ -83,5 +83,27 @@ namespace PFMS.BLL.Services
 
             await _unitOfWork.SaveDatabaseChangesAsync();
         }
+        public async Task DeleteRecurringTransaction(Guid recurringTransactionId, Guid userId)
+        {
+            UserDto? userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
+            if(userDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
+            Guid? userIdOfRecurringTransaction = (await _unitOfWork.RecurringTransactionsRepository.GetByIdAsync(recurringTransactionId))?.UserId;
+            if(userIdOfRecurringTransaction == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.RecurringTransactionNotFound);
+            }
+
+            if(userIdOfRecurringTransaction != userId)
+            {
+                throw new BadRequestException(ErrorMessages.RecurringTransactionDoesNotBelongToUser);
+            }
+
+            await _unitOfWork.RecurringTransactionsRepository.DeleteAsync(recurringTransactionId);
+            await _unitOfWork.SaveDatabaseChangesAsync();
+        }
     }
 }
