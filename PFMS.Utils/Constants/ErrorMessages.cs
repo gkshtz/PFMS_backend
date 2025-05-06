@@ -53,5 +53,7 @@ namespace PFMS.Utils.Constants
         public const string DateMustBeGreaterThanToday = "Transaction date must be greater than today";
         public const string TransactionNotificationNotFound = "Transaction notification not found";
         public const string TransactionNotificationDoesNotBelongToUser = "This notification does not belong to this user";
+        public const string RecurringTransactionNotFound = "Recurring transaction not found";
+        public const string RecurringTransactionDoesNotBelongToUser = "Recurring transaction does not belong to this user";
     }
 }
