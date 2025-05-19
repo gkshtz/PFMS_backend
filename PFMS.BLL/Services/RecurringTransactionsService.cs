@@ -12,6 +12,7 @@ using PFMS.Utils.CustomExceptions;
 using PFMS.Utils.Constants;
 using System.Transactions;
 using PFMS.Utils.Enums;
+using Azure.Core.Pipeline;
 
 namespace PFMS.BLL.Services
 {
@@ -52,6 +53,57 @@ namespace PFMS.BLL.Services
 
             IEnumerable<RecurringTransactionDto> recurringTransactionDtos = await _unitOfWork.RecurringTransactionsRepository.GetAllRecurringTransactions(userId);
             return _mapper.Map<List<RecurringTransactionBo>>(recurringTransactionDtos);
+        }
+
+        public async Task UpdateRecurringTransaction(RecurringTransactionBo recurringTransactionBo, Guid recurringTransactionId, Guid userId)
+        {
+            UserDto? userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
+            if(userDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
+            Guid? userIdOfRecurringTransaction = (await _unitOfWork.RecurringTransactionsRepository.GetByIdAsync(recurringTransactionId))?.UserId;
+            if(userIdOfRecurringTransaction == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.RecurringTransactionNotFound);
+            }
+            
+            if(userIdOfRecurringTransaction != userId)
+            {
+                throw new BadRequestException(ErrorMessages.RecurringTransactionDoesNotBelongToUser);   
+            }
+
+            recurringTransactionBo.Id = recurringTransactionId;
+            recurringTransactionBo.UserId = userId;
+
+            var recurringTransactionDto = _mapper.Map<RecurringTransactionDto>(recurringTransactionBo);
+
+            await _unitOfWork.RecurringTransactionsRepository.UpdateAsync(recurringTransactionDto);
+
+            await _unitOfWork.SaveDatabaseChangesAsync();
+        }
+        public async Task DeleteRecurringTransaction(Guid recurringTransactionId, Guid userId)
+        {
+            UserDto? userDto = await _unitOfWork.UsersRepository.GetByIdAsync(userId);
+            if(userDto == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.UserNotFound);
+            }
+
+            Guid? userIdOfRecurringTransaction = (await _unitOfWork.RecurringTransactionsRepository.GetByIdAsync(recurringTransactionId))?.UserId;
+            if(userIdOfRecurringTransaction == null)
+            {
+                throw new ResourceNotFoundExecption(ErrorMessages.RecurringTransactionNotFound);
+            }
+
+            if(userIdOfRecurringTransaction != userId)
+            {
+                throw new BadRequestException(ErrorMessages.RecurringTransactionDoesNotBelongToUser);
+            }
+
+            await _unitOfWork.RecurringTransactionsRepository.DeleteAsync(recurringTransactionId);
+            await _unitOfWork.SaveDatabaseChangesAsync();
         }
     }
 }

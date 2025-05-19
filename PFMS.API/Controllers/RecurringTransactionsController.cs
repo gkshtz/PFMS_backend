@@ -51,5 +51,36 @@ namespace PFMS.API.Controllers
 
             return Ok(response);
         }
+
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] RecurringTransactionRequestModel recurringTransactionModel)
+        {
+            var recurringTransactionBo = _mapper.Map<RecurringTransactionBo>(recurringTransactionModel);
+            await _recurringTransactionsService.UpdateRecurringTransaction(recurringTransactionBo, id, UserId);
+
+            var response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = 200,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+        {
+            await _recurringTransactionsService.DeleteRecurringTransaction(id, UserId);
+            GenericSuccessResponse<bool> response = new GenericSuccessResponse<bool>()
+            {
+                StatusCode = 200,
+                ResponseData = true,
+                ResponseMessage = ResponseMessage.Success.ToString()
+            };
+            return Ok(response);
+
+        }
     }
 }
