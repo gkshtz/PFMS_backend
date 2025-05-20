@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using PFMS.DAL.Data;
 using PFMS.DAL.DTOs;
 using PFMS.DAL.Entities;
@@ -61,5 +62,7 @@ namespace PFMS.DAL.Repositories
             List<User> users = await _appDbContext.Users.Where(x => userIds.Contains(x.Id)).ToListAsync();
             return _mapper.Map<List<UserDto>>(users);
         }
+
+        
     }
 }

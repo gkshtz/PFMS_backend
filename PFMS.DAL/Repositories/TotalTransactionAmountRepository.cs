@@ -50,5 +50,12 @@ namespace PFMS.DAL.Repositories
                 .ToListAsync();
             _appDbContext.TotalMonthlyAmounts.RemoveRange(totalMonthlyAmounts);
         }
+
+        public async Task<TotalTransactionAmountDto?> GetTotalTransactionAmountByUserId(Guid userId)
+        {
+            TotalTransactionAmount? totalTransactionAmount = await _appDbContext.TotalTransactionAmounts.FirstOrDefaultAsync(x => x.UserId == userId);
+            return _mapper.Map<TotalTransactionAmountDto>(totalTransactionAmount);
+        }
+
     }
 }

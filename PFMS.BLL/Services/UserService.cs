@@ -300,6 +300,12 @@ namespace PFMS.BLL.Services
 
             return accessToken;
         }
+
+        public async Task<TotalTransactionAmountBo?> GetTotalTransactionAmountByUserId(Guid userId)
+        {
+            TotalTransactionAmountDto? totalTransactionAmountDto = await _unitOfWork.TotalTransactionAmountsRespository.GetTotalTransactionAmountByUserId(userId);
+            return _mapper.Map<TotalTransactionAmountBo>(totalTransactionAmountDto);
+        }
         private string GenerateRefreshToken(UserBo userBo)
         {
             var claims = new List<Claim>()

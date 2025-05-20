@@ -17,5 +17,6 @@ namespace PFMS.DAL.Interfaces
         public Task<TotalMonthlyAmountDto?> GetTotalMonthlyAmountOfParticularMonthAndYear(Guid totalTransactionAmountId, int month, int year);
 
         public Task DeleteTotalMonthlyAmountsByTotalTransactionAmountId(Guid totalTransactionAmountId);
+        public Task<TotalTransactionAmountDto?> GetTotalTransactionAmountByUserId(Guid userId);
     }
 }

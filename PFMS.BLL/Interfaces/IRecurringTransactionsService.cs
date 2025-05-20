@@ -13,5 +13,6 @@ namespace PFMS.BLL.Interfaces
         public Task<List<RecurringTransactionBo>> GetAllRecurringTransactions(Guid userId);
         public Task UpdateRecurringTransaction(RecurringTransactionBo recurringTransactionBo, Guid recurringTransactionId, Guid userId);
         public Task DeleteRecurringTransaction(Guid recurringTransactionId, Guid userId);
+        public Task<List<RecurringTransactionBo>> GetRecurringTransactionsForToday();
     }
 }

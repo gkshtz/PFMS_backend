@@ -48,6 +48,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("pfmsDb"))
 );
 
 builder.Services.AddHostedService<SendTransactionNotificationJob>();
+builder.Services.AddHostedService<RecurringTransactionJob>();
 
 builder.Services.Configure<SmtpSettingsBo>(builder.Configuration.GetSection("SmtpSettings"));
 

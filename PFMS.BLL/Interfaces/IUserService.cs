@@ -25,5 +25,6 @@ namespace PFMS.BLL.Interfaces
         public void Logout();
 
         public Task DeleteUserAsync(Guid userId);
+        public Task<TotalTransactionAmountBo?> GetTotalTransactionAmountByUserId(Guid userId);
     }
 }

@@ -105,5 +105,11 @@ namespace PFMS.BLL.Services
             await _unitOfWork.RecurringTransactionsRepository.DeleteAsync(recurringTransactionId);
             await _unitOfWork.SaveDatabaseChangesAsync();
         }
+
+        public async Task<List<RecurringTransactionBo>> GetRecurringTransactionsForToday()
+        {
+            List<RecurringTransactionDto> recurringTransactionDtos = await _unitOfWork.RecurringTransactionsRepository.GetRecurringTransactionsForToday();
+            return _mapper.Map<List<RecurringTransactionBo>>(recurringTransactionDtos);
+        }
     }
 }

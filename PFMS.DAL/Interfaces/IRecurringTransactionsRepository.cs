@@ -11,5 +11,6 @@ namespace PFMS.DAL.Interfaces
         where Dto: RecurringTransactionDto
     {
         public Task<IEnumerable<RecurringTransactionDto>> GetAllRecurringTransactions(Guid userId);
+        public Task<List<RecurringTransactionDto>> GetRecurringTransactionsForToday();
     }
 }

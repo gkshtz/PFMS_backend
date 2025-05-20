@@ -29,5 +29,11 @@ namespace PFMS.DAL.Repositories
             IEnumerable<RecurringTransaction> recurringTransactions = await _appDbContext.RecurringTransactions.Where(x => x.UserId == userId).ToListAsync();
             return _mapper.Map<IEnumerable<RecurringTransactionDto>>(recurringTransactions);
         }
+
+        public async Task<List<RecurringTransactionDto>> GetRecurringTransactionsForToday()
+        {
+            List<RecurringTransaction> recurringTransactions = await _appDbContext.RecurringTransactions.Where(x => x.NextTransactionDate == DateOnly.FromDateTime(DateTime.Today)).ToListAsync();
+            return _mapper.Map<List<RecurringTransactionDto>>(recurringTransactions);
+        }
     }
 }
